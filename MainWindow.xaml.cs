@@ -317,7 +317,7 @@ namespace FertCalculator
         private void SetComparisonVisibility(Visibility visibility)
         {
             // Update the visibility of all comparison-related UI elements
-
+            ComparisonMixesComboBox.Visibility = visibility;
             CompareTotalNitrogenBox.Visibility = visibility;
             ComparePhosphorousBox.Visibility = visibility;
             ComparePotassiumBox.Visibility = visibility;
@@ -333,19 +333,6 @@ namespace FertCalculator
             CompareTotalPPMBox.Visibility = visibility;
             // Also, don't forget to adjust for any labels or additional UI elements related to comparison
             CompareMix.Visibility = visibility;
-            CompareNitrogen.Visibility = visibility;
-            ComparePhosphorous.Visibility = visibility;
-            ComparePotassium.Visibility = visibility;
-            CompareMagnesium.Visibility = visibility;
-            CompareCalcium.Visibility = visibility;
-            CompareSulfur.Visibility = visibility;
-            CompareIron.Visibility = visibility;
-            CompareZinc.Visibility = visibility;
-            CompareBoron.Visibility = visibility;
-            CompareManganese.Visibility = visibility;
-            CompareCopper.Visibility = visibility;
-            CompareMolybdenum.Visibility = visibility;
-            CompareTotalPPM.Visibility = visibility;
         }
 
         private void DecimalInputValidation(object sender, TextCompositionEventArgs e)
