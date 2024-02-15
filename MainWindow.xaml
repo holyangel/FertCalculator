@@ -510,11 +510,11 @@
         </StackPanel>
 
         <ComboBox Name="ComparisonMixesComboBox"
-          Grid.Column="2" Grid.Row="16" Grid.RowSpan="2"
+          Grid.Column="2" Grid.Row="17" Grid.RowSpan="2"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Center"
-          Margin="5"
-          SelectionChanged="ComparisonMixesComboBox_SelectionChanged" Visibility="Collapsed">
+          Margin="5,-5,5,8"
+          SelectionChanged="ComparisonMixesComboBox_SelectionChanged">
             <ComboBoxItem Content="Select a Mix to Compare" IsEnabled="False" IsSelected="True"/>
             <!-- Dynamically populated mix names -->
         </ComboBox>
