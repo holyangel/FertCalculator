@@ -946,5 +946,58 @@ namespace FertCalculator
             CompareMolybdenumBox.Text = "";
             CompareTotalPPMBox.Text = "";
         }
+
+        private void ImportMixesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "XML Files (*.xml)|*.xml", // Filter to only show XML files
+                Title = "Select UserMixes.xml to Import"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ImportMixes(openFileDialog.FileName);
+            }
+        }
+
+        private void ImportMixes(string filePath)
+        {
+            try
+            {
+                var serializer = new XmlSerializer(typeof(MixCollection));
+                MixCollection importedMixCollection;
+                using (var reader = new StreamReader(filePath))
+                {
+                    importedMixCollection = (MixCollection)serializer.Deserialize(reader);
+                }
+
+                bool mixesUpdated = false;
+                foreach (var importedMix in importedMixCollection.Mixes)
+                {
+                    if (!savedMixes.ContainsKey(importedMix.Name))
+                    {
+                        savedMixes.Add(importedMix.Name, importedMix.FertilizerQuantities.ToDictionary(fq => fq.Name, fq => fq.Quantity));
+                        mixesUpdated = true;
+                    }
+                }
+
+                if (mixesUpdated)
+                {
+                    SaveMixesToFile(); // Update the current UserMixes.xml file
+                    PopulateMixesComboBox(); // Refresh the UI
+                    PopulateComparisonMixesComboBox(); // Refresh the comparison ComboBox as well
+                    MessageBox.Show("New mixes have been imported successfully.", "Import Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("No new mixes were found to import.", "No New Mixes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to import mixes: {ex.Message}", "Import Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }
