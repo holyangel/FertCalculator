@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -671,6 +671,10 @@ namespace FertCalculator
                 DisableAllCheckBoxes(); // This should clear and disable all CheckBoxes
                 DisableAllQuantityTextBoxes(); // Optionally clear all TextBoxes if needed
                 SaveMixNameTextBox.Text = ""; // Clear the SaveMixNameTextBox
+                // Reset nutrient value text boxes to empty
+                ClearNutrientValues();
+                // Reset the ComboBox selection to the placeholder
+                PredefinedMixesComboBox.SelectedIndex = 0;
             }
             else if (savedMixes.ContainsKey(selectedMix))
             {
@@ -830,7 +834,7 @@ namespace FertCalculator
 
                     MessageBox.Show("Mix deleted successfully!", "Delete Mix", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                    // Optionally, reset UI elements or select another mix
+                    // Reset UI elements or select another mix
                     DisableAllCheckBoxes();
                     DisableAllQuantityTextBoxes();
                 }
@@ -852,7 +856,7 @@ namespace FertCalculator
             // Check if "Reset" is selected
             if (selectedMix.Equals("Reset"))
             {
-                // Reset comparison nutrient value text boxes to empty or "0"
+                // Reset comparison nutrient value text boxes to empty
                 ClearComparisonNutrientValues();
 
                 // Optionally, reset the ComboBox selection to the placeholder
@@ -907,6 +911,23 @@ namespace FertCalculator
                 CompareMolybdenumBox.Text = totalMo.ToString("N2");
                 CompareTotalPPMBox.Text = totalPPM.ToString("N2");
             }
+        }
+
+        private void ClearNutrientValues()
+        {
+            TotalNitrogenBox.Text = "";
+            PhosphorousBox.Text = "";
+            PotassiumBox.Text = "";
+            MagnesiumBox.Text = "";
+            CalciumBox.Text = "";
+            SulfurBox.Text = "";
+            IronBox.Text = "";
+            ZincBox.Text = "";
+            BoronBox.Text = "";
+            ManganeseBox.Text = "";
+            CopperBox.Text = "";
+            MolybdenumBox.Text = "";
+            TotalPPMBox.Text = "";
         }
 
         private void ClearComparisonNutrientValues()
