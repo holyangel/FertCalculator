@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -70,7 +70,6 @@ namespace FertCalculator
         private Dictionary<string, Dictionary<string, double>> savedMixes = new Dictionary<string, Dictionary<string, double>>();
         private const string PlaceholderText = "Enter mix name"; // Your placeholder text
         private string mixesFilePath = "UserMixes.xml"; // Path to save the mixes
-
 
         public MainWindow()
         {
@@ -897,6 +896,81 @@ namespace FertCalculator
                 CompareCopperBox.Text = totalCu.ToString("N2");
                 CompareMolybdenumBox.Text = totalMo.ToString("N2");
                 CompareTotalPPMBox.Text = totalPPM.ToString("N2");
+
+                UpdateComparisonBoxBackground(CompareTotalNitrogenBox, TotalNitrogenBox);
+                UpdateComparisonBoxBackground(ComparePhosphorousBox, PhosphorousBox);
+                UpdateComparisonBoxBackground(ComparePotassiumBox, PotassiumBox);
+                UpdateComparisonBoxBackground(CompareMagnesiumBox, MagnesiumBox);
+                UpdateComparisonBoxBackground(CompareCalciumBox, CalciumBox);
+                UpdateComparisonBoxBackground(CompareSulfurBox, SulfurBox);
+                UpdateComparisonBoxBackground(CompareIronBox, IronBox);
+                UpdateComparisonBoxBackground(CompareZincBox, ZincBox);
+                UpdateComparisonBoxBackground(CompareBoronBox, BoronBox);
+                UpdateComparisonBoxBackground(CompareManganeseBox, ManganeseBox);
+                UpdateComparisonBoxBackground(CompareCopperBox, CopperBox);
+                UpdateComparisonBoxBackground(CompareMolybdenumBox, MolybdenumBox);
+                UpdateComparisonBoxBackground(CompareTotalPPMBox, TotalPPMBox);
+            }
+        }
+
+        private void UpdateComparisonBoxBackground(TextBox compareBox, TextBox regularBox)
+        {
+            double compareValue, regularValue;
+            bool compareSuccess = double.TryParse(compareBox.Text, out compareValue);
+            bool regularSuccess = double.TryParse(regularBox.Text, out regularValue);
+
+            // Determine the tolerance based on the nutrient type
+            double tolerance = DetermineTolerance(compareBox.Name);
+
+            if (compareSuccess && regularSuccess)
+            {
+                if (compareValue == regularValue)
+                {
+                    // If values are exactly the same, set background to white
+                    compareBox.Background = Brushes.White;
+                }
+                else if (Math.Abs(compareValue - regularValue) <= tolerance)
+                {
+                    // If values are within tolerance, set background to light blue
+                    compareBox.Background = Brushes.LightBlue;
+                }
+                else if (compareValue > regularValue)
+                {
+                    // If comparison value is higher, set background to green
+                    compareBox.Background = Brushes.Green;
+                }
+                else
+                {
+                    // If comparison value is lower, set background to red
+                    compareBox.Background = Brushes.Red;
+                }
+            }
+            else
+            {
+                // Use white color if comparison isn't possible due to parsing failure
+                compareBox.Background = Brushes.White;
+            }
+        }
+
+        // Helper method to determine tolerance based on the nutrient type
+        private double DetermineTolerance(string textBoxName)
+        {
+            // List of TextBox names for primary nutrients with higher tolerance
+            var primaryNutrients = new List<string>
+    {
+        "TotalNitrogenBox", "PhosphorousBox", "PotassiumBox",
+        "MagnesiumBox", "CalciumBox", "SulfurBox"
+    };
+
+            // Check if the textBoxName contains any of the primary nutrient identifiers
+            // Adjust the logic if your TextBox naming convention is different
+            if (primaryNutrients.Any(n => textBoxName.Contains(n)))
+            {
+                return 1.0; // Higher tolerance for primary nutrients
+            }
+            else
+            {
+                return 0.1; // Lower tolerance for micronutrients
             }
         }
 
@@ -919,19 +993,24 @@ namespace FertCalculator
 
         private void ClearComparisonNutrientValues()
         {
-            CompareTotalNitrogenBox.Text = "";
-            ComparePhosphorousBox.Text = "";
-            ComparePotassiumBox.Text = "";
-            CompareMagnesiumBox.Text = "";
-            CompareCalciumBox.Text = "";
-            CompareSulfurBox.Text = "";
-            CompareIronBox.Text = "";
-            CompareZincBox.Text = "";
-            CompareBoronBox.Text = "";
-            CompareManganeseBox.Text = "";
-            CompareCopperBox.Text = "";
-            CompareMolybdenumBox.Text = "";
-            CompareTotalPPMBox.Text = "";
+            var defaultBrush = new SolidColorBrush(Colors.White); // Assuming white is the default
+
+            // List of all comparison boxes
+            var comparisonBoxes = new TextBox[]
+            {
+        CompareTotalNitrogenBox, ComparePhosphorousBox, ComparePotassiumBox,
+        CompareMagnesiumBox, CompareCalciumBox, CompareSulfurBox,
+        CompareIronBox, CompareZincBox, CompareBoronBox,
+        CompareManganeseBox, CompareCopperBox, CompareMolybdenumBox,
+        CompareTotalPPMBox
+            };
+
+            // Clear the text and reset the background color for each comparison box
+            foreach (var box in comparisonBoxes)
+            {
+                box.Text = "";
+                box.Background = defaultBrush;
+            }
         }
 
         private void ImportMixesButton_Click(object sender, RoutedEventArgs e)
