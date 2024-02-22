@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,14 +85,18 @@ namespace FertCalculator
             BioBizzAlgamicCheck.Checked += UpdateNutrientValues;
             BioBizzBloomCheck.Checked += UpdateNutrientValues;
             BioBizzGrowCheck.Checked += UpdateNutrientValues;
+            CalciumNitrateCheck.Checked += UpdateNutrientValues;
             CaliMagicCheck.Checked += UpdateNutrientValues;
+            CannaBoostCheck.Checked += UpdateNutrientValues;
             CannaCalmagCheck.Checked += UpdateNutrientValues;
             CannaCocoACheck.Checked += UpdateNutrientValues;
             CannaCocoBCheck.Checked += UpdateNutrientValues;
-            CannaFloresCheck.Checked += UpdateNutrientValues;
+            CannaFloresACheck.Checked += UpdateNutrientValues;
+            CannaFloresBCheck.Checked += UpdateNutrientValues;
             CannaPHDownCheck.Checked += UpdateNutrientValues;
             CannaPK1314Check.Checked += UpdateNutrientValues;
-            CannaVegaCheck.Checked += UpdateNutrientValues;
+            CannaVegaACheck.Checked += UpdateNutrientValues;
+            CannaVegaBCheck.Checked += UpdateNutrientValues;
             DryPartBloomCheck.Checked += UpdateNutrientValues;
             EpsomSaltCheck.Checked += UpdateNutrientValues;
             GypsumCheck.Checked += UpdateNutrientValues;
@@ -136,14 +140,18 @@ namespace FertCalculator
             BioBizzAlgamicBox.TextChanged += UpdateNutrientValues;
             BioBizzBloomBox.TextChanged += UpdateNutrientValues;
             BioBizzGrowBox.TextChanged += UpdateNutrientValues;
+            CalciumNitrateBox.TextChanged += UpdateNutrientValues;
             CaliMagicBox.TextChanged += UpdateNutrientValues;
+            CannaBoostBox.TextChanged += UpdateNutrientValues;
             CannaCalmagBox.TextChanged += UpdateNutrientValues;
             CannaCocoABox.TextChanged += UpdateNutrientValues;
             CannaCocoBBox.TextChanged += UpdateNutrientValues;
-            CannaFloresBox.TextChanged += UpdateNutrientValues;
+            CannaFloresABox.TextChanged += UpdateNutrientValues;
+            CannaFloresBBox.TextChanged += UpdateNutrientValues;
             CannaPHDownBox.TextChanged += UpdateNutrientValues;
             CannaPK1314Box.TextChanged += UpdateNutrientValues;
-            CannaVegaBox.TextChanged += UpdateNutrientValues;
+            CannaVegaABox.TextChanged += UpdateNutrientValues;
+            CannaVegaBBox.TextChanged += UpdateNutrientValues;
             DryPartBloomBox.TextChanged += UpdateNutrientValues;
             EpsomSaltBox.TextChanged += UpdateNutrientValues;
             GypsumBox.TextChanged += UpdateNutrientValues;
@@ -245,14 +253,18 @@ namespace FertCalculator
             BioBizzAlgamicBox.IsEnabled = false;
             BioBizzBloomBox.IsEnabled = false;
             BioBizzGrowBox.IsEnabled = false;
+            CalciumNitrateBox.IsEnabled = false;
             CaliMagicBox.IsEnabled = false;
+            CannaBoostBox.IsEnabled = false;
             CannaCalmagBox.IsEnabled = false;
             CannaCocoABox.IsEnabled = false;
             CannaCocoBBox.IsEnabled = false;
-            CannaFloresBox.IsEnabled = false;
+            CannaFloresABox.IsEnabled = false;
+            CannaFloresBBox.IsEnabled = false;
             CannaPHDownBox.IsEnabled = false;
             CannaPK1314Box.IsEnabled = false;
-            CannaVegaBox.IsEnabled = false;
+            CannaVegaABox.IsEnabled = false;
+            CannaVegaBBox.IsEnabled = false;
             DryPartBloomBox.IsEnabled = false;
             EpsomSaltBox.IsEnabled = false;
             GypsumBox.IsEnabled = false;
@@ -377,17 +389,21 @@ namespace FertCalculator
 
         private void InitializeFertilizers()
         {
-            fertilizers.Add("BioBizz Grow", new Fertilizer { Name = "BioBizz Grow", N = 40, P = 13.1, K = 49.8, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 102.9 });
-            fertilizers.Add("BioBizz Bloom", new Fertilizer { Name = "BioBizz Bloom", N = 20, P = 28.3, K = 36.2, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 84.5 });
             fertilizers.Add("BioBizz Algamic", new Fertilizer { Name = "BioBizz Algamic", N = 2, P = 0.873, K = 0.83, Mg = 0.04, Ca = 0.12, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0.018, Cu = 0, Mo = 0, TotalPPM = 3.881 });
-            fertilizers.Add("CaliMagic", new Fertilizer { Name = "CaliMagic", N = 10, P = 0, K = 0, Mg = 15, Ca = 50, S = 0, Fe = 1, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 76 });
+            fertilizers.Add("BioBizz Bloom", new Fertilizer { Name = "BioBizz Bloom", N = 20, P = 28.3, K = 36.2, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 84.5 });
+            fertilizers.Add("BioBizz Grow", new Fertilizer { Name = "BioBizz Grow", N = 40, P = 13.1, K = 49.8, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 102.9 });
+            fertilizers.Add("Calcium Nitrate", new Fertilizer { Name = "Calcium Nitrate", N = 40.95, P = 0, K = 0, Mg = 0, Ca = 50.19, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 91.14 });
+            fertilizers.Add("CaliMagic", new Fertilizer { Name = "CaliMagic", N = 2.64, P = 0, K = 0, Mg = 3.962, Ca = 13.208, S = 0, Fe = 0.264, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 20.06 });
+            fertilizers.Add("Canna Boost", new Fertilizer { Name = "Canna Boost", N = 0, P = 1.153, K = 2.193, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 3.34 });
             fertilizers.Add("Canna Calmag", new Fertilizer { Name = "Canna Calmag", N = 8.242, P = 0, K = 0, Mg = 3.3497, Ca = 9.51, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 21.1017 });
-            fertilizers.Add("CannaCoco 'A'", new Fertilizer { Name = "CannaCoco 'A'", N = 15.85, P = 0, K = 2.425, Mg = 2.5043, Ca = 26.258, S = 0, Fe = 0.0834, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 47.1207 });
-            fertilizers.Add("CannaCoco 'B'", new Fertilizer { Name = "CannaCoco 'B'", N = 4.226, P = 8.981, K = 9.6687, Mg = 9.51, Ca = 0, S = 9.51, Fe = 0, Zn = 0.0369, B = 0.0369, Mn = 0.0634, Cu = 0.005, Mo = 0, TotalPPM = 42.0379 });
-            fertilizers.Add("Canna Flores", new Fertilizer { Name = "Canna Flores", N = 0, P = 2.4425, K = 3.4754, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0.004226, TotalPPM = 5.922126 });
-            fertilizers.Add("Canna PH Down", new Fertilizer { Name = "Canna PH Down", N = 2.09, P = 0, K = 0, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 2.09 });
-            fertilizers.Add("Canna PK13/14", new Fertilizer { Name = "Canna PK13/14", N = 0, P = 6.0854, K = 12.7431, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 18.8285 });
-            fertilizers.Add("Canna Vega", new Fertilizer { Name = "Canna Vega", N = 6.9786, P = 0, K = 2.3167, Mg = 0.5581, Ca = 2.2333, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.0867 });
+            fertilizers.Add("CannaCoco A", new Fertilizer { Name = "CannaCoco A", N = 10.0039, P = 0, K = 1.32, Mg = 1.06, Ca = 11.9, S = 0, Fe = 0.0528, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 24.3328 });
+            fertilizers.Add("CannaCoco B", new Fertilizer { Name = "CannaCoco B", N = 2.64, P = 4.61, K = 4.39, Mg = 2.91, Ca = 0, S = 1.85, Fe = 0, Zn = 0.0185, B = 0.0185, Mn = 0.0317, Cu = 0.00264, Mo = 0.00528, TotalPPM = 16.47662 });
+            fertilizers.Add("Canna Flores A", new Fertilizer { Name = "Canna Flores A", N = 7.925, P = 0, K = 13.158, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 21.083 });
+            fertilizers.Add("Canna Flores B", new Fertilizer { Name = "Canna Flores B", N = 0, P = 4.612, K = 6.579, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 11.191 });
+            fertilizers.Add("Canna PH Down", new Fertilizer { Name = "Canna PH Down", N = 2.64, P = 0, K = 0, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 2.64 });
+            fertilizers.Add("Canna PK13/14", new Fertilizer { Name = "Canna PK13/14", N = 0, P = 11.53, K = 24.123, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 35.6 });
+            fertilizers.Add("Canna Vega A", new Fertilizer { Name = "Canna Vega A", N = 13.2, P = 0, K = 4.39, Mg = 0.5581, Ca = 2.2333, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.0867 });
+            fertilizers.Add("Canna Vega B", new Fertilizer { Name = "Canna Vega B", N = 0, P = 3.459, K = 8.772, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.231 });
             fertilizers.Add("DryPart Bloom", new Fertilizer { Name = "DryPart Bloom", N = 15.8, P = 19.6, K = 32.9, Mg = 18.5, Ca = 18.5, S = 37, Fe = 0.291, Zn = 0.0396, B = 0.037, Mn = 0.0687, Cu = 0.0396, Mo = 0.0528, TotalPPM = 142.8287 });
             fertilizers.Add("Epsom Salt", new Fertilizer { Name = "Epsom Salt", N = 0, P = 0, K = 0, Mg = 26, Ca = 0, S = 103, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 129 });
             fertilizers.Add("Gypsum", new Fertilizer { Name = "Gypsum", N = 0, P = 0, K = 0, Mg = 0, Ca = 58.12, S = 47.55, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 105.67 });
@@ -413,7 +429,7 @@ namespace FertCalculator
             fertilizers.Add("MaxiGrow", new Fertilizer { Name = "MaxiGrow", N = 26.42, P = 5.77, K = 30.7, Mg = 5.3, Ca = 15.9, S = 8, Fe = 0.317, Zn = 0, B = 0, Mn = 0.133, Cu = 0, Mo = 0.005283, TotalPPM = 92.545283 });
             fertilizers.Add("Megacrop", new Fertilizer { Name = "Megacrop", N = 25.705, P = 9.01, K = 33.39, Mg = 7.95, Ca = 21.2, S = 10.6, Fe = 0.3975, Zn = 0.159, B = 0.0689, Mn = 0.0742, Cu = 0.0212, Mo = 0.0345, TotalPPM = 108.6103 });
             fertilizers.Add("Megacrop A", new Fertilizer { Name = "Megacrop A", N = 29.979, P = 14.283, K = 65.3315, Mg = 7.9615, Ca = 0, S = 10.6593, Fe = 0.4629, Zn = 0.1323, B = 0.1349, Mn = 0.611, Cu = 0.0079, Mo = 0.0032, TotalPPM = 129.5665 });
-            fertilizers.Add("Megacrop 'B'", new Fertilizer { Name = "Megacrop 'B'", N = 40.9975, P = 0, K = 0, Mg = 0, Ca = 50.255, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 91.2525 });
+            fertilizers.Add("Megacrop B", new Fertilizer { Name = "Megacrop B", N = 40.9975, P = 0, K = 0, Mg = 0, Ca = 50.255, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 91.2525 });
             fertilizers.Add("MC Cal-Mag", new Fertilizer { Name = "MC Cal-Mag", N = 34.34, P = 0, K = 0, Mg = 9.25, Ca = 29.1, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 72.69 });
             fertilizers.Add("MC Sweet Candy", new Fertilizer { Name = "MC Sweet Candy", N = 0, P = 0, K = 35.1, Mg = 14.5, Ca = 0, S = 34.3, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 83.9 });
             fertilizers.Add("MOAB", new Fertilizer { Name = "MOAB", N = 0, P = 59.95, K = 70.17, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 130.12 });
@@ -555,7 +571,7 @@ namespace FertCalculator
         {
             // You might need to adjust this method to correctly find all CheckBoxes
             // depending on your application's structure. This is just a conceptual example.
-            return new CheckBox[] { BioBizzAlgamicCheck, BioBizzBloomCheck, BioBizzGrowCheck, CaliMagicCheck, CannaCalmagCheck, CannaCocoACheck, CannaCocoBCheck, CannaFloresCheck, CannaPHDownCheck, CannaPK1314Check, CannaVegaCheck, DryPartBloomCheck, EpsomSaltCheck, GypsumCheck, Jacks01226Check, Jacks51226Check, Jacks55018Check, Jacks71530Check, Jacks103020Check, Jacks12416Check, Jacks1500Check, Jacks15520Check, Jacks15617Check, Jacks18823Check, Jacks201020Check, Jacks202020Check, KTrateLXCheck, KoolbloomCheck, LKoolbloomCheck, MagNitCheck, MagTrateLXCheck, MAPCheck, MaxiBloomCheck, MaxiGrowCheck, MegacropCheck, MegacropACheck, MegacropBCheck, MCCalMagCheck, MCSweetCandyCheck, MOABCheck, MonsterBloomCheck, MPKCheck, PPBloomCheck, PPBoostCheck, PPCalKickCheck, PPFinisherCheck, PPGrowCheck, PPSpikeCheck };
+            return new CheckBox[] { BioBizzAlgamicCheck, BioBizzBloomCheck, BioBizzGrowCheck, CalciumNitrateCheck, CaliMagicCheck, CannaBoostCheck, CannaCalmagCheck, CannaCocoACheck, CannaCocoBCheck, CannaFloresACheck, CannaFloresBCheck, CannaPHDownCheck, CannaPK1314Check, CannaVegaACheck, CannaVegaBCheck, DryPartBloomCheck, EpsomSaltCheck, GypsumCheck, Jacks01226Check, Jacks51226Check, Jacks55018Check, Jacks71530Check, Jacks103020Check, Jacks12416Check, Jacks1500Check, Jacks15520Check, Jacks15617Check, Jacks18823Check, Jacks201020Check, Jacks202020Check, KTrateLXCheck, KoolbloomCheck, LKoolbloomCheck, MagNitCheck, MagTrateLXCheck, MAPCheck, MaxiBloomCheck, MaxiGrowCheck, MegacropCheck, MegacropACheck, MegacropBCheck, MCCalMagCheck, MCSweetCandyCheck, MOABCheck, MonsterBloomCheck, MPKCheck, PPBloomCheck, PPBoostCheck, PPCalKickCheck, PPFinisherCheck, PPGrowCheck, PPSpikeCheck };
         }
 
         private double GetFertilizerQuantity(string fertilizerName)
@@ -566,14 +582,18 @@ namespace FertCalculator
         {"BioBizz Algamic", BioBizzAlgamicBox},
         {"BioBizz Bloom", BioBizzBloomBox},
         {"BioBizz Grow", BioBizzGrowBox},
+        {"Calcium Nitrate", CalciumNitrateBox},
         {"CaliMagic", CaliMagicBox},
+        {"Canna Boost", CannaBoostBox},
         {"Canna Calmag", CannaCalmagBox},
-        {"CannaCoco 'A'", CannaCocoABox},
-        {"CannaCoco 'B'", CannaCocoBBox},
-        {"Canna Flores", CannaFloresBox},
+        {"CannaCoco A", CannaCocoABox},
+        {"CannaCoco B", CannaCocoBBox},
+        {"Canna Flores A", CannaFloresABox},
+        {"Canna Flores B", CannaFloresBBox},
         {"Canna PH Down", CannaPHDownBox},
         {"Canna PK13/14", CannaPK1314Box},
-        {"Canna Vega", CannaVegaBox},
+        {"Canna Vega A", CannaVegaABox},
+        {"Canna Vega B", CannaVegaBBox},
         {"DryPart Bloom", DryPartBloomBox},
         {"Epsom Salt", EpsomSaltBox},
         {"Gypsum", GypsumBox},
@@ -599,7 +619,7 @@ namespace FertCalculator
         {"MaxiGrow", MaxiGrowBox},
         {"Megacrop", MegacropBox},
         {"Megacrop A", MegacropABox},
-        {"Megacrop 'B'", MegacropBBox},
+        {"Megacrop B", MegacropBBox},
         {"MC Cal-Mag", MCCalMagBox},
         {"MC Sweet Candy", MCSweetCandyBox},
         {"MOAB", MOABBox},
