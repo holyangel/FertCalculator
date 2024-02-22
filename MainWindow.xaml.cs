@@ -564,6 +564,14 @@ namespace FertCalculator
             CopperBox.Text = $"{copper:N2}";
             MolybdenumBox.Text = $"{molybdenum:N2}";
             TotalPPMBox.Text = $"{totalPPM:N2}";
+
+            if (ComparisonMixesComboBox.SelectedItem != null &&
+                ComparisonMixesComboBox.SelectedIndex > 0 &&
+                ComparisonMixesComboBox.SelectedItem is ComboBoxItem selectedItem &&
+                !selectedItem.Content.ToString().Equals("Select a Mix to Compare"))
+            {
+                ApplyComparisonMix(selectedItem.Content.ToString());
+            }
         }
 
         // Utility method to get all fertilizer CheckBoxes
@@ -868,12 +876,18 @@ namespace FertCalculator
                 // Optionally, reset the ComboBox selection to the placeholder
                 ComparisonMixesComboBox.SelectedIndex = 0;
             }
-            else if (selectedMix == "Select a Mix to Compare") return; // Ignore the placeholder selection
-
-            // Assuming savedMixes dictionary is already populated and has the mix details
-            if (savedMixes.ContainsKey(selectedMix))
+            else if (selectedMix != "Select a Mix to Compare")
             {
-                var mixDetails = savedMixes[selectedMix];
+                ApplyComparisonMix(selectedMix);
+            }
+        }
+
+        private void ApplyComparisonMix(string mixName)
+        {
+            // Assuming savedMixes dictionary is already populated and has the mix details
+            if (!savedMixes.ContainsKey(mixName)) return;
+
+                var mixDetails = savedMixes[mixName];
 
                 // Initialize nutrient totals
                 double totalN = 0, totalP = 0, totalK = 0, totalMg = 0, totalCa = 0, totalS = 0;
@@ -931,7 +945,6 @@ namespace FertCalculator
                 UpdateComparisonBoxBackground(CompareMolybdenumBox, MolybdenumBox);
                 UpdateComparisonBoxBackground(CompareTotalPPMBox, TotalPPMBox);
             }
-        }
 
         private void UpdateComparisonBoxBackground(TextBox compareBox, TextBox regularBox)
         {
