@@ -80,6 +80,7 @@ namespace FertCalculator
             PopulateMixesComboBox(); // Existing method to populate predefined mixes
             SetComparisonVisibility(Visibility.Collapsed); // Hide comparison elements initially
             PopulateComparisonMixesComboBox(); // Ensure the comparison ComboBox is also populated
+            UpdateUnitToggleButtonLabel();
 
             // Attach event handlers to Check Boxes
             BioBizzAlgamicCheck.Checked += UpdateNutrientValues;
@@ -507,6 +508,9 @@ namespace FertCalculator
 
         private void UpdateNutrientValues(object sender, EventArgs e)
         {
+            // Determine the conversion factor based on the current unit preference
+            double conversionFactor = Properties.Settings.Default.UnitPreference ? 3.78541 : 1;
+
             // Reset nutrient values
             double totalNitrogen = 0.0;
             double phosphorous = 0.0;
@@ -551,22 +555,22 @@ namespace FertCalculator
             }
 
             // Update the UI with the aggregated values
-            TotalNitrogenBox.Text = $"{totalNitrogen:N2}";
-            PhosphorousBox.Text = $"{phosphorous:N2}";
-            PotassiumBox.Text = $"{potassium:N2}";
-            MagnesiumBox.Text = $"{magnesium:N2}";
-            CalciumBox.Text = $"{calcium:N2}";
-            SulfurBox.Text = $"{sulfur:N2}";
-            IronBox.Text = $"{iron:N2}";
-            ZincBox.Text = $"{zinc:N2}";
-            BoronBox.Text = $"{boron:N2}";
-            ManganeseBox.Text = $"{manganese:N2}";
-            CopperBox.Text = $"{copper:N2}";
-            MolybdenumBox.Text = $"{molybdenum:N2}";
-            TotalPPMBox.Text = $"{totalPPM:N2}";
+            TotalNitrogenBox.Text = $"{(totalNitrogen * conversionFactor):N2}";
+            PhosphorousBox.Text = $"{(phosphorous * conversionFactor):N2}";
+            PotassiumBox.Text = $"{(potassium * conversionFactor):N2}";
+            MagnesiumBox.Text = $"{(magnesium * conversionFactor):N2}";
+            CalciumBox.Text = $"{(calcium * conversionFactor):N2}";
+            SulfurBox.Text = $"{(sulfur * conversionFactor):N2}";
+            IronBox.Text = $"{(iron * conversionFactor):N2}";
+            ZincBox.Text = $"{(zinc * conversionFactor):N2}";
+            BoronBox.Text = $"{(boron * conversionFactor):N2}";
+            ManganeseBox.Text = $"{(manganese * conversionFactor):N2}";
+            CopperBox.Text = $"{(copper * conversionFactor):N2}";
+            MolybdenumBox.Text = $"{(molybdenum * conversionFactor):N2}";
+            TotalPPMBox.Text = $"{(totalPPM * conversionFactor):N2}";
 
             if (ComparisonMixesComboBox.SelectedItem != null &&
-                ComparisonMixesComboBox.SelectedIndex > 0 &&
+                ComparisonMixesComboBox.SelectedIndex > -1 &&
                 ComparisonMixesComboBox.SelectedItem is ComboBoxItem selectedItem &&
                 !selectedItem.Content.ToString().Equals("Select a Mix to Compare"))
             {
@@ -884,6 +888,9 @@ namespace FertCalculator
 
         private void ApplyComparisonMix(string mixName)
         {
+            // Determine the conversion factor based on the current unit preference
+            double conversionFactor = Properties.Settings.Default.UnitPreference ? 3.78541 : 1;
+
             // Assuming savedMixes dictionary is already populated and has the mix details
             if (!savedMixes.ContainsKey(mixName)) return;
 
@@ -916,35 +923,36 @@ namespace FertCalculator
                     }
                 }
 
-                // Update the comparison textboxes
-                CompareTotalNitrogenBox.Text = totalN.ToString("N2");
-                ComparePhosphorousBox.Text = totalP.ToString("N2");
-                ComparePotassiumBox.Text = totalK.ToString("N2");
-                CompareMagnesiumBox.Text = totalMg.ToString("N2");
-                CompareCalciumBox.Text = totalCa.ToString("N2");
-                CompareSulfurBox.Text = totalS.ToString("N2");
-                CompareIronBox.Text = totalFe.ToString("N2");
-                CompareZincBox.Text = totalZn.ToString("N2");
-                CompareBoronBox.Text = totalB.ToString("N2");
-                CompareManganeseBox.Text = totalMn.ToString("N2");
-                CompareCopperBox.Text = totalCu.ToString("N2");
-                CompareMolybdenumBox.Text = totalMo.ToString("N2");
-                CompareTotalPPMBox.Text = totalPPM.ToString("N2");
+            // Update the comparison textboxes
+            CompareTotalNitrogenBox.Text = (totalN * conversionFactor).ToString("N2");
+            ComparePhosphorousBox.Text = (totalP * conversionFactor).ToString("N2");
+            ComparePotassiumBox.Text = (totalK * conversionFactor).ToString("N2");
+            CompareMagnesiumBox.Text = (totalMg * conversionFactor).ToString("N2");
+            CompareCalciumBox.Text = (totalCa * conversionFactor).ToString("N2");
+            CompareSulfurBox.Text = (totalS * conversionFactor).ToString("N2");
+            CompareIronBox.Text = (totalFe * conversionFactor).ToString("N2");
+            CompareZincBox.Text = (totalZn * conversionFactor).ToString("N2");
+            CompareBoronBox.Text = (totalB * conversionFactor).ToString("N2");
+            CompareManganeseBox.Text = (totalMn * conversionFactor).ToString("N2");
+            CompareCopperBox.Text = (totalCu * conversionFactor).ToString("N2");
+            CompareMolybdenumBox.Text = (totalMo * conversionFactor).ToString("N2");
+            CompareTotalPPMBox.Text = (totalPPM * conversionFactor).ToString("N2");
 
-                UpdateComparisonBoxBackground(CompareTotalNitrogenBox, TotalNitrogenBox);
-                UpdateComparisonBoxBackground(ComparePhosphorousBox, PhosphorousBox);
-                UpdateComparisonBoxBackground(ComparePotassiumBox, PotassiumBox);
-                UpdateComparisonBoxBackground(CompareMagnesiumBox, MagnesiumBox);
-                UpdateComparisonBoxBackground(CompareCalciumBox, CalciumBox);
-                UpdateComparisonBoxBackground(CompareSulfurBox, SulfurBox);
-                UpdateComparisonBoxBackground(CompareIronBox, IronBox);
-                UpdateComparisonBoxBackground(CompareZincBox, ZincBox);
-                UpdateComparisonBoxBackground(CompareBoronBox, BoronBox);
-                UpdateComparisonBoxBackground(CompareManganeseBox, ManganeseBox);
-                UpdateComparisonBoxBackground(CompareCopperBox, CopperBox);
-                UpdateComparisonBoxBackground(CompareMolybdenumBox, MolybdenumBox);
-                UpdateComparisonBoxBackground(CompareTotalPPMBox, TotalPPMBox);
-            }
+            UpdateComparisonBoxBackground(CompareTotalNitrogenBox, TotalNitrogenBox);
+            UpdateComparisonBoxBackground(ComparePhosphorousBox, PhosphorousBox);
+            UpdateComparisonBoxBackground(ComparePotassiumBox, PotassiumBox);
+            UpdateComparisonBoxBackground(CompareMagnesiumBox, MagnesiumBox);
+            UpdateComparisonBoxBackground(CompareCalciumBox, CalciumBox);
+            UpdateComparisonBoxBackground(CompareSulfurBox, SulfurBox);
+            UpdateComparisonBoxBackground(CompareIronBox, IronBox);
+            UpdateComparisonBoxBackground(CompareZincBox, ZincBox);
+            UpdateComparisonBoxBackground(CompareBoronBox, BoronBox);
+            UpdateComparisonBoxBackground(CompareManganeseBox, ManganeseBox);
+            UpdateComparisonBoxBackground(CompareCopperBox, CopperBox);
+            UpdateComparisonBoxBackground(CompareMolybdenumBox, MolybdenumBox);
+            UpdateComparisonBoxBackground(CompareTotalPPMBox, TotalPPMBox);
+
+        }
 
         private void UpdateComparisonBoxBackground(TextBox compareBox, TextBox regularBox)
         {
@@ -1098,5 +1106,33 @@ namespace FertCalculator
                 MessageBox.Show($"Failed to import mixes: {ex.Message}", "Import Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void UnitToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.UnitPreference = true;
+            Properties.Settings.Default.Save(); // Save the settings
+            UpdateUnitToggleButtonLabel();
+            UpdateNutrientValues(null, null);
+        }
+
+        private void UnitToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.UnitPreference = false;
+            Properties.Settings.Default.Save(); // Save the settings
+            UpdateUnitToggleButtonLabel();
+            UpdateNutrientValues(null, null);
+        }
+
+        private void UpdateUnitToggleButtonLabel()
+        {
+            // Update the unit toggle button label
+            UnitToggle.Content = Properties.Settings.Default.UnitPreference ? "g|mL/Liter" : "g|mL/Gallon";
+
+            // Update unitbox1 and unitbox2 based on the current unit preference
+            string unitText = Properties.Settings.Default.UnitPreference ? "g|mL/L" : "g|mL/Gal";
+            unitbox1.Text = unitText;
+            unitbox2.Text = unitText;
+        }
+
     }
 }

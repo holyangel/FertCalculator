@@ -94,10 +94,11 @@
             <ComboBoxItem Content="Reset"/>
             <!-- Add more predefined mix names here -->
         </ComboBox>
-        <Button Name="DeleteMixButton" Content="Delete Mix" Click="DeleteMixButton_Click" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+        <Button Name="DeleteMixButton" Content="Delete Mix" Click="DeleteMixButton_Click" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
         <TextBox Name="SaveMixNameTextBox" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Margin="-1,-5,0,-5" VerticalAlignment="Center" Width="215" Grid.ColumnSpan="2" GotFocus="SaveMixNameTextBox_GotFocus" LostFocus="SaveMixNameTextBox_LostFocus" Foreground="Gray"/>
-        <Button Content="Save/Update" Click="SaveMixButton_Click" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <Button Name="ImportMixesButton" Content="Import Mix" Click="ImportMixesButton_Click" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+            <Button Content="Save/Update" Click="SaveMixButton_Click" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+        <Button Name="ImportMixesButton" Content="Import Mix" Click="ImportMixesButton_Click" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+            <ToggleButton x:Name="UnitToggle" Content="g|mL/Gallon" Checked="UnitToggle_Checked" Unchecked="UnitToggle_Unchecked" Grid.Column="4" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" />
 
             <ComboBox Name="ComparisonMixesComboBox" Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,-5,5,-5" SelectionChanged="ComparisonMixesComboBox_SelectionChanged">
             <ComboBoxItem Content="Select a Mix to Compare" IsEnabled="False" IsSelected="True"/>
@@ -109,9 +110,9 @@
 
         <!-- Title Bar -->
         <TextBlock Text="Fertilizers" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <TextBlock Text="g|ml/Gal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock x:Name="unitbox1" Text="g|mL/Gal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <TextBlock Text="Fertilizers" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <TextBlock Text="g|ml/Gal" Grid.Column="3" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock x:Name="unitbox2" Text="g|mL/Gal" Grid.Column="3" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <TextBlock Text="Elemental Breakdown" Grid.Column="4" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StackPanel Name="CompareMix" Grid.Column="6" Grid.Row="2" HorizontalAlignment="Center" >
             <!-- Labels for comparison nutrient values -->
