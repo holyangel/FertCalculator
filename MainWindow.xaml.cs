@@ -1000,7 +1000,7 @@ namespace FertCalculator
             var primaryNutrients = new List<string>
     {
         "TotalNitrogenBox", "PhosphorousBox", "PotassiumBox",
-        "MagnesiumBox", "CalciumBox", "SulfurBox"
+        "MagnesiumBox", "CalciumBox", "SulfurBox", "TotalPPMBox"
     };
 
             // Check if the textBoxName contains any of the primary nutrient identifiers
