@@ -227,6 +227,26 @@ namespace FertCalculator
             }
         }
 
+        private void DisableAllQuantityCheckBoxes()
+        {
+            var checkBoxes = FindVisualChildren<CheckBox>(this); // 'this' refers to the current window
+
+            // Determine if a comparison mix is selected and should be preserved
+            bool preserveComparison = ComparisonMixesComboBox.SelectedIndex > 1; // Assuming index 0 is "Select a Mix to Compare", and index 1 is "Reset"
+
+            foreach (var checkBox in checkBoxes)
+            {
+                if (checkBox != null)
+                {
+                    // If preserveComparison is true, check if the current checkbox is the comparison checkbox and skip unchecking it
+                    if (!(preserveComparison && checkBox == ShowComparisonCheckBox))
+                    {
+                        checkBox.IsChecked = false;
+                    }
+                }
+            }
+        }
+
         // Helper method to find all children of a specific type in the visual tree
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
@@ -696,7 +716,7 @@ namespace FertCalculator
             }
             else if (savedMixes.ContainsKey(selectedMix))
             {
-                DisableAllCheckBoxes(); // Ensure a clean state before applying new selections
+                DisableAllQuantityCheckBoxes(); // Ensure a clean state before applying new selections
                 var mixDetails = savedMixes[selectedMix];
                 // Apply mix details to CheckBoxes and TextBoxes
                 foreach (var detail in mixDetails)
