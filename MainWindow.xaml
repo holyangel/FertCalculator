@@ -1,7 +1,7 @@
 <Window x:Class="FertCalculator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Fertilizer Calculator V24.02.22" Height="525" Width="775"
+        Title="Fertilizer Calculator V24.02.24" Height="550" Width="775"
         Background="Black"
         Icon="FertCalculator.png">
     <!-- Set the window background to black -->
