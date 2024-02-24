@@ -99,6 +99,9 @@ namespace FertCalculator
             CannaVegaACheck.Checked += UpdateNutrientValues;
             CannaVegaBCheck.Checked += UpdateNutrientValues;
             DryPartBloomCheck.Checked += UpdateNutrientValues;
+            DynaBloomCheck.Checked += UpdateNutrientValues;
+            DynaGrowCheck.Checked += UpdateNutrientValues;
+            DynaMagProCheck.Checked += UpdateNutrientValues;
             EpsomSaltCheck.Checked += UpdateNutrientValues;
             GypsumCheck.Checked += UpdateNutrientValues;
             Jacks01226Check.Checked += UpdateNutrientValues;
@@ -154,6 +157,9 @@ namespace FertCalculator
             CannaVegaABox.TextChanged += UpdateNutrientValues;
             CannaVegaBBox.TextChanged += UpdateNutrientValues;
             DryPartBloomBox.TextChanged += UpdateNutrientValues;
+            DynaBloomBox.TextChanged += UpdateNutrientValues;
+            DynaGrowBox.TextChanged += UpdateNutrientValues;
+            DynaMagProBox.TextChanged += UpdateNutrientValues;
             EpsomSaltBox.TextChanged += UpdateNutrientValues;
             GypsumBox.TextChanged += UpdateNutrientValues;
             Jacks01226Box.TextChanged += UpdateNutrientValues;
@@ -287,6 +293,9 @@ namespace FertCalculator
             CannaVegaABox.IsEnabled = false;
             CannaVegaBBox.IsEnabled = false;
             DryPartBloomBox.IsEnabled = false;
+            DynaBloomBox.IsEnabled = false;
+            DynaGrowBox.IsEnabled = false;
+            DynaMagProBox.IsEnabled = false;
             EpsomSaltBox.IsEnabled = false;
             GypsumBox.IsEnabled = false;
             Jacks01226Box.IsEnabled = false;
@@ -426,6 +435,9 @@ namespace FertCalculator
             fertilizers.Add("Canna Vega A", new Fertilizer { Name = "Canna Vega A", N = 13.2, P = 0, K = 4.39, Mg = 0.5581, Ca = 2.2333, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.0867 });
             fertilizers.Add("Canna Vega B", new Fertilizer { Name = "Canna Vega B", N = 0, P = 3.459, K = 8.772, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.231 });
             fertilizers.Add("DryPart Bloom", new Fertilizer { Name = "DryPart Bloom", N = 15.8, P = 19.6, K = 32.9, Mg = 18.5, Ca = 18.5, S = 37, Fe = 0.291, Zn = 0.0396, B = 0.037, Mn = 0.0687, Cu = 0.0396, Mo = 0.0528, TotalPPM = 142.8287 });
+            fertilizers.Add("Dyna-Bloom", new Fertilizer { Name = "Dyna-Bloom", N = 7.93, P = 13.8, K = 13.2, Mg = 1.32, Ca = 5.28, S = 0.238, Fe = 0.264, Zn = 0.132, B = 0.0528, Mn = 0.132, Cu = 0.132, Mo = 0.00238, TotalPPM = 42.48318 });
+            fertilizers.Add("Dyna-Grow", new Fertilizer { Name = "Dyna-Grow", N = 18.5, P = 10.4, K = 11, Mg = 1.32, Ca = 5.28, S = 1.32, Fe = 0.264, Zn = 0.132, B = 0.0528, Mn = 0.132, Cu = 0.132, Mo = 0.00238, TotalPPM = 43.52518 });
+            fertilizers.Add("Dyna-MagPro", new Fertilizer { Name = "Dyna-MagPro", N = 5.28, P = 17.3, K = 8.77, Mg = 5.28, Ca = 0, S = 3.96, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 40.59 });
             fertilizers.Add("Epsom Salt", new Fertilizer { Name = "Epsom Salt", N = 0, P = 0, K = 0, Mg = 26, Ca = 0, S = 103, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 129 });
             fertilizers.Add("Gypsum", new Fertilizer { Name = "Gypsum", N = 0, P = 0, K = 0, Mg = 0, Ca = 58.12, S = 47.55, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 105.67 });
             fertilizers.Add("Jacks 0-12-26", new Fertilizer { Name = "Jacks 0-12-26", N = 0, P = 13.8, K = 57, Mg = 15.8, Ca = 0, S = 34.3, Fe = 0.792, Zn = 0.0396, B = 0.132, Mn = 0.132, Cu = 0.0396, Mo = 0.0238, TotalPPM = 122.059 });
@@ -603,7 +615,7 @@ namespace FertCalculator
         {
             // You might need to adjust this method to correctly find all CheckBoxes
             // depending on your application's structure. This is just a conceptual example.
-            return new CheckBox[] { BioBizzAlgamicCheck, BioBizzBloomCheck, BioBizzGrowCheck, CalciumNitrateCheck, CaliMagicCheck, CannaBoostCheck, CannaCalmagCheck, CannaCocoACheck, CannaCocoBCheck, CannaFloresACheck, CannaFloresBCheck, CannaPHDownCheck, CannaPK1314Check, CannaVegaACheck, CannaVegaBCheck, DryPartBloomCheck, EpsomSaltCheck, GypsumCheck, Jacks01226Check, Jacks51226Check, Jacks55018Check, Jacks71530Check, Jacks103020Check, Jacks12416Check, Jacks1500Check, Jacks15520Check, Jacks15617Check, Jacks18823Check, Jacks201020Check, Jacks202020Check, KTrateLXCheck, KoolbloomCheck, LKoolbloomCheck, MagNitCheck, MagTrateLXCheck, MAPCheck, MaxiBloomCheck, MaxiGrowCheck, MegacropCheck, MegacropACheck, MegacropBCheck, MCCalMagCheck, MCSweetCandyCheck, MOABCheck, MonsterBloomCheck, MPKCheck, PPBloomCheck, PPBoostCheck, PPCalKickCheck, PPFinisherCheck, PPGrowCheck, PPSpikeCheck };
+            return new CheckBox[] { BioBizzAlgamicCheck, BioBizzBloomCheck, BioBizzGrowCheck, CalciumNitrateCheck, CaliMagicCheck, CannaBoostCheck, CannaCalmagCheck, CannaCocoACheck, CannaCocoBCheck, CannaFloresACheck, CannaFloresBCheck, CannaPHDownCheck, CannaPK1314Check, CannaVegaACheck, CannaVegaBCheck, DryPartBloomCheck, DynaBloomCheck, DynaGrowCheck, DynaMagProCheck, EpsomSaltCheck, GypsumCheck, Jacks01226Check, Jacks51226Check, Jacks55018Check, Jacks71530Check, Jacks103020Check, Jacks12416Check, Jacks1500Check, Jacks15520Check, Jacks15617Check, Jacks18823Check, Jacks201020Check, Jacks202020Check, KTrateLXCheck, KoolbloomCheck, LKoolbloomCheck, MagNitCheck, MagTrateLXCheck, MAPCheck, MaxiBloomCheck, MaxiGrowCheck, MegacropCheck, MegacropACheck, MegacropBCheck, MCCalMagCheck, MCSweetCandyCheck, MOABCheck, MonsterBloomCheck, MPKCheck, PPBloomCheck, PPBoostCheck, PPCalKickCheck, PPFinisherCheck, PPGrowCheck, PPSpikeCheck };
         }
 
         private double GetFertilizerQuantity(string fertilizerName)
@@ -627,6 +639,9 @@ namespace FertCalculator
         {"Canna Vega A", CannaVegaABox},
         {"Canna Vega B", CannaVegaBBox},
         {"DryPart Bloom", DryPartBloomBox},
+        {"Dyna-Bloom", DynaBloomBox},
+        {"Dyna-Grow", DynaGrowBox},
+        {"Dyna-MagPro", DynaMagProBox},
         {"Epsom Salt", EpsomSaltBox},
         {"Gypsum", GypsumBox},
         {"Jacks 0-12-26", Jacks01226Box},
