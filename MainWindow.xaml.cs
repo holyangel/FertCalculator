@@ -98,6 +98,10 @@ namespace FertCalculator
             CannaPK1314Check.Checked += UpdateNutrientValues;
             CannaVegaACheck.Checked += UpdateNutrientValues;
             CannaVegaBCheck.Checked += UpdateNutrientValues;
+            CannaStartCheck.Checked += UpdateNutrientValues;
+            Chempak3Check.Checked += UpdateNutrientValues;
+            Chempak8Check.Checked += UpdateNutrientValues;
+            ChempakSeqIronCheck.Checked += UpdateNutrientValues;
             DryPartBloomCheck.Checked += UpdateNutrientValues;
             DynaBloomCheck.Checked += UpdateNutrientValues;
             DynaGrowCheck.Checked += UpdateNutrientValues;
@@ -138,6 +142,7 @@ namespace FertCalculator
             PPFinisherCheck.Checked += UpdateNutrientValues;
             PPGrowCheck.Checked += UpdateNutrientValues;
             PPSpikeCheck.Checked += UpdateNutrientValues;
+            VitalinkCalmagCheck.Checked += UpdateNutrientValues;
             // Add event handlers for other modifier Check Boxes
 
             // Attach event handlers to quantity input boxes
@@ -156,6 +161,10 @@ namespace FertCalculator
             CannaPK1314Box.TextChanged += UpdateNutrientValues;
             CannaVegaABox.TextChanged += UpdateNutrientValues;
             CannaVegaBBox.TextChanged += UpdateNutrientValues;
+            CannaStartBox.TextChanged += UpdateNutrientValues;
+            Chempak3Box.TextChanged += UpdateNutrientValues;
+            Chempak8Box.TextChanged += UpdateNutrientValues;
+            ChempakSeqIronBox.TextChanged += UpdateNutrientValues;
             DryPartBloomBox.TextChanged += UpdateNutrientValues;
             DynaBloomBox.TextChanged += UpdateNutrientValues;
             DynaGrowBox.TextChanged += UpdateNutrientValues;
@@ -196,6 +205,7 @@ namespace FertCalculator
             PPFinisherBox.TextChanged += UpdateNutrientValues;
             PPGrowBox.TextChanged += UpdateNutrientValues;
             PPSpikeBox.TextChanged += UpdateNutrientValues;
+            VitalinkCalmagBox.TextChanged += UpdateNutrientValues;
             // Add event handlers for other quantity input boxes
 
             // Disable all quantity TextBoxes initially
@@ -292,6 +302,10 @@ namespace FertCalculator
             CannaPK1314Box.IsEnabled = false;
             CannaVegaABox.IsEnabled = false;
             CannaVegaBBox.IsEnabled = false;
+            CannaBoostBox.IsEnabled = false;
+            Chempak3Box.IsEnabled = false;
+            Chempak8Box.IsEnabled = false;
+            ChempakSeqIronBox.IsEnabled = false;
             DryPartBloomBox.IsEnabled = false;
             DynaBloomBox.IsEnabled = false;
             DynaGrowBox.IsEnabled = false;
@@ -332,6 +346,7 @@ namespace FertCalculator
             PPFinisherBox.IsEnabled = false;
             PPGrowBox.IsEnabled = false;
             PPSpikeBox.IsEnabled = false;
+            VitalinkCalmagBox.IsEnabled = false;
             // Repeat for other TextBoxes as necessary
         }
 
@@ -434,6 +449,10 @@ namespace FertCalculator
             fertilizers.Add("Canna PK13/14", new Fertilizer { Name = "Canna PK13/14", N = 0, P = 11.53, K = 24.123, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 35.6 });
             fertilizers.Add("Canna Vega A", new Fertilizer { Name = "Canna Vega A", N = 13.2, P = 0, K = 4.39, Mg = 0.5581, Ca = 2.2333, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.0867 });
             fertilizers.Add("Canna Vega B", new Fertilizer { Name = "Canna Vega B", N = 0, P = 3.459, K = 8.772, Mg = 0, Ca = 0, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 12.231 });
+            fertilizers.Add("Canna Start", new Fertilizer { Name = "Canna Start", N = 3.434, P = 1.1517, K = 3.936, Mg = 0.7925, Ca = 2.9059, S = 0, Fe = 0.05283, Zn = 0.01849, B = 0.01849, Mn = 0.02641, Cu = 0.002641, Mo = 0.005283, TotalPPM = 12.23442 });
+            fertilizers.Add("Chempak 3", new Fertilizer { Name = "Chempak 3", N = 52.8345, P = 23.0622, K = 43.85267, Mg = 0, Ca = 0, S = 0, Fe = 0.528345, Zn = 0.132086, B = 0.052834, Mn = 0.052834, Cu = 0.02641, Mo = 0.0052834, TotalPPM = 120.54724 });
+            fertilizers.Add("Chempak 8", new Fertilizer { Name = "Chempak 8", N = 33.0216, P = 28.79484, K = 54.94795, Mg = 0, Ca = 0, S = 0, Fe = 0.52834, Zn = 0.132086, B = 0.052834, Mn = 0.052834, Cu = 0.02641, Mo = 0, TotalPPM = 117.556894 });
+            fertilizers.Add("Chempak Seq.Iron", new Fertilizer { Name = "Chempak Seq.Iron", N = 0, P = 0, K = 0, Mg = 26.417287, Ca = 0, S = 0, Fe = 5.283457, Zn = 0, B = 0, Mn = 7.925186, Cu = 0, Mo = 0, TotalPPM = 39.62593 });
             fertilizers.Add("DryPart Bloom", new Fertilizer { Name = "DryPart Bloom", N = 15.8, P = 19.6, K = 32.9, Mg = 18.5, Ca = 18.5, S = 37, Fe = 0.291, Zn = 0.0396, B = 0.037, Mn = 0.0687, Cu = 0.0396, Mo = 0.0528, TotalPPM = 142.8287 });
             fertilizers.Add("Dyna-Bloom", new Fertilizer { Name = "Dyna-Bloom", N = 7.93, P = 13.8, K = 13.2, Mg = 1.32, Ca = 5.28, S = 0.238, Fe = 0.264, Zn = 0.132, B = 0.0528, Mn = 0.132, Cu = 0.132, Mo = 0.00238, TotalPPM = 42.48318 });
             fertilizers.Add("Dyna-Grow", new Fertilizer { Name = "Dyna-Grow", N = 18.5, P = 10.4, K = 11, Mg = 1.32, Ca = 5.28, S = 1.32, Fe = 0.264, Zn = 0.132, B = 0.0528, Mn = 0.132, Cu = 0.132, Mo = 0.00238, TotalPPM = 43.52518 });
@@ -474,6 +493,7 @@ namespace FertCalculator
             fertilizers.Add("PP Grow", new Fertilizer { Name = "PP Grow", N = 31.7, P = 9.224, K = 57.02, Mg = 6.604, Ca = 0, S = 13.474, Fe = 0.6604, Zn = 0.1323, B = 0.0528, Mn = 0.1323, Cu = 0.1323, Mo = 0.013209, TotalPPM = 119.145309 });
             fertilizers.Add("PP Finisher", new Fertilizer { Name = "PP Finisher", N = 10.566, P = 35.74, K = 81.14, Mg = 0, Ca = 0, S = 0, Fe = 0.26415, Zn = 0.1323, B = 0.0528, Mn = 0.1323, Cu = 0.1323, Mo = 0.013209, TotalPPM = 128.173059 });
             fertilizers.Add("PP Spike", new Fertilizer { Name = "PP Spike", N = 0, P = 0, K = 0, Mg = 7.132, Ca = 14.265, S = 0, Fe = 0, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 21.397 });
+            fertilizers.Add("Vitalink Calmag+", new Fertilizer { Name = "Vitalink Calmag+", N = 4.755, P = 0, K = 0, Mg = 4.49, Ca = 10.566, S = 0, Fe = 0.23775, Zn = 0, B = 0, Mn = 0, Cu = 0, Mo = 0, TotalPPM = 20.04875 });
         }
 
         private void PopulateMixesComboBox()
@@ -638,6 +658,10 @@ namespace FertCalculator
         {"Canna PK13/14", CannaPK1314Box},
         {"Canna Vega A", CannaVegaABox},
         {"Canna Vega B", CannaVegaBBox},
+        {"Canna Start", CannaStartBox},
+        {"Chempak 3", Chempak3Box},
+        {"Chempak 8", Chempak8Box},
+        {"Chempak Seq.Iron", ChempakSeqIronBox},
         {"DryPart Bloom", DryPartBloomBox},
         {"Dyna-Bloom", DynaBloomBox},
         {"Dyna-Grow", DynaGrowBox},
@@ -677,7 +701,8 @@ namespace FertCalculator
         {"PP CalKick", PPCalKickBox},
         {"PP Finisher", PPFinisherBox},
         {"PP Grow", PPGrowBox},
-        {"PP Spike", PPSpikeBox}
+        {"PP Spike", PPSpikeBox},
+        {"Vitalink Calmag+", VitalinkCalmagBox}
         // Add any additional mappings here as necessary
     };
 

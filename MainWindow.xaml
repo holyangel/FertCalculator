@@ -1,7 +1,7 @@
 <Window x:Class="FertCalculator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Fertilizer Calculator V24.02.24" Height="550" Width="775"
+        Title="Fertilizer Calculator V25.02.27" Height="550" Width="775"
         Background="Black"
         Icon="FertCalculator.png">
     <!-- Set the window background to black -->
@@ -53,6 +53,8 @@
             <RowDefinition Height="35"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="20"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="15"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="15"/>
                 <RowDefinition Height="15"/>
@@ -166,128 +168,142 @@
             <CheckBox Content="Canna Vega B" Name="CannaVegaBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="18">
-            <CheckBox Content="DryPart Bloom" Name="DryPartBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Canna Start" Name="CannaStartCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="19">
-            <CheckBox Content="Dyna-Bloom" Name="DynaBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Chempak 3" Name="Chempak3Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="20">
-            <CheckBox Content="Dyna-Grow" Name="DynaGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Chempak 8" Name="Chempak8Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="21">
-            <CheckBox Content="Dyna-MagPro" Name="DynaMagProCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Chempak Seq. Iron" Name="ChempakSeqIronCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="22">
-            <CheckBox Content="Epsom Salt" Name="EpsomSaltCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="DryPart Bloom" Name="DryPartBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="23">
-            <CheckBox Content="Gypsum" Name="GypsumCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Dyna-Bloom" Name="DynaBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="24">
-            <CheckBox Content="Jacks 0-12-26" Name="Jacks01226Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Dyna-Grow" Name="DynaGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="25">
-            <CheckBox Content="Jacks 5-12-26" Name="Jacks51226Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Dyna-MagPro" Name="DynaMagProCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="26">
-            <CheckBox Content="Jacks 5-50-18" Name="Jacks55018Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Epsom Salt" Name="EpsomSaltCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="27">
-            <CheckBox Content="Jacks 7-15-30" Name="Jacks71530Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Gypsum" Name="GypsumCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="28">
-            <CheckBox Content="Jacks 10-30-20" Name="Jacks103020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 0-12-26" Name="Jacks01226Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="29">
-            <CheckBox Content="Jacks 12-4-16" Name="Jacks12416Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 5-12-26" Name="Jacks51226Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="30">
-            <CheckBox Content="Jacks 15-0-0" Name="Jacks1500Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 5-50-18" Name="Jacks55018Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+        </StackPanel>
+        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="31">
+            <CheckBox Content="Jacks 7-15-30" Name="Jacks71530Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+        </StackPanel>
+        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="32">
+            <CheckBox Content="Jacks 10-30-20" Name="Jacks103020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="3">
-            <CheckBox Content="Jacks 15-5-20" Name="Jacks15520Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 12-4-16" Name="Jacks12416Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="4">
-            <CheckBox Content="Jacks 15-6-17" Name="Jacks15617Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 15-0-0" Name="Jacks1500Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="5">
-            <CheckBox Content="Jacks 18-8-23" Name="Jacks18823Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 15-5-20" Name="Jacks15520Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="6">
-            <CheckBox Content="Jacks 20-10-20" Name="Jacks201020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 15-6-17" Name="Jacks15617Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="7">
-            <CheckBox Content="Jacks 20-20-20" Name="Jacks202020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 18-8-23" Name="Jacks18823Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="8">
-            <CheckBox Content="K-Trate LX" Name="KTrateLXCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 20-10-20" Name="Jacks201020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="9">
-            <CheckBox Content="Koolbloom" Name="KoolbloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Jacks 20-20-20" Name="Jacks202020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="10">
-            <CheckBox Content="L.Koolbloom" Name="LKoolbloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="K-Trate LX" Name="KTrateLXCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="11">
-            <CheckBox Content="MagNit" Name="MagNitCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Koolbloom" Name="KoolbloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="12">
-            <CheckBox Content="MAG-Trate LX" Name="MagTrateLXCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="L.Koolbloom" Name="LKoolbloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="13">
-            <CheckBox Content="MAP" Name="MAPCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MagNit" Name="MagNitCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="14">
-            <CheckBox Content="MaxiBloom" Name="MaxiBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MAG-Trate LX" Name="MagTrateLXCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="15">
-            <CheckBox Content="MaxiGrow" Name="MaxiGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MAP" Name="MAPCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="16">
-            <CheckBox Content="Megacrop" Name="MegacropCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MaxiBloom" Name="MaxiBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="17">
-            <CheckBox Content="Megacrop A" Name="MegacropACheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MaxiGrow" Name="MaxiGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="18">
-            <CheckBox Content="Megacrop B" Name="MegacropBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Megacrop" Name="MegacropCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="19">
-            <CheckBox Content="MC Cal-Mag" Name="MCCalMagCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Megacrop A" Name="MegacropACheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="20">
-            <CheckBox Content="MC Sweet Candy" Name="MCSweetCandyCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Megacrop B" Name="MegacropBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="21">
-            <CheckBox Content="MOAB" Name="MOABCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MC Cal-Mag" Name="MCCalMagCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="22">
-            <CheckBox Content="Monster Bloom" Name="MonsterBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MC Sweet Candy" Name="MCSweetCandyCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="23">
-            <CheckBox Content="MPK" Name="MPKCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MOAB" Name="MOABCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="24">
-            <CheckBox Content="PP Bloom" Name="PPBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="Monster Bloom" Name="MonsterBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="25">
-            <CheckBox Content="PP Boost" Name="PPBoostCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="MPK" Name="MPKCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="26">
-            <CheckBox Content="PP CalKick" Name="PPCalKickCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="PP Bloom" Name="PPBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="27">
-            <CheckBox Content="PP Finisher" Name="PPFinisherCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="PP Boost" Name="PPBoostCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="28">
-            <CheckBox Content="PP Grow" Name="PPGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+            <CheckBox Content="PP CalKick" Name="PPCalKickCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="29">
+            <CheckBox Content="PP Finisher" Name="PPFinisherCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="30">
+            <CheckBox Content="PP Grow" Name="PPGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+        </StackPanel>
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="31">
             <CheckBox Content="PP Spike" Name="PPSpikeCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
         </StackPanel>
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="32">
+            <CheckBox Content="Vitalink Calmag+" Name="VitalinkCalmagCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
+        </StackPanel>
 
-
-        <!-- Boxes for quantity in grams -->
+            <!-- Boxes for quantity in grams -->
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="3">
             <TextBox Name="BioBizzAlgamicBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
@@ -334,128 +350,143 @@
             <TextBox Name="CannaVegaBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="18">
-            <TextBox Name="DryPartBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="CannaStartBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="19">
-            <TextBox Name="DynaBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Chempak3Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="20">
-            <TextBox Name="DynaGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Chempak8Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="21">
-            <TextBox Name="DynaMagProBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="ChempakSeqIronBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="22">
-            <TextBox Name="EpsomSaltBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="DryPartBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="23">
-            <TextBox Name="GypsumBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="DynaBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="24">
-            <TextBox Name="Jacks01226Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="DynaGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="25">
-            <TextBox Name="Jacks51226Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="DynaMagProBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="26">
-            <TextBox Name="Jacks55018Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="EpsomSaltBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="27">
-            <TextBox Name="Jacks71530Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="GypsumBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="28">
-            <TextBox Name="Jacks103020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks01226Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="29">
-            <TextBox Name="Jacks12416Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks51226Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="30">
-            <TextBox Name="Jacks1500Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks55018Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="31">
+            <TextBox Name="Jacks71530Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="32">
+            <TextBox Name="Jacks103020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="3">
-            <TextBox Name="Jacks15520Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks12416Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="4">
-            <TextBox Name="Jacks15617Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks1500Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="5">
-            <TextBox Name="Jacks18823Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks15520Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="6">
-            <TextBox Name="Jacks201020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks15617Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="7">
-            <TextBox Name="Jacks202020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks18823Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="8">
-            <TextBox Name="KTrateLXBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks201020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="9">
-            <TextBox Name="KoolbloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="Jacks202020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="10">
-            <TextBox Name="LKoolbloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="KTrateLXBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="11">
-            <TextBox Name="MagNitBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="KoolbloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="12">
-            <TextBox Name="MagTrateLXBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="LKoolbloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="13">
-            <TextBox Name="MAPBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MagNitBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="14">
-            <TextBox Name="MaxiBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MagTrateLXBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="15">
-            <TextBox Name="MaxiGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MAPBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="16">
-            <TextBox Name="MegacropBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MaxiBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="17">
-            <TextBox Name="MegacropABox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MaxiGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="18">
-            <TextBox Name="MegacropBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MegacropBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="19">
-            <TextBox Name="MCCalMagBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MegacropABox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="20">
-            <TextBox Name="MCSweetCandyBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MegacropBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="21">
-            <TextBox Name="MOABBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MCCalMagBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="22">
-            <TextBox Name="MonsterBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MCSweetCandyBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="23">
-            <TextBox Name="MPKBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MOABBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="24">
-            <TextBox Name="PPBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MonsterBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="25">
-            <TextBox Name="PPBoostBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="MPKBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="26">
-            <TextBox Name="PPCalKickBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="PPBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="27">
-            <TextBox Name="PPFinisherBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="PPBoostBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="28">
-            <TextBox Name="PPGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+            <TextBox Name="PPCalKickBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
         <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="29">
+            <TextBox Name="PPFinisherBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+        </StackPanel>
+        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="30">
+            <TextBox Name="PPGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+        </StackPanel>
+        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="31">
             <TextBox Name="PPSpikeBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
+        </StackPanel>
+        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="32">
+            <TextBox Name="VitalinkCalmagBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
         </StackPanel>
 
 
-        <!-- Nutrient Values -->
+            <!-- Nutrient Values -->
         <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="3">
             <TextBlock Text="Total Nitrogen (N)" />
         </StackPanel>
