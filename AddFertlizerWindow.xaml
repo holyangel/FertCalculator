@@ -1,0 +1,126 @@
+﻿<!-- AddFertilizerWindow.xaml -->
+<Window x:Class="FertilizerCalculator.AddFertilizerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Fertilizer" Height="625" Width="500"
+        Background="#1E1E1E">
+    <Window.Resources>
+    </Window.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Enter Fertilizer Information" FontSize="18" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- Fertilizer details form -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Fertilizer name -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Fertilizer Name:" FontWeight="Bold"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="NameTextBox" Margin="5,10"/>
+
+                <!-- Instructions -->
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                           Text="Enter the percentage of each element as shown on the fertilizer label. For P and K, select the format that matches your fertilizer label."
+                           TextWrapping="Wrap" Margin="0,5,0,15"/>
+
+                <!-- Element percentages -->
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Nitrogen (N):"/>
+                <TextBox Grid.Row="2" Grid.Column="1" x:Name="NitrogenTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Phosphorus:"/>
+                <Grid Grid.Row="3" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" x:Name="PhosphorusTextBox" PreviewTextInput="DecimalInputValidation"/>
+                    <ComboBox Grid.Column="1" x:Name="PhosphorusFormatComboBox" Width="100" Margin="5,3,0,3"/>
+                </Grid>
+                <TextBlock Grid.Row="3" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Potassium:"/>
+                <Grid Grid.Row="4" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" x:Name="PotassiumTextBox" PreviewTextInput="DecimalInputValidation"/>
+                    <ComboBox Grid.Column="1" x:Name="PotassiumFormatComboBox" Width="100" Margin="5,3,0,3"/>
+                </Grid>
+                <TextBlock Grid.Row="4" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Magnesium (Mg):"/>
+                <TextBox Grid.Row="5" Grid.Column="1" x:Name="MagnesiumTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="5" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Calcium (Ca):"/>
+                <TextBox Grid.Row="6" Grid.Column="1" x:Name="CalciumTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="6" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="Sulfur (S):"/>
+                <TextBox Grid.Row="7" Grid.Column="1" x:Name="SulfurTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="7" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="8" Grid.Column="0" Text="Iron (Fe):"/>
+                <TextBox Grid.Row="8" Grid.Column="1" x:Name="IronTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="8" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="9" Grid.Column="0" Text="Zinc (Zn):"/>
+                <TextBox Grid.Row="9" Grid.Column="1" x:Name="ZincTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="9" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="10" Grid.Column="0" Text="Boron (B):"/>
+                <TextBox Grid.Row="10" Grid.Column="1" x:Name="BoronTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="10" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="11" Grid.Column="0" Text="Manganese (Mn):"/>
+                <TextBox Grid.Row="11" Grid.Column="1" x:Name="ManganeseTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="11" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="12" Grid.Column="0" Text="Copper (Cu):"/>
+                <TextBox Grid.Row="12" Grid.Column="1" x:Name="CopperTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="12" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="13" Grid.Column="0" Text="Molybdenum (Mo):"/>
+                <TextBox Grid.Row="13" Grid.Column="1" x:Name="MolybdenumTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="13" Grid.Column="2" Text="%"/>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="Cancel" Width="100" Click="CancelButton_Click" Background="#505050"/>
+            <Button Content="Save" Width="100" Click="SaveButton_Click" Margin="10,3,3,3"/>
+        </StackPanel>
+    </Grid>
+</Window>

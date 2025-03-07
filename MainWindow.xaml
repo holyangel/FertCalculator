@@ -1,618 +1,238 @@
-<Window x:Class="FertCalculator.MainWindow"
+﻿<!-- MainWindow.xaml -->
+<Window x:Class="FertilizerCalculator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Fertilizer Calculator V25.02.27" Height="550" Width="775"
-        Background="Black"
-        Icon="FertCalculator.png">
-    <!-- Set the window background to black -->
+        Title="Fertilizer Calculator" Height="810" Width="1000"
+        Background="#1E1E1E">
 
-    <Window.Resources>
-        <!-- Define styles for TextBox and TextBlock -->
-        <Style TargetType="TextBox">
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="BorderBrush" Value="LimeGreen"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="Margin" Value="2"/>
-            <Style.Triggers>
-                <!-- Change background to white when TextBox is enabled -->
-                <Trigger Property="IsEnabled" Value="True">
-                    <Setter Property="Background" Value="White"/>
-                    <Setter Property="Foreground" Value="Black"/>
-                </Trigger>
-                <!-- Keep background dark but slightly visible when disabled -->
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#FF252525"/>
-                    <Setter Property="Foreground" Value="Gray"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="LimeGreen"/>
-            <Setter Property="Margin" Value="2"/>
-        </Style>
-        <!-- Optionally, define a style for CheckBoxes if you want to customize their appearance too -->
-        <Style TargetType="CheckBox">
-            <Setter Property="Foreground" Value="LimeGreen"/>
-        </Style>
-    </Window.Resources>
-    <Grid>
-    <Grid>
-        <!-- Define six columns -->
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="75"/>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="75"/>
-                <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="75"/>
-                <ColumnDefinition Width="75"/>
-            </Grid.ColumnDefinitions>
-        
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="20"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-                <RowDefinition Height="15"/>
-            </Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-        <ComboBox Name="PredefinedMixesComboBox"
-          Grid.Column="0" Grid.ColumnSpan="2"
-          Grid.Row="0"
-          HorizontalAlignment="Stretch"
-          VerticalAlignment="Center"
-          Margin="5"
-          SelectionChanged="PredefinedMixesComboBox_SelectionChanged">
-            <ComboBoxItem Content="Select a Mix or Make Your Own" IsEnabled="False" IsSelected="True"/>
-            <ComboBoxItem Content="Reset"/>
-            <!-- Add more predefined mix names here -->
-        </ComboBox>
-        <Button Name="DeleteMixButton" Content="Delete Mix" Click="DeleteMixButton_Click" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
-        <TextBox Name="SaveMixNameTextBox" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" Margin="-1,-5,0,-5" VerticalAlignment="Center" Width="215" Grid.ColumnSpan="2" GotFocus="SaveMixNameTextBox_GotFocus" LostFocus="SaveMixNameTextBox_LostFocus" Foreground="Gray"/>
-            <Button Content="Save/Update" Click="SaveMixButton_Click" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
-        <Button Name="ImportMixesButton" Content="Import Mix" Click="ImportMixesButton_Click" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
-            <ToggleButton x:Name="UnitToggle" Content="g|mL/Gallon" Checked="UnitToggle_Checked" Unchecked="UnitToggle_Unchecked" Grid.Column="4" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" />
+        <!-- Header with app title and unit toggle -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <ComboBox Name="ComparisonMixesComboBox" Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,-5,5,-5" SelectionChanged="ComparisonMixesComboBox_SelectionChanged">
-            <ComboBoxItem Content="Select a Mix to Compare" IsEnabled="False" IsSelected="True"/>
-            <!-- Dynamically populated mix names -->
-        </ComboBox>
-        <StackPanel Name="ShowCompareBox" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center">
-            <CheckBox Name="ShowComparisonCheckBox" Content="Compare?" Checked="ShowComparisonCheckBox_Checked" Unchecked="ShowComparisonCheckBox_Unchecked"/>
-        </StackPanel>
+            <TextBlock Text="Fertilizer Calculator" FontSize="24" FontWeight="Bold" Margin="0,0,0,10"/>
 
-        <!-- Title Bar -->
-        <TextBlock Text="Fertilizers" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <TextBlock x:Name="unitbox1" Text="g|mL/Gal" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <TextBlock Text="Fertilizers" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <TextBlock x:Name="unitbox2" Text="g|mL/Gal" Grid.Column="3" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <TextBlock Text="Elemental Breakdown" Grid.Column="4" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <StackPanel Name="CompareMix" Grid.Column="6" Grid.Row="2" HorizontalAlignment="Center" >
-            <!-- Labels for comparison nutrient values -->
-            <TextBlock Text="Compare Mix"/>
-        </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Text="Units:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <Button x:Name="UnitToggleButton" Content="PPM per Liter" Width="120" Height="30" Click="UnitToggleButton_Click"/>
+                <Button Content="Import" Width="80" Margin="10,0,0,0" Click="ImportButton_Click"/>
+                <Button Content="Export" Width="80" Margin="5,0,0,0" Click="ExportButton_Click"/>
+            </StackPanel>
+        </Grid>
 
-    <!-- NPK Fertilizers -->
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="3">
-            <CheckBox Content="BioBizz Algamic" Name="BioBizzAlgamicCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="4">
-            <CheckBox Content="BioBizz Bloom" Name="BioBizzBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="5">
-            <CheckBox Content="BioBizz Grow" Name="BioBizzGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="6">
-            <CheckBox Content="Calcium Nitrate" Name="CalciumNitrateCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="7">
-            <CheckBox Content="CaliMagic" Name="CaliMagicCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="8">
-            <CheckBox Content="Canna Boost" Name="CannaBoostCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="9">
-            <CheckBox Content="Canna Calmag" Name="CannaCalmagCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="10">
-            <CheckBox Content="CannaCoco A" Name="CannaCocoACheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="11">
-            <CheckBox Content="CannaCoco B" Name="CannaCocoBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="12">
-            <CheckBox Content="Canna Flores A" Name="CannaFloresACheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="13">
-            <CheckBox Content="Canna Flores B" Name="CannaFloresBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="14">
-            <CheckBox Content="Canna PH Down" Name="CannaPHDownCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="15">
-            <CheckBox Content="Canna PK13/14" Name="CannaPK1314Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="16">
-            <CheckBox Content="Canna Vega A" Name="CannaVegaACheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="17">
-            <CheckBox Content="Canna Vega B" Name="CannaVegaBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="18">
-            <CheckBox Content="Canna Start" Name="CannaStartCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="19">
-            <CheckBox Content="Chempak 3" Name="Chempak3Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="20">
-            <CheckBox Content="Chempak 8" Name="Chempak8Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="21">
-            <CheckBox Content="Chempak Seq. Iron" Name="ChempakSeqIronCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="22">
-            <CheckBox Content="DryPart Bloom" Name="DryPartBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="23">
-            <CheckBox Content="Dyna-Bloom" Name="DynaBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="24">
-            <CheckBox Content="Dyna-Grow" Name="DynaGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="25">
-            <CheckBox Content="Dyna-MagPro" Name="DynaMagProCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="26">
-            <CheckBox Content="Epsom Salt" Name="EpsomSaltCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="27">
-            <CheckBox Content="Gypsum" Name="GypsumCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="28">
-            <CheckBox Content="Jacks 0-12-26" Name="Jacks01226Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="29">
-            <CheckBox Content="Jacks 5-12-26" Name="Jacks51226Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="30">
-            <CheckBox Content="Jacks 5-50-18" Name="Jacks55018Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="31">
-            <CheckBox Content="Jacks 7-15-30" Name="Jacks71530Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.Row="32">
-            <CheckBox Content="Jacks 10-30-20" Name="Jacks103020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="3">
-            <CheckBox Content="Jacks 12-4-16" Name="Jacks12416Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="4">
-            <CheckBox Content="Jacks 15-0-0" Name="Jacks1500Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="5">
-            <CheckBox Content="Jacks 15-5-20" Name="Jacks15520Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="6">
-            <CheckBox Content="Jacks 15-6-17" Name="Jacks15617Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="7">
-            <CheckBox Content="Jacks 18-8-23" Name="Jacks18823Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="8">
-            <CheckBox Content="Jacks 20-10-20" Name="Jacks201020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="9">
-            <CheckBox Content="Jacks 20-20-20" Name="Jacks202020Check" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="10">
-            <CheckBox Content="K-Trate LX" Name="KTrateLXCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="11">
-            <CheckBox Content="Koolbloom" Name="KoolbloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="12">
-            <CheckBox Content="L.Koolbloom" Name="LKoolbloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="13">
-            <CheckBox Content="MagNit" Name="MagNitCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="14">
-            <CheckBox Content="MAG-Trate LX" Name="MagTrateLXCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="15">
-            <CheckBox Content="MAP" Name="MAPCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="16">
-            <CheckBox Content="MaxiBloom" Name="MaxiBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="17">
-            <CheckBox Content="MaxiGrow" Name="MaxiGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="18">
-            <CheckBox Content="Megacrop" Name="MegacropCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="19">
-            <CheckBox Content="Megacrop A" Name="MegacropACheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="20">
-            <CheckBox Content="Megacrop B" Name="MegacropBCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="21">
-            <CheckBox Content="MC Cal-Mag" Name="MCCalMagCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="22">
-            <CheckBox Content="MC Sweet Candy" Name="MCSweetCandyCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="23">
-            <CheckBox Content="MOAB" Name="MOABCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="24">
-            <CheckBox Content="Monster Bloom" Name="MonsterBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="25">
-            <CheckBox Content="MPK" Name="MPKCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="26">
-            <CheckBox Content="PP Bloom" Name="PPBloomCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="27">
-            <CheckBox Content="PP Boost" Name="PPBoostCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="28">
-            <CheckBox Content="PP CalKick" Name="PPCalKickCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="29">
-            <CheckBox Content="PP Finisher" Name="PPFinisherCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="30">
-            <CheckBox Content="PP Grow" Name="PPGrowCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="31">
-            <CheckBox Content="PP Spike" Name="PPSpikeCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
-        <StackPanel Grid.Column="2" VerticalAlignment="Center" Grid.Row="32">
-            <CheckBox Content="Vitalink Calmag+" Name="VitalinkCalmagCheck" Checked="CheckBox_CheckedUnchecked" Unchecked="CheckBox_CheckedUnchecked" />
-        </StackPanel>
+        <!-- Main content area -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <!-- Boxes for quantity in grams -->
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="3">
-            <TextBox Name="BioBizzAlgamicBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="4">
-            <TextBox Name="BioBizzBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="5">
-            <TextBox Name="BioBizzGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="6">
-            <TextBox Name="CalciumNitrateBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="7">
-            <TextBox Name="CaliMagicBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="8">
-            <TextBox Name="CannaBoostBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="9">
-            <TextBox Name="CannaCalmagBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="10">
-            <TextBox Name="CannaCocoABox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="11">
-            <TextBox Name="CannaCocoBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="12">
-            <TextBox Name="CannaFloresABox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="13">
-            <TextBox Name="CannaFloresBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="14">
-            <TextBox Name="CannaPHDownBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="15">
-            <TextBox Name="CannaPK1314Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="16">
-            <TextBox Name="CannaVegaABox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="17">
-            <TextBox Name="CannaVegaBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="18">
-            <TextBox Name="CannaStartBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="19">
-            <TextBox Name="Chempak3Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="20">
-            <TextBox Name="Chempak8Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="21">
-            <TextBox Name="ChempakSeqIronBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="22">
-            <TextBox Name="DryPartBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="23">
-            <TextBox Name="DynaBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="24">
-            <TextBox Name="DynaGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="25">
-            <TextBox Name="DynaMagProBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="26">
-            <TextBox Name="EpsomSaltBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="27">
-            <TextBox Name="GypsumBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="28">
-            <TextBox Name="Jacks01226Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="29">
-            <TextBox Name="Jacks51226Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="30">
-            <TextBox Name="Jacks55018Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="31">
-            <TextBox Name="Jacks71530Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" Grid.Row="32">
-            <TextBox Name="Jacks103020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="3">
-            <TextBox Name="Jacks12416Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="4">
-            <TextBox Name="Jacks1500Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="5">
-            <TextBox Name="Jacks15520Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="6">
-            <TextBox Name="Jacks15617Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="7">
-            <TextBox Name="Jacks18823Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="8">
-            <TextBox Name="Jacks201020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="9">
-            <TextBox Name="Jacks202020Box" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="10">
-            <TextBox Name="KTrateLXBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="11">
-            <TextBox Name="KoolbloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="12">
-            <TextBox Name="LKoolbloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="13">
-            <TextBox Name="MagNitBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="14">
-            <TextBox Name="MagTrateLXBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="15">
-            <TextBox Name="MAPBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="16">
-            <TextBox Name="MaxiBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="17">
-            <TextBox Name="MaxiGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="18">
-            <TextBox Name="MegacropBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="19">
-            <TextBox Name="MegacropABox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="20">
-            <TextBox Name="MegacropBBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="21">
-            <TextBox Name="MCCalMagBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="22">
-            <TextBox Name="MCSweetCandyBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="23">
-            <TextBox Name="MOABBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="24">
-            <TextBox Name="MonsterBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="25">
-            <TextBox Name="MPKBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="26">
-            <TextBox Name="PPBloomBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="27">
-            <TextBox Name="PPBoostBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="28">
-            <TextBox Name="PPCalKickBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="29">
-            <TextBox Name="PPFinisherBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="30">
-            <TextBox Name="PPGrowBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="31">
-            <TextBox Name="PPSpikeBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
-        <StackPanel Grid.Column="3" VerticalAlignment="Center" Grid.Row="32">
-            <TextBox Name="VitalinkCalmagBox" PreviewTextInput="DecimalInputValidation" PreviewKeyDown="TextBox_PreviewKeyDown" />
-        </StackPanel>
+            <!-- Left panel: Fertilizer management -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
+                <TextBlock Text="Available Fertilizers" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
 
-            <!-- Nutrient Values -->
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="3">
-            <TextBlock Text="Total Nitrogen (N)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="4">
-            <TextBlock Text="Phosphorous  (P)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="5">
-            <TextBlock Text="Potassium (K)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="6">
-            <TextBlock Text="Magnesium (Mg)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="7">
-            <TextBlock Text="Calcium (Ca)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="8">
-            <TextBlock Text="Sulfur (S)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="9">
-            <TextBlock Text="Iron (Fe)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="10">
-            <TextBlock Text="Zinc (Zn)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="11">
-            <TextBlock Text="Boron (B)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="12">
-            <TextBlock Text="Manganese (Mn)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="13">
-            <TextBlock Text="Copper (Cu)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="14">
-            <TextBlock Text="Molybdenum (Mo)" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="15">
-            <TextBlock Text="Total PPM" />
-        </StackPanel>
-        <StackPanel Grid.Column="4" VerticalAlignment="Center" Grid.Row="16">
-            <!-- Add labels for other nutrients here -->
-        </StackPanel>
+                <ListBox x:Name="FertilizerListBox" Grid.Row="1" SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-        <!-- Boxes for calculated values -->
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="3">
-            <TextBox Name="TotalNitrogenBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="4">
-            <TextBox Name="PhosphorousBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="5">
-            <TextBox Name="PotassiumBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="6">
-            <TextBox Name="MagnesiumBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="7">
-            <TextBox Name="CalciumBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="8">
-            <TextBox Name="SulfurBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="9">
-            <TextBox Name="IronBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="10">
-            <TextBox Name="ZincBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="11">
-            <TextBox Name="BoronBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="12">
-            <TextBox Name="ManganeseBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="13">
-            <TextBox Name="CopperBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="14">
-            <TextBox Name="MolybdenumBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="15">
-            <TextBox Name="TotalPPMBox" IsReadOnly="True" />
-        </StackPanel>
-        <StackPanel Grid.Column="5" VerticalAlignment="Center" Grid.Row="16">
-            <!-- Add boxes for other nutrient values here -->
-        </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,0">
+                    <Button Content="Add New" Width="90" Click="AddFertilizerButton_Click"/>
+                    <Button Content="Edit" Width="90" Click="EditFertilizerButton_Click"/>
+                    <Button Content="Delete" Width="90" Click="DeleteFertilizerButton_Click"/>
+                </StackPanel>
+            </Grid>
 
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="3">
-            <TextBox Name="CompareTotalNitrogenBox" IsReadOnly="True"/>
-        </StackPanel>
-            <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="4">
-        <TextBox Name="ComparePhosphorousBox" IsReadOnly="True"/>
-        </StackPanel>
-            <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="5">
-            <TextBox Name="ComparePotassiumBox" IsReadOnly="True"/>
-        </StackPanel>
-            <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="6">
-            <TextBox Name="CompareMagnesiumBox" IsReadOnly="True"/>
-        </StackPanel>
-            <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="7" >
-            <TextBox Name="CompareCalciumBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="8">
-            <TextBox Name="CompareSulfurBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="9">
-            <TextBox Name="CompareIronBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="10">
-            <TextBox Name="CompareZincBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="11">
-            <TextBox Name="CompareBoronBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="12">
-            <TextBox Name="CompareManganeseBox" IsReadOnly="True"/>
-        </StackPanel>
-            <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="13">
-            <TextBox Name="CompareCopperBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="14">
-            <TextBox Name="CompareMolybdenumBox" IsReadOnly="True"/>
-        </StackPanel>
-        <StackPanel Grid.Column="6" VerticalAlignment="Center" Grid.Row="15">
-            <TextBox Name="CompareTotalPPMBox" IsReadOnly="True"/>
-        </StackPanel>
-    </Grid>
+            <!-- Right panel: Mix creation and nutrient display -->
+            <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="250"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Current mix header -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Current Mix" FontSize="16" FontWeight="Bold"/>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <ComboBox x:Name="SavedMixesComboBox" Width="200" DisplayMemberPath="Name"/>
+                        <Button Content="Load" Width="70" Click="LoadMixButton_Click"/>
+                        <Button Content="Delete" Width="70" Click="DeleteMixButton_Click"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Current mix ingredients -->
+                <DataGrid x:Name="MixListBox" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="MixListBox_CellEditEnding">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Fertilizer" Binding="{Binding FertilizerName}" Width="*" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=N2}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                            <DataGridTextColumn.EditingElementStyle>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <EventSetter Event="PreviewTextInput" Handler="DecimalInputValidation"/>
+                                    <EventSetter Event="PreviewKeyDown" Handler="TextBox_PreviewKeyDown"/>
+                                    <EventSetter Event="Loaded" Handler="QuantityTextBox_Loaded"/>
+                                </Style>
+                            </DataGridTextColumn.EditingElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Mix controls -->
+                <Grid Grid.Row="2" Margin="0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Add to Mix" Width="100" Click="AddToMixButton_Click"/>
+                        <Button Content="Remove" Width="100" Click="RemoveFromMixButton_Click"/>
+                        <Button Content="Clear Mix" Width="100" Click="ClearMixButton_Click"/>
+                        <Button Content="Save Mix" Width="80" Click="SaveMixButton_Click"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    </StackPanel>
+                </Grid>
+
+                <!-- Nutrient breakdown -->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Nutrient Breakdown" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Nutrient labels -->
+                            <TextBlock Grid.Row="0" Text="Nitrogen (N)" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="1" Text="Phosphorus (P)"/>
+                            <TextBlock Grid.Row="2" Text="Potassium (K)"/>
+                            <TextBlock Grid.Row="3" Text="Magnesium (Mg)"/>
+                            <TextBlock Grid.Row="4" Text="Calcium (Ca)"/>
+                            <TextBlock Grid.Row="5" Text="Sulfur (S)"/>
+                            <TextBlock Grid.Row="6" Text="Iron (Fe)"/>
+                            <TextBlock Grid.Row="7" Text="Zinc (Zn)"/>
+                            <TextBlock Grid.Row="8" Text="Boron (B)"/>
+                            <TextBlock Grid.Row="9" Text="Manganese (Mn)"/>
+                            <TextBlock Grid.Row="10" Text="Copper (Cu)"/>
+                            <TextBlock Grid.Row="11" Text="Molybdenum (Mo)"/>
+                            <TextBlock Grid.Row="12" Text="" Height="10"/>
+                            <TextBlock Grid.Row="13" Text="TOTAL PPM" FontWeight="Bold"/>
+
+                            <!-- Nutrient values -->
+                            <TextBlock x:Name="NitrogenValueTextBlock" Grid.Row="0" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="PhosphorusValueTextBlock" Grid.Row="1" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="PotassiumValueTextBlock" Grid.Row="2" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="MagnesiumValueTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="CalciumValueTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="SulfurValueTextBlock" Grid.Row="5" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="IronValueTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="ZincValueTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="BoronValueTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="ManganeseValueTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="CopperValueTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="MolybdenumValueTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock Grid.Row="12" Grid.Column="1" Text="" Height="10"/>
+                            <TextBlock x:Name="TotalPpmValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Column="1" Margin="10,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Unit Information" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+
+                        <StackPanel Grid.Row="1">
+                            <TextBlock x:Name="UnitLabel" Text="PPM (mg/L)" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                                All nutrient values are shown in parts per million (PPM). For fertilizers, enter the quantity in grams per liter or per gallon depending on your selected unit.
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                                For dry fertilizers, enter the percentage of each element as shown on the label. For P and K, enter the elemental percentage, not the oxide form (P₂O₅ or K₂O).
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+                                Conversion formulas:
+                                • P₂O₅ to P: multiply by 0.4364
+                                • K₂O to K: multiply by 0.8301
+                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap">
+                                PPM calculation: percentage × 10 × quantity (for 1g/L)
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- Footer with status information -->
+        <StatusBar Grid.Row="2" Background="#007ACC" Foreground="White" Height="25">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
