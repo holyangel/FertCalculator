@@ -87,7 +87,13 @@
                 </Grid>
 
                 <!-- Current mix ingredients -->
-                <DataGrid x:Name="MixListBox" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="MixListBox_CellEditEnding">
+                <DataGrid x:Name="MixListBox" 
+                          Grid.Row="1" 
+                          AutoGenerateColumns="False" 
+                          CanUserAddRows="False" 
+                          CellEditEnding="MixListBox_CellEditEnding"
+                          PreviewKeyDown="MixListBox_PreviewKeyDown"
+                          MouseDoubleClick="MixListBox_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Fertilizer" Binding="{Binding FertilizerName}" Width="*" IsReadOnly="True" />
                         <DataGridTextColumn Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=N2}" Width="100">

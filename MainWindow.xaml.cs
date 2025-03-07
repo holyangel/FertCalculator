@@ -197,6 +197,45 @@ namespace FertilizerCalculator
             }
         }
 
+        private void MixListBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                // Check if an item is selected
+                if (MixListBox.SelectedItem is FertilizerQuantity selectedItem)
+                {
+                    // Remove the selected item
+                    currentMix.Remove(selectedItem);
+
+                    // Update nutrient totals
+                    UpdateNutrientTotals();
+
+                    // Update status
+                    StatusText.Text = $"Removed {selectedItem.FertilizerName} from mix";
+
+                    // Mark the event as handled to prevent the default DataGrid delete behavior
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void MixListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // Check if an item is selected
+            if (MixListBox.SelectedItem is FertilizerQuantity selectedItem)
+            {
+                // Remove the selected item
+                currentMix.Remove(selectedItem);
+                UpdateNutrientTotals();
+
+                // Update status
+                StatusText.Text = $"Removed {selectedItem.FertilizerName} from mix";
+
+                // Mark the event as handled
+                e.Handled = true;
+            }
+        }
+
         private void SaveMixes()
         {
             try
