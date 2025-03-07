@@ -84,6 +84,33 @@ namespace FertilizerCalculator
             }
         }
 
+        private void FertilizerListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // Check if a fertilizer is selected
+            if (FertilizerListBox.SelectedItem is Fertilizer selectedFertilizer)
+            {
+                // Check if already in mix
+                if (currentMix.Any(i => i.FertilizerName == selectedFertilizer.Name))
+                {
+                    MessageBox.Show("This fertilizer is already in the current mix.", "Already Added", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Add to mix
+                var quantity = new FertilizerQuantity
+                {
+                    FertilizerName = selectedFertilizer.Name,
+                    Quantity = 1.0 // Default quantity
+                };
+
+                currentMix.Add(quantity);
+                UpdateNutrientTotals();
+
+                // Optional: Show a status message
+                StatusText.Text = $"Added {selectedFertilizer.Name} to mix";
+            }
+        }
+
         private void LoadMixes()
         {
             if (File.Exists(mixesDbPath))

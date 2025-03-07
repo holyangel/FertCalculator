@@ -46,7 +46,7 @@
 
                 <TextBlock Text="Available Fertilizers" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
 
-                <ListBox x:Name="FertilizerListBox" Grid.Row="1" SelectionMode="Single">
+                <ListBox x:Name="FertilizerListBox" Grid.Row="1" SelectionMode="Single" MouseDoubleClick="FertilizerListBox_MouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"/>
