@@ -168,6 +168,10 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <!-- Nutrient labels -->
@@ -183,7 +187,12 @@
                             <TextBlock Grid.Row="9" Text="Manganese (Mn)"/>
                             <TextBlock Grid.Row="10" Text="Molybdenum (Mo)"/>
                             <TextBlock Grid.Row="11" Text="Zinc (Zn)"/>
-                            <TextBlock Grid.Row="12" Text="" Height="10"/>
+                            <TextBlock Grid.Row="12" Text="Chlorine (Cl)"/>
+                            <TextBlock Grid.Row="13" Text="Silica (Si)"/>
+                            <TextBlock Grid.Row="14" Text="Humic Acid"/>
+                            <TextBlock Grid.Row="15" Text="Fulvic Acid"/>
+                            <TextBlock Grid.Row="16" Text="" Height="10"/>
+                            <TextBlock Grid.Row="17" Text="TOTAL PPM" FontWeight="Bold"/>
 
                             <!-- Nutrient values -->
                             <TextBlock x:Name="NitrogenValueTextBlock" Grid.Row="0" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
@@ -198,7 +207,12 @@
                             <TextBlock x:Name="ManganeseValueTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock x:Name="MolybdenumValueTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock x:Name="ZincValueTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="TotalPpmValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold"/>
+                            <TextBlock x:Name="ChlorineValueTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="SilicaValueTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="HumicAcidValueTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="FulvicAcidValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock Grid.Row="16" Grid.Column="1" Text="" Height="10"/>
+                            <TextBlock x:Name="TotalPpmValueTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold"/>
                         </Grid>
                     </Grid>
 

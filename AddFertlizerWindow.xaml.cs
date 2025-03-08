@@ -64,6 +64,10 @@ namespace FertilizerCalculator
                 ManganeseTextBox.Text = existingFertilizer.ManganesePercent.ToString("F3");
                 MolybdenumTextBox.Text = existingFertilizer.MolybdenumPercent.ToString("F3");
                 ZincTextBox.Text = existingFertilizer.ZincPercent.ToString("F3");
+                ChlorineTextBox.Text = existingFertilizer.ChlorinePercent.ToString("F3");
+                SilicaTextBox.Text = existingFertilizer.SilicaPercent.ToString("F3");
+                HumicAcidTextBox.Text = existingFertilizer.HumicAcidPercent.ToString("F3");
+                FulvicAcidTextBox.Text = existingFertilizer.FulvicAcidPercent.ToString("F3");
             }
             else
             {
@@ -80,6 +84,10 @@ namespace FertilizerCalculator
                 ManganeseTextBox.Text = "";
                 MolybdenumTextBox.Text = "";
                 ZincTextBox.Text = "";
+                ChlorineTextBox.Text = "";
+                SilicaTextBox.Text = "";
+                HumicAcidTextBox.Text = "";
+                FulvicAcidTextBox.Text = "";
             }
         }
 
@@ -151,6 +159,10 @@ namespace FertilizerCalculator
                 ManganesePercent = ParseTextBoxValue(ManganeseTextBox),
                 MolybdenumPercent = ParseTextBoxValue(MolybdenumTextBox),
                 ZincPercent = ParseTextBoxValue(ZincTextBox),
+                ChlorinePercent = ParseTextBoxValue(ChlorineTextBox),
+                SilicaPercent = ParseTextBoxValue(SilicaTextBox),
+                HumicAcidPercent = ParseTextBoxValue(HumicAcidTextBox),
+                FulvicAcidPercent = ParseTextBoxValue(FulvicAcidTextBox),
 
                 // Store original input format and values
                 IsPhosphorusInOxideForm = isPhosphorusInOxideForm,

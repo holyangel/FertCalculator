@@ -430,6 +430,7 @@ namespace FertilizerCalculator
         {
             double totalN = 0, totalP = 0, totalK = 0, totalCa = 0, totalMg = 0, totalS = 0;
             double totalB = 0, totalFe = 0, totalCu = 0, totalMn = 0, totalMo = 0, totalZn = 0;
+            double totalChlorine = 0, totalSilica = 0,totalHumicAcid = 0, totalFulvicAcid = 0;
             
             foreach (var item in currentMix)
             {
@@ -449,6 +450,10 @@ namespace FertilizerCalculator
                     totalMn += fertilizer.ManganesePpm * quantity;
                     totalMo += fertilizer.MolybdenumPpm * quantity;
                     totalZn += fertilizer.ZincPpm * quantity;
+                    totalChlorine += fertilizer.ChlorinePpm * quantity;
+                    totalSilica += fertilizer.SilicaPpm * quantity;
+                    totalHumicAcid += fertilizer.HumicAcidPpm * quantity;
+                    totalFulvicAcid += fertilizer.FulvicAcidPpm * quantity;
                 }
             }
             
@@ -468,9 +473,14 @@ namespace FertilizerCalculator
             ManganeseValueTextBlock.Text = (totalMn * conversionFactor).ToString("F2");
             MolybdenumValueTextBlock.Text = (totalMo * conversionFactor).ToString("F2");
             ZincValueTextBlock.Text = (totalZn * conversionFactor).ToString("F2");
+            ChlorineValueTextBlock.Text = (totalChlorine * conversionFactor).ToString("F2");
+            SilicaValueTextBlock.Text = (totalSilica * conversionFactor).ToString("F2");
+            HumicAcidValueTextBlock.Text = (totalHumicAcid * conversionFactor).ToString("F2");
+            FulvicAcidValueTextBlock.Text = (totalFulvicAcid * conversionFactor).ToString("F2");
             
             double totalPpm = totalN + totalP + totalK + totalCa + totalMg + totalS + 
                              totalB + totalCu + totalFe + totalMn + totalMo +totalZn + 
+                             totalChlorine + totalSilica +totalHumicAcid + totalFulvicAcid;
             TotalPpmValueTextBlock.Text = (totalPpm * conversionFactor).ToString("F2");
         }
 
@@ -764,6 +774,10 @@ namespace FertilizerCalculator
         private double manganesePercent;
         private double molybdenumPercent;
         private double zincPercent;
+        private double chlorinePercent;
+        private double silicaPercent;
+        private double humicAcidPercent;
+        private double fulvicAcidPercent;
 
         // New properties to store original input format and values
         public bool IsPhosphorusInOxideForm { get; set; }
@@ -850,28 +864,28 @@ namespace FertilizerCalculator
             set { zincPercent = value; OnPropertyChanged(nameof(ZincPercent)); OnPropertyChanged(nameof(ZincPpm)); }
         }
 
-        public double BoronPercent
+        public double ChlorinePercent
         {
-            get => boronPercent;
-            set { boronPercent = value; OnPropertyChanged(nameof(BoronPercent)); OnPropertyChanged(nameof(BoronPpm)); }
+            get => chlorinePercent;
+            set { chlorinePercent = value; OnPropertyChanged(nameof(ChlorinePercent)); OnPropertyChanged(nameof(ChlorinePpm)); }
         }
 
-        public double ManganesePercent
+        public double SilicaPercent
         {
-            get => manganesePercent;
-            set { manganesePercent = value; OnPropertyChanged(nameof(ManganesePercent)); OnPropertyChanged(nameof(ManganesePpm)); }
+            get => silicaPercent;
+            set { silicaPercent = value; OnPropertyChanged(nameof(SilicaPercent)); OnPropertyChanged(nameof(SilicaPpm)); }
         }
 
-        public double CopperPercent
+        public double HumicAcidPercent
         {
-            get => copperPercent;
-            set { copperPercent = value; OnPropertyChanged(nameof(CopperPercent)); OnPropertyChanged(nameof(CopperPpm)); }
+            get => humicAcidPercent;
+            set { humicAcidPercent = value; OnPropertyChanged(nameof(HumicAcidPercent)); OnPropertyChanged(nameof(HumicAcidPpm)); }
         }
 
-        public double MolybdenumPercent
+        public double FulvicAcidPercent
         {
-            get => molybdenumPercent;
-            set { molybdenumPercent = value; OnPropertyChanged(nameof(MolybdenumPercent)); OnPropertyChanged(nameof(MolybdenumPpm)); }
+            get => fulvicAcidPercent;
+            set { fulvicAcidPercent = value; OnPropertyChanged(nameof(FulvicAcidPercent)); OnPropertyChanged(nameof(FulvicAcidPpm)); }
         }
 
         // Convert percentage to decimal (divide by 100) and multiply by 1000 to get mg/L (PPM)
@@ -887,6 +901,10 @@ namespace FertilizerCalculator
         public double ManganesePpm => (ManganesePercent / 100) * 1000;
         public double MolybdenumPpm => (MolybdenumPercent / 100) * 1000;
         public double ZincPpm => (ZincPercent / 100) * 1000;
+        public double ChlorinePpm => (ChlorinePercent / 100) * 1000;
+        public double SilicaPpm => (SilicaPercent / 100) * 1000;
+        public double HumicAcidPpm => (HumicAcidPercent / 100) * 1000;
+        public double FulvicAcidPpm => (FulvicAcidPercent / 100) * 1000;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

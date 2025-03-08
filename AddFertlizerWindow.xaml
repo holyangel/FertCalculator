@@ -41,6 +41,13 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Fertilizer name -->
@@ -114,6 +121,22 @@
                 <TextBlock Grid.Row="13" Grid.Column="0" Text="Zinc (Zn):"/>
                 <TextBox Grid.Row="13" Grid.Column="1" x:Name="ZincTextBox" PreviewTextInput="DecimalInputValidation"/>
                 <TextBlock Grid.Row="13" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="14" Grid.Column="0" Text="Chlorine (Cl):"/>
+                <TextBox Grid.Row="14" Grid.Column="1" x:Name="ChlorineTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="14" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="15" Grid.Column="0" Text="Silica (Si):"/>
+                <TextBox Grid.Row="15" Grid.Column="1" x:Name="SilicaTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="15" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="16" Grid.Column="0" Text="Humic Acid:"/>
+                <TextBox Grid.Row="16" Grid.Column="1" x:Name="HumicAcidTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="16" Grid.Column="2" Text="%"/>
+
+                <TextBlock Grid.Row="17" Grid.Column="0" Text="Fulvic Acid:"/>
+                <TextBox Grid.Row="17" Grid.Column="1" x:Name="FulvicAcidTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="17" Grid.Column="2" Text="%"/>
             </Grid>
         </ScrollViewer>
 
