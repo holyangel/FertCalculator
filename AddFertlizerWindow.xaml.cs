@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,15 +55,15 @@ namespace FertilizerCalculator
                     PotassiumFormatComboBox.SelectedIndex = 0; // K
                 }
 
-                MagnesiumTextBox.Text = existingFertilizer.MagnesiumPercent.ToString("F3");
                 CalciumTextBox.Text = existingFertilizer.CalciumPercent.ToString("F3");
+                MagnesiumTextBox.Text = existingFertilizer.MagnesiumPercent.ToString("F3");
                 SulfurTextBox.Text = existingFertilizer.SulfurPercent.ToString("F3");
-                IronTextBox.Text = existingFertilizer.IronPercent.ToString("F3");
-                ZincTextBox.Text = existingFertilizer.ZincPercent.ToString("F3");
                 BoronTextBox.Text = existingFertilizer.BoronPercent.ToString("F3");
-                ManganeseTextBox.Text = existingFertilizer.ManganesePercent.ToString("F3");
                 CopperTextBox.Text = existingFertilizer.CopperPercent.ToString("F3");
+                IronTextBox.Text = existingFertilizer.IronPercent.ToString("F3");
+                ManganeseTextBox.Text = existingFertilizer.ManganesePercent.ToString("F3");
                 MolybdenumTextBox.Text = existingFertilizer.MolybdenumPercent.ToString("F3");
+                ZincTextBox.Text = existingFertilizer.ZincPercent.ToString("F3");
             }
             else
             {
@@ -71,15 +71,15 @@ namespace FertilizerCalculator
                 NitrogenTextBox.Text = "";
                 PhosphorusTextBox.Text = "";
                 PotassiumTextBox.Text = "";
-                MagnesiumTextBox.Text = "";
                 CalciumTextBox.Text = "";
+                MagnesiumTextBox.Text = "";
                 SulfurTextBox.Text = "";
-                IronTextBox.Text = "";
-                ZincTextBox.Text = "";
                 BoronTextBox.Text = "";
-                ManganeseTextBox.Text = "";
                 CopperTextBox.Text = "";
+                IronTextBox.Text = "";
+                ManganeseTextBox.Text = "";
                 MolybdenumTextBox.Text = "";
+                ZincTextBox.Text = "";
             }
         }
 
@@ -142,15 +142,15 @@ namespace FertilizerCalculator
                 NitrogenPercent = ParseTextBoxValue(NitrogenTextBox),
                 PhosphorusPercent = phosphorusValue,
                 PotassiumPercent = potassiumValue,
-                MagnesiumPercent = ParseTextBoxValue(MagnesiumTextBox),
                 CalciumPercent = ParseTextBoxValue(CalciumTextBox),
+                MagnesiumPercent = ParseTextBoxValue(MagnesiumTextBox),
                 SulfurPercent = ParseTextBoxValue(SulfurTextBox),
-                IronPercent = ParseTextBoxValue(IronTextBox),
-                ZincPercent = ParseTextBoxValue(ZincTextBox),
                 BoronPercent = ParseTextBoxValue(BoronTextBox),
-                ManganesePercent = ParseTextBoxValue(ManganeseTextBox),
                 CopperPercent = ParseTextBoxValue(CopperTextBox),
+                IronPercent = ParseTextBoxValue(IronTextBox),
+                ManganesePercent = ParseTextBoxValue(ManganeseTextBox),
                 MolybdenumPercent = ParseTextBoxValue(MolybdenumTextBox),
+                ZincPercent = ParseTextBoxValue(ZincTextBox),
 
                 // Store original input format and values
                 IsPhosphorusInOxideForm = isPhosphorusInOxideForm,

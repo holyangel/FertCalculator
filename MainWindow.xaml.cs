@@ -428,8 +428,8 @@ namespace FertilizerCalculator
 
         public void UpdateNutrientTotals()
         {
-            double totalN = 0, totalP = 0, totalK = 0, totalMg = 0, totalCa = 0, totalS = 0;
-            double totalFe = 0, totalZn = 0, totalB = 0, totalMn = 0, totalCu = 0, totalMo = 0;
+            double totalN = 0, totalP = 0, totalK = 0, totalCa = 0, totalMg = 0, totalS = 0;
+            double totalB = 0, totalFe = 0, totalCu = 0, totalMn = 0, totalMo = 0, totalZn = 0;
             
             foreach (var item in currentMix)
             {
@@ -440,15 +440,15 @@ namespace FertilizerCalculator
                     totalN += fertilizer.NitrogenPpm * quantity;
                     totalP += fertilizer.PhosphorusPpm * quantity;
                     totalK += fertilizer.PotassiumPpm * quantity;
-                    totalMg += fertilizer.MagnesiumPpm * quantity;
                     totalCa += fertilizer.CalciumPpm * quantity;
+                    totalMg += fertilizer.MagnesiumPpm * quantity;
                     totalS += fertilizer.SulfurPpm * quantity;
-                    totalFe += fertilizer.IronPpm * quantity;
-                    totalZn += fertilizer.ZincPpm * quantity;
                     totalB += fertilizer.BoronPpm * quantity;
-                    totalMn += fertilizer.ManganesePpm * quantity;
                     totalCu += fertilizer.CopperPpm * quantity;
+                    totalFe += fertilizer.IronPpm * quantity;
+                    totalMn += fertilizer.ManganesePpm * quantity;
                     totalMo += fertilizer.MolybdenumPpm * quantity;
+                    totalZn += fertilizer.ZincPpm * quantity;
                 }
             }
             
@@ -459,18 +459,18 @@ namespace FertilizerCalculator
             NitrogenValueTextBlock.Text = (totalN * conversionFactor).ToString("F2");
             PhosphorusValueTextBlock.Text = (totalP * conversionFactor).ToString("F2");
             PotassiumValueTextBlock.Text = (totalK * conversionFactor).ToString("F2");
-            MagnesiumValueTextBlock.Text = (totalMg * conversionFactor).ToString("F2");
             CalciumValueTextBlock.Text = (totalCa * conversionFactor).ToString("F2");
+            MagnesiumValueTextBlock.Text = (totalMg * conversionFactor).ToString("F2");
             SulfurValueTextBlock.Text = (totalS * conversionFactor).ToString("F2");
-            IronValueTextBlock.Text = (totalFe * conversionFactor).ToString("F2");
-            ZincValueTextBlock.Text = (totalZn * conversionFactor).ToString("F2");
             BoronValueTextBlock.Text = (totalB * conversionFactor).ToString("F2");
-            ManganeseValueTextBlock.Text = (totalMn * conversionFactor).ToString("F2");
             CopperValueTextBlock.Text = (totalCu * conversionFactor).ToString("F2");
+            IronValueTextBlock.Text = (totalFe * conversionFactor).ToString("F2");
+            ManganeseValueTextBlock.Text = (totalMn * conversionFactor).ToString("F2");
             MolybdenumValueTextBlock.Text = (totalMo * conversionFactor).ToString("F2");
+            ZincValueTextBlock.Text = (totalZn * conversionFactor).ToString("F2");
             
-            double totalPpm = totalN + totalP + totalK + totalMg + totalCa + totalS + 
-                             totalFe + totalZn + totalB + totalMn + totalCu + totalMo;
+            double totalPpm = totalN + totalP + totalK + totalCa + totalMg + totalS + 
+                             totalB + totalCu + totalFe + totalMn + totalMo +totalZn + 
             TotalPpmValueTextBlock.Text = (totalPpm * conversionFactor).ToString("F2");
         }
 
@@ -755,15 +755,15 @@ namespace FertilizerCalculator
         private double nitrogenPercent;
         private double phosphorusPercent;
         private double potassiumPercent;
-        private double magnesiumPercent;
         private double calciumPercent;
+        private double magnesiumPercent;
         private double sulfurPercent;
-        private double ironPercent;
-        private double zincPercent;
         private double boronPercent;
-        private double manganesePercent;
         private double copperPercent;
+        private double ironPercent;
+        private double manganesePercent;
         private double molybdenumPercent;
+        private double zincPercent;
 
         // New properties to store original input format and values
         public bool IsPhosphorusInOxideForm { get; set; }
@@ -796,16 +796,16 @@ namespace FertilizerCalculator
             set { potassiumPercent = value; OnPropertyChanged(nameof(PotassiumPercent)); OnPropertyChanged(nameof(PotassiumPpm)); }
         }
 
-        public double MagnesiumPercent
-        {
-            get => magnesiumPercent;
-            set { magnesiumPercent = value; OnPropertyChanged(nameof(MagnesiumPercent)); OnPropertyChanged(nameof(MagnesiumPpm)); }
-        }
-
         public double CalciumPercent
         {
             get => calciumPercent;
             set { calciumPercent = value; OnPropertyChanged(nameof(CalciumPercent)); OnPropertyChanged(nameof(CalciumPpm)); }
+        }
+
+        public double MagnesiumPercent
+        {
+            get => magnesiumPercent;
+            set { magnesiumPercent = value; OnPropertyChanged(nameof(MagnesiumPercent)); OnPropertyChanged(nameof(MagnesiumPpm)); }
         }
 
         public double SulfurPercent
@@ -814,10 +814,34 @@ namespace FertilizerCalculator
             set { sulfurPercent = value; OnPropertyChanged(nameof(SulfurPercent)); OnPropertyChanged(nameof(SulfurPpm)); }
         }
 
+        public double BoronPercent
+        {
+            get => boronPercent;
+            set { boronPercent = value; OnPropertyChanged(nameof(BoronPercent)); OnPropertyChanged(nameof(BoronPpm)); }
+        }
+
+        public double CopperPercent
+        {
+            get => copperPercent;
+            set { copperPercent = value; OnPropertyChanged(nameof(CopperPercent)); OnPropertyChanged(nameof(CopperPpm)); }
+        }
+
         public double IronPercent
         {
             get => ironPercent;
             set { ironPercent = value; OnPropertyChanged(nameof(IronPercent)); OnPropertyChanged(nameof(IronPpm)); }
+        }
+
+        public double ManganesePercent
+        {
+            get => manganesePercent;
+            set { manganesePercent = value; OnPropertyChanged(nameof(ManganesePercent)); OnPropertyChanged(nameof(ManganesePpm)); }
+        }
+
+        public double MolybdenumPercent
+        {
+            get => molybdenumPercent;
+            set { molybdenumPercent = value; OnPropertyChanged(nameof(MolybdenumPercent)); OnPropertyChanged(nameof(MolybdenumPpm)); }
         }
 
         public double ZincPercent
@@ -854,15 +878,15 @@ namespace FertilizerCalculator
         public double NitrogenPpm => (NitrogenPercent / 100) * 1000;
         public double PhosphorusPpm => (PhosphorusPercent / 100) * 1000;
         public double PotassiumPpm => (PotassiumPercent / 100) * 1000;
-        public double MagnesiumPpm => (MagnesiumPercent / 100) * 1000;
         public double CalciumPpm => (CalciumPercent / 100) * 1000;
+        public double MagnesiumPpm => (MagnesiumPercent / 100) * 1000;
         public double SulfurPpm => (SulfurPercent / 100) * 1000;
-        public double IronPpm => (IronPercent / 100) * 1000;
-        public double ZincPpm => (ZincPercent / 100) * 1000;
         public double BoronPpm => (BoronPercent / 100) * 1000;
-        public double ManganesePpm => (ManganesePercent / 100) * 1000;
         public double CopperPpm => (CopperPercent / 100) * 1000;
+        public double IronPpm => (IronPercent / 100) * 1000;
+        public double ManganesePpm => (ManganesePercent / 100) * 1000;
         public double MolybdenumPpm => (MolybdenumPercent / 100) * 1000;
+        public double ZincPpm => (ZincPercent / 100) * 1000;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
