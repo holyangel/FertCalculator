@@ -68,18 +68,18 @@ namespace FertilizerCalculator
             else
             {
                 // Set default values for new fertilizer
-                NitrogenTextBox.Text = "0.000";
-                PhosphorusTextBox.Text = "0.000";
-                PotassiumTextBox.Text = "0.000";
-                MagnesiumTextBox.Text = "0.000";
-                CalciumTextBox.Text = "0.000";
-                SulfurTextBox.Text = "0.000";
-                IronTextBox.Text = "0.000";
-                ZincTextBox.Text = "0.000";
-                BoronTextBox.Text = "0.000";
-                ManganeseTextBox.Text = "0.000";
-                CopperTextBox.Text = "0.000";
-                MolybdenumTextBox.Text = "0.000";
+                NitrogenTextBox.Text = "";
+                PhosphorusTextBox.Text = "";
+                PotassiumTextBox.Text = "";
+                MagnesiumTextBox.Text = "";
+                CalciumTextBox.Text = "";
+                SulfurTextBox.Text = "";
+                IronTextBox.Text = "";
+                ZincTextBox.Text = "";
+                BoronTextBox.Text = "";
+                ManganeseTextBox.Text = "";
+                CopperTextBox.Text = "";
+                MolybdenumTextBox.Text = "";
             }
         }
 
