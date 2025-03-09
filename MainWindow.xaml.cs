@@ -57,7 +57,8 @@ namespace FertilizerCalculator
                     {
                         var fertilizers = (List<Fertilizer>)serializer.Deserialize(reader);
                         availableFertilizers.Clear();
-                        foreach (var fertilizer in fertilizers)
+                        // Sort fertilizers alphabetically by name before adding to the collection
+                        foreach (var fertilizer in fertilizers.OrderBy(f => f.Name))
                         {
                             availableFertilizers.Add(fertilizer);
                         }
@@ -266,7 +267,17 @@ namespace FertilizerCalculator
                     return;
                 }
                 
+                // Add the new fertilizer
                 availableFertilizers.Add(dialog.NewFertilizer);
+                
+                // Re-sort the list alphabetically
+                var sortedList = availableFertilizers.OrderBy(f => f.Name).ToList();
+                availableFertilizers.Clear();
+                foreach (var fertilizer in sortedList)
+                {
+                    availableFertilizers.Add(fertilizer);
+                }
+                
                 SaveFertilizers();
             }
         }
@@ -289,6 +300,15 @@ namespace FertilizerCalculator
                     // Update the fertilizer
                     int index = availableFertilizers.IndexOf(selectedFertilizer);
                     availableFertilizers[index] = dialog.NewFertilizer;
+                    
+                    // Re-sort the list alphabetically
+                    var sortedList = availableFertilizers.OrderBy(f => f.Name).ToList();
+                    availableFertilizers.Clear();
+                    foreach (var fertilizer in sortedList)
+                    {
+                        availableFertilizers.Add(fertilizer);
+                    }
+                    
                     SaveFertilizers();
                     
                     // Update any mixes that use this fertilizer
