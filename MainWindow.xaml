@@ -83,6 +83,7 @@
                         <ComboBox x:Name="SavedMixesComboBox" Width="200" DisplayMemberPath="Name" Margin="0,0,0,5"/>
                         <Button Content="Load" Width="70" Click="LoadMixButton_Click" Margin="0,0,0,5"/>
                         <Button Content="Delete" Width="70" Click="DeleteMixButton_Click" Margin="0,0,0,5"/>
+                        <Button Content="Compare" Width="70" Click="CompareMixesButton_Click" Margin="5,0,0,5" ToolTip="Compare two saved mixes"/>
                     </StackPanel>
                 </Grid>
 
@@ -154,7 +155,6 @@
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>

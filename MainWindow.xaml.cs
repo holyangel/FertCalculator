@@ -632,22 +632,36 @@ namespace FertilizerCalculator
         {
             if (SavedMixesComboBox.SelectedItem is FertilizerMix selectedMix)
             {
-                var result = MessageBox.Show(
-                    $"Are you sure you want to delete the mix '{selectedMix.Name}'?",
-                    "Confirm Delete",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
+                var result = MessageBox.Show($"Are you sure you want to delete the mix '{selectedMix.Name}'?", 
+                    "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 
                 if (result == MessageBoxResult.Yes)
                 {
                     savedMixes.Remove(selectedMix);
                     SaveMixes();
+                    StatusText.Text = $"Deleted mix '{selectedMix.Name}'";
                 }
             }
             else
             {
                 MessageBox.Show("Please select a mix to delete.", "No Selection", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void CompareMixesButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if we have at least one mix to compare
+            if (savedMixes.Count == 0)
+            {
+                MessageBox.Show("You need to have at least one saved mix to compare.", 
+                    "No Mixes Available", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            // Open the comparison window
+            var compareWindow = new CompareMixesWindow(savedMixes.ToList(), availableFertilizers.ToList());
+            compareWindow.Owner = this;
+            compareWindow.ShowDialog();
         }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
@@ -782,6 +796,7 @@ namespace FertilizerCalculator
                 {
                     currentMix.Clear();
                     UpdateNutrientTotals();
+                    StatusText.Text = $"Cleared mix";
                 }
             }
         }
