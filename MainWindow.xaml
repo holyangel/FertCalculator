@@ -227,10 +227,10 @@
                         <StackPanel Grid.Row="1">
                             <TextBlock x:Name="UnitLabel" Text="PPM (mg/L)" FontWeight="Bold" Margin="0,0,0,10"/>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                All nutrient values are shown in parts per million (PPM). For fertilizers, enter the quantity in grams per liter or per gallon depending on your selected unit.
+                                All nutrient values are shown in parts per million (PPM). Add fertilizers to your mix by selecting from the available list and entering the quantity in grams per liter or per gallon depending on your selected unit.
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                For dry fertilizers, enter the percentage of each element as shown on the label. For P and K, enter the elemental percentage, not the oxide form (P₂O₅ or K₂O).
+                                When adding new fertilizers, enter the percentage of each nutrient as shown on the label. For phosphorus and potassium, enter the elemental percentage (P and K), not the oxide form (P₂O₅ or K₂O).
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
                                 Conversion formulas:
@@ -238,7 +238,7 @@
                                 • K₂O to K: multiply by 0.8301
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap">
-                                PPM calculation: percentage × 10 × quantity (for 1g/L)
+                                Use the Compare button to compare nutrient profiles between different saved mixes. Double-click on a fertilizer name in your current mix to remove it.
                             </TextBlock>
                         </StackPanel>
                     </Grid>
