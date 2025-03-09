@@ -234,7 +234,7 @@
                                 All nutrient values are shown in parts per million (PPM). Add fertilizers to your mix by selecting from the available list and entering the quantity in grams per liter or per gallon depending on your selected unit.
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                When adding new fertilizers, enter the percentage of each nutrient as shown on the label. For phosphorus and potassium, enter the elemental percentage (P and K), not the oxide form (P₂O₅ or K₂O).
+                                When adding new fertilizers, enter the percentage of each nutrient as shown on the label. For phosphorus and potassium, be sure the selected dropdown is accurate for your nutrient label. Most US labels list P and K in their oxide form (P₂O₅ or K₂O).
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
                                 Conversion formulas:
