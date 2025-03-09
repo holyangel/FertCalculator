@@ -15,6 +15,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- First Mix Selection -->
@@ -27,6 +28,12 @@
             <StackPanel Grid.Column="1" Margin="5">
                 <TextBlock Text="Second Mix:" FontSize="14" Margin="0,0,0,5"/>
                 <ComboBox x:Name="SecondMixComboBox" DisplayMemberPath="Name" SelectionChanged="MixComboBox_SelectionChanged" Margin="0,0,0,10"/>
+            </StackPanel>
+            
+            <!-- Unit Toggle -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
+                <TextBlock Text="Units:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <Button x:Name="UnitToggleButton" Content="PPM per Liter" Width="120" Height="30" Click="UnitToggleButton_Click"/>
             </StackPanel>
         </Grid>
 
@@ -108,9 +115,9 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Nutrient" FontWeight="Bold" Margin="0,0,10,5"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Text="Mix 1 (PPM)" FontWeight="Bold" Margin="0,0,0,5"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="Mix 2 (PPM)" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Nutrient" FontWeight="Bold" Margin="5"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="Mix 1 (PPM/L)" FontWeight="Bold" Margin="5"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="Mix 2 (PPM/L)" FontWeight="Bold" Margin="5"/>
 
             <!-- Nutrients -->
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Nitrogen (N)" Margin="0,0,10,2"/>

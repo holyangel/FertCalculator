@@ -11,6 +11,8 @@ namespace FertilizerCalculator
     {
         private List<FertilizerMix> availableMixes;
         private List<Fertilizer> availableFertilizers;
+        private bool isMetricUnits = true; // true = per liter, false = per gallon
+        private const double GALLON_TO_LITER = 3.78541;
         
         public CompareMixesWindow(List<FertilizerMix> mixes, List<Fertilizer> fertilizers)
         {
@@ -37,11 +39,36 @@ namespace FertilizerCalculator
                     SecondMixComboBox.SelectedIndex = 0;
                 }
             }
+            
+            // Initialize unit display
+            UpdateUnitDisplay();
         }
         
         private void MixComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateComparison();
+        }
+        
+        private void UnitToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Toggle between metric and imperial units
+            isMetricUnits = !isMetricUnits;
+            
+            // Update the button text and recalculate
+            UpdateUnitDisplay();
+            UpdateComparison();
+        }
+        
+        private void UpdateUnitDisplay()
+        {
+            if (isMetricUnits)
+            {
+                UnitToggleButton.Content = "PPM per Liter";
+            }
+            else
+            {
+                UnitToggleButton.Content = "PPM per Gallon";
+            }
         }
         
         private void UpdateComparison()
@@ -99,6 +126,13 @@ namespace FertilizerCalculator
                 {
                     double quantity = ingredient.Quantity;
                     
+                    // If we're in imperial units, we need to convert the quantity
+                    if (!isMetricUnits)
+                    {
+                        // Convert from g/gal to g/L for calculation
+                        quantity = quantity / GALLON_TO_LITER;
+                    }
+                    
                     // Add the contribution of each nutrient
                     nutrients["Nitrogen"] += (fertilizer.NitrogenPercent / 100) * quantity;
                     nutrients["Phosphorus"] += (fertilizer.PhosphorusPercent / 100) * quantity;
@@ -128,6 +162,31 @@ namespace FertilizerCalculator
         private void UpdateNutrientDisplay(Dictionary<string, double> firstMixNutrients, Dictionary<string, double> secondMixNutrients)
         {
             // Convert g/L to PPM (multiply by 1000)
+            // Update the column headers to reflect the current unit
+            string unitText = isMetricUnits ? "Mix 1 (PPM/L)" : "Mix 1 (PPM/gal)";
+            string unitText2 = isMetricUnits ? "Mix 2 (PPM/L)" : "Mix 2 (PPM/gal)";
+            
+            // Find the TextBlocks in the header row and update them
+            if (Grid.GetRow(FirstMixNitrogenTextBlock) > 0)
+            {
+                var headerRow = Grid.GetRow(FirstMixNitrogenTextBlock) - 1;
+                foreach (var child in FindVisualChildren<TextBlock>(this))
+                {
+                    if (Grid.GetRow(child) == 0)
+                    {
+                        if (Grid.GetColumn(child) == 1)
+                        {
+                            child.Text = unitText;
+                        }
+                        else if (Grid.GetColumn(child) == 2)
+                        {
+                            child.Text = unitText2;
+                        }
+                    }
+                }
+            }
+            
+            // Update the nutrient values
             FirstMixNitrogenTextBlock.Text = (firstMixNutrients["Nitrogen"] * 1000).ToString("F2");
             FirstMixPhosphorusTextBlock.Text = (firstMixNutrients["Phosphorus"] * 1000).ToString("F2");
             FirstMixPotassiumTextBlock.Text = (firstMixNutrients["Potassium"] * 1000).ToString("F2");
@@ -163,6 +222,27 @@ namespace FertilizerCalculator
             SecondMixHumicAcidTextBlock.Text = (secondMixNutrients["HumicAcid"] * 1000).ToString("F2");
             SecondMixFulvicAcidTextBlock.Text = (secondMixNutrients["FulvicAcid"] * 1000).ToString("F2");
             SecondMixTotalPpmTextBlock.Text = (secondMixNutrients["Total"] * 1000).ToString("F2");
+        }
+        
+        // Helper method to find visual children of a specific type
+        private IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = System.Windows.Media.VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
     }
 }
