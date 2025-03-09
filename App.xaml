@@ -47,7 +47,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border" 
-                        Background="#2D2D30" 
+                        Background="#007ACC" 
                         BorderThickness="1" 
                         BorderBrush="Transparent">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
