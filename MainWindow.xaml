@@ -54,7 +54,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,0">
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,5">
                     <Button Content="Add New" Width="90" Click="AddFertilizerButton_Click"/>
                     <Button Content="Edit" Width="90" Click="EditFertilizerButton_Click"/>
                     <Button Content="Delete" Width="90" Click="DeleteFertilizerButton_Click"/>
@@ -80,9 +80,9 @@
                     <TextBlock Text="Current Mix" FontSize="16" FontWeight="Bold"/>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                        <ComboBox x:Name="SavedMixesComboBox" Width="200" DisplayMemberPath="Name"/>
-                        <Button Content="Load" Width="70" Click="LoadMixButton_Click"/>
-                        <Button Content="Delete" Width="70" Click="DeleteMixButton_Click"/>
+                        <ComboBox x:Name="SavedMixesComboBox" Width="200" DisplayMemberPath="Name" Margin="0,0,0,5"/>
+                        <Button Content="Load" Width="70" Click="LoadMixButton_Click" Margin="0,0,0,5"/>
+                        <Button Content="Delete" Width="70" Click="DeleteMixButton_Click" Margin="0,0,0,5"/>
                     </StackPanel>
                 </Grid>
 
