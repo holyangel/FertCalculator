@@ -2,7 +2,7 @@
 <Window x:Class="FertilizerCalculator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Fertilizer Calculator" Height="810" Width="1000"
+        Title="Fertilizer Calculator" Height="875" Width="1000"
         Background="#1E1E1E">
 
     <Grid Margin="10">
