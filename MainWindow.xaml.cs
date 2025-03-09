@@ -737,6 +737,15 @@ namespace FertilizerCalculator
                                     importedFertilizers++;
                                 }
                             }
+                            
+                            // Sort the fertilizers alphabetically after import
+                            var sortedFertilizers = availableFertilizers.OrderBy(f => f.Name).ToList();
+                            availableFertilizers.Clear();
+                            foreach (var fertilizer in sortedFertilizers)
+                            {
+                                availableFertilizers.Add(fertilizer);
+                            }
+                            
                             SaveFertilizers();
                         }
                         
