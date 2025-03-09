@@ -224,8 +224,16 @@ namespace FertilizerCalculator
 
         private void MixListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // Check if an item is selected
-            if (MixListBox.SelectedItem is FertilizerQuantity selectedItem)
+            // Get the clicked element
+            var dataGrid = sender as DataGrid;
+            if (dataGrid == null) return;
+
+            // Get the clicked cell
+            var cell = dataGrid.CurrentCell;
+            if (cell == null) return;
+
+            // Check if the clicked column is the fertilizer name column (first column)
+            if (cell.Column.DisplayIndex == 0 && MixListBox.SelectedItem is FertilizerQuantity selectedItem)
             {
                 // Remove the selected item
                 currentMix.Remove(selectedItem);
