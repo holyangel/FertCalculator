@@ -198,19 +198,19 @@
                             <TextBlock x:Name="NitrogenValueTextBlock" Grid.Row="0" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock x:Name="PhosphorusValueTextBlock" Grid.Row="1" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock x:Name="PotassiumValueTextBlock" Grid.Row="2" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="CalciumValueTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="MagnesiumValueTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="CalciumValueTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="MagnesiumValueTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock x:Name="SulfurValueTextBlock" Grid.Row="5" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="BoronValueTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="CopperValueTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="IronValueTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="BoronValueTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="CopperValueTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="IronValueTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock x:Name="ManganeseValueTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="MolybdenumValueTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="ZincValueTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="ChlorineValueTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="SilicaValueTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="HumicAcidValueTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="FulvicAcidValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="MolybdenumValueTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="ZincValueTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="ChlorineValueTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="SilicaValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="HumicAcidValueTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBlock x:Name="FulvicAcidValueTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
                             <TextBlock Grid.Row="16" Grid.Column="1" Text="" Height="10"/>
                             <TextBlock x:Name="TotalPpmValueTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold"/>
                         </Grid>
