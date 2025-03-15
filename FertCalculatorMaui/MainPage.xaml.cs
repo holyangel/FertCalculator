@@ -570,6 +570,19 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private void OnToggleMixVisibilityClicked(object sender, EventArgs e)
+    {
+        // Toggle visibility of mix content
+        bool isVisible = MixButtonsLayout.IsVisible;
+        
+        // Toggle visibility
+        MixButtonsLayout.IsVisible = !isVisible;
+        MixListView.IsVisible = !isVisible;
+        
+        // Update button text
+        ToggleMixVisibilityButton.Text = isVisible ? "▲" : "▼";
+    }
+
     private void AddFertilizerToMix(Fertilizer fertilizer)
     {
         // Check if the fertilizer is already in the mix

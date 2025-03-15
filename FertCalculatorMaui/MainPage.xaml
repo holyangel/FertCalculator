@@ -5,9 +5,18 @@
              Title="Fertilizer Calculator v1.0">
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" Padding="10">
-        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5">
-            <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
-            <HorizontalStackLayout Spacing="2">
+        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5" x:Name="CurrentMixSection">
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
+                <Button Text="▼" 
+                        Clicked="OnToggleMixVisibilityClicked" 
+                        x:Name="ToggleMixVisibilityButton"
+                        WidthRequest="40"
+                        HeightRequest="35"
+                        FontSize="Small" />
+            </HorizontalStackLayout>
+            
+            <HorizontalStackLayout Spacing="2" x:Name="MixButtonsLayout">
                 <Button Text="Add Fertilizer to Mix" 
                         Clicked="OnManageFertilizersClicked" 
                         HorizontalOptions="Center"
@@ -27,21 +36,22 @@
                             HeightRequest="200">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="*,Auto" Padding="5">
+                        <Grid ColumnDefinitions="*,*,Auto" Padding="5">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnFertilizerTapped" CommandParameter="{Binding FertilizerName}" />
                             </Grid.GestureRecognizers>
                             
                             <VerticalStackLayout Grid.Column="0">
                                 <Label Text="{Binding FertilizerName}" FontAttributes="Bold" />
-                                <HorizontalStackLayout>
-                                    <Label Text="{Binding Quantity}" />
-                                    <Label Text=" g/L" x:Name="UnitLabel" />
-                                </HorizontalStackLayout>
                             </VerticalStackLayout>
+
+                            <HorizontalStackLayout Grid.Column="1">
+                                <Label Text="{Binding Quantity}" HorizontalOptions="Start" />
+                                <Label Text=" g/L" x:Name="UnitLabel" />
+                            </HorizontalStackLayout>
                             
                             <Button Text="Remove" 
-                                    Grid.Column="1" 
+                                    Grid.Column="2" 
                                     CommandParameter="{Binding FertilizerName}" 
                                     Clicked="OnRemoveFromMixClicked" 
                                     WidthRequest="85"
@@ -59,10 +69,10 @@
         </VerticalStackLayout>
         
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
-            <ScrollView>
+            <ScrollView VerticalScrollBarVisibility="Always" HeightRequest="375">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Nutrient Totals" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
-                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                         <!-- Headers -->
                         <Label Text="Nutrient" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" />
                         <Label Text="%" FontAttributes="Bold" Grid.Row="0" Grid.Column="1" />
