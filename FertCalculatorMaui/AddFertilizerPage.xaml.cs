@@ -16,6 +16,50 @@ public partial class AddFertilizerPage : ContentPage
         // Use discard syntax to explicitly indicate we're ignoring the task
         _ = LoadFertilizersAsync();
     }
+    
+    public AddFertilizerPage(FileService fileService, Fertilizer existingFertilizer)
+    {
+        InitializeComponent();
+        this.fileService = fileService;
+        _ = LoadFertilizersAsync();
+        
+        // Populate fields with existing fertilizer data
+        NameEntry.Text = existingFertilizer.Name;
+        NitrogenEntry.Text = existingFertilizer.NitrogenPercent.ToString();
+        
+        // For phosphorus and potassium, use the original values and set checkboxes
+        if (existingFertilizer.IsPhosphorusInOxideForm)
+        {
+            PhosphorusEntry.Text = existingFertilizer.OriginalPhosphorusValue.ToString();
+            PhosphorusOxideCheckbox.IsChecked = true;
+        }
+        else
+        {
+            PhosphorusEntry.Text = existingFertilizer.PhosphorusPercent.ToString();
+            PhosphorusOxideCheckbox.IsChecked = false;
+        }
+        
+        if (existingFertilizer.IsPotassiumInOxideForm)
+        {
+            PotassiumEntry.Text = existingFertilizer.OriginalPotassiumValue.ToString();
+            PotassiumOxideCheckbox.IsChecked = true;
+        }
+        else
+        {
+            PotassiumEntry.Text = existingFertilizer.PotassiumPercent.ToString();
+            PotassiumOxideCheckbox.IsChecked = false;
+        }
+        
+        CalciumEntry.Text = existingFertilizer.CalciumPercent.ToString();
+        MagnesiumEntry.Text = existingFertilizer.MagnesiumPercent.ToString();
+        SulfurEntry.Text = existingFertilizer.SulfurPercent.ToString();
+        BoronEntry.Text = existingFertilizer.BoronPercent.ToString();
+        CopperEntry.Text = existingFertilizer.CopperPercent.ToString();
+        IronEntry.Text = existingFertilizer.IronPercent.ToString();
+        ManganeseEntry.Text = existingFertilizer.ManganesePercent.ToString();
+        MolybdenumEntry.Text = existingFertilizer.MolybdenumPercent.ToString();
+        ZincEntry.Text = existingFertilizer.ZincPercent.ToString();
+    }
 
     private async Task LoadFertilizersAsync()
     {
@@ -51,8 +95,41 @@ public partial class AddFertilizerPage : ContentPage
 
         // Parse nutrient values
         TryParseEntry(NitrogenEntry, value => fertilizer.NitrogenPercent = value);
-        TryParseEntry(PhosphorusEntry, value => fertilizer.PhosphorusPercent = value);
-        TryParseEntry(PotassiumEntry, value => fertilizer.PotassiumPercent = value);
+        
+        // Handle phosphorus with oxide form option
+        if (TryParseEntry(PhosphorusEntry, out double phosphorusValue))
+        {
+            fertilizer.IsPhosphorusInOxideForm = PhosphorusOxideCheckbox.IsChecked;
+            fertilizer.OriginalPhosphorusValue = phosphorusValue;
+            
+            // Convert from P₂O₅ to P if in oxide form
+            if (fertilizer.IsPhosphorusInOxideForm)
+            {
+                fertilizer.PhosphorusPercent = Fertilizer.P2O5ToP(phosphorusValue);
+            }
+            else
+            {
+                fertilizer.PhosphorusPercent = phosphorusValue;
+            }
+        }
+        
+        // Handle potassium with oxide form option
+        if (TryParseEntry(PotassiumEntry, out double potassiumValue))
+        {
+            fertilizer.IsPotassiumInOxideForm = PotassiumOxideCheckbox.IsChecked;
+            fertilizer.OriginalPotassiumValue = potassiumValue;
+            
+            // Convert from K₂O to K if in oxide form
+            if (fertilizer.IsPotassiumInOxideForm)
+            {
+                fertilizer.PotassiumPercent = Fertilizer.K2OToK(potassiumValue);
+            }
+            else
+            {
+                fertilizer.PotassiumPercent = potassiumValue;
+            }
+        }
+        
         TryParseEntry(CalciumEntry, value => fertilizer.CalciumPercent = value);
         TryParseEntry(MagnesiumEntry, value => fertilizer.MagnesiumPercent = value);
         TryParseEntry(SulfurEntry, value => fertilizer.SulfurPercent = value);
@@ -82,6 +159,16 @@ public partial class AddFertilizerPage : ContentPage
         {
             setter(value);
         }
+    }
+
+    private bool TryParseEntry(Entry entry, out double value)
+    {
+        if (!string.IsNullOrWhiteSpace(entry.Text) && double.TryParse(entry.Text, out value))
+        {
+            return true;
+        }
+        value = 0;
+        return false;
     }
 
     private bool ValidateNumericEntries()

@@ -215,80 +215,128 @@ public partial class MainPage : ContentPage
         
         double totalGrams = 0;
         
+        // Calculate percentage contributions (for display)
+        double nitrogenPercent = 0;
+        double phosphorusPercent = 0;
+        double potassiumPercent = 0;
+        double calciumPercent = 0;
+        double magnesiumPercent = 0;
+        double sulfurPercent = 0;
+        double boronPercent = 0;
+        double copperPercent = 0;
+        double ironPercent = 0;
+        double manganesePercent = 0;
+        double molybdenumPercent = 0;
+        double zincPercent = 0;
+        double chlorinePercent = 0;
+        double silicaPercent = 0;
+        double humicAcidPercent = 0;
+        double fulvicAcidPercent = 0;
+        
         // Calculate for each fertilizer in the mix
         foreach (var item in currentMix)
         {
             var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == item.FertilizerName);
             if (fertilizer == null) continue;
             
-            double grams = item.Quantity;
-            totalGrams += grams;
+            double quantity = item.Quantity;
+            totalGrams += quantity;
             
-            // Calculate weighted contribution of each nutrient
-            nitrogenTotal += (fertilizer.NitrogenPercent / 100) * grams;
-            phosphorusTotal += (fertilizer.PhosphorusPercent / 100) * grams;
-            potassiumTotal += (fertilizer.PotassiumPercent / 100) * grams;
-            calciumTotal += (fertilizer.CalciumPercent / 100) * grams;
-            magnesiumTotal += (fertilizer.MagnesiumPercent / 100) * grams;
-            sulfurTotal += (fertilizer.SulfurPercent / 100) * grams;
-            boronTotal += (fertilizer.BoronPercent / 100) * grams;
-            copperTotal += (fertilizer.CopperPercent / 100) * grams;
-            ironTotal += (fertilizer.IronPercent / 100) * grams;
-            manganeseTotal += (fertilizer.ManganesePercent / 100) * grams;
-            molybdenumTotal += (fertilizer.MolybdenumPercent / 100) * grams;
-            zincTotal += (fertilizer.ZincPercent / 100) * grams;
-            chlorineTotal += (fertilizer.ChlorinePercent / 100) * grams;
-            silicaTotal += (fertilizer.SilicaPercent / 100) * grams;
-            humicAcidTotal += (fertilizer.HumicAcidPercent / 100) * grams;
-            fulvicAcidTotal += (fertilizer.FulvicAcidPercent / 100) * grams;
+            // Calculate weighted contribution for percentage display
+            nitrogenPercent += (fertilizer.NitrogenPercent / 100) * quantity;
+            phosphorusPercent += (fertilizer.PhosphorusPercent / 100) * quantity;
+            potassiumPercent += (fertilizer.PotassiumPercent / 100) * quantity;
+            calciumPercent += (fertilizer.CalciumPercent / 100) * quantity;
+            magnesiumPercent += (fertilizer.MagnesiumPercent / 100) * quantity;
+            sulfurPercent += (fertilizer.SulfurPercent / 100) * quantity;
+            boronPercent += (fertilizer.BoronPercent / 100) * quantity;
+            copperPercent += (fertilizer.CopperPercent / 100) * quantity;
+            ironPercent += (fertilizer.IronPercent / 100) * quantity;
+            manganesePercent += (fertilizer.ManganesePercent / 100) * quantity;
+            molybdenumPercent += (fertilizer.MolybdenumPercent / 100) * quantity;
+            zincPercent += (fertilizer.ZincPercent / 100) * quantity;
+            chlorinePercent += (fertilizer.ChlorinePercent / 100) * quantity;
+            silicaPercent += (fertilizer.SilicaPercent / 100) * quantity;
+            humicAcidPercent += (fertilizer.HumicAcidPercent / 100) * quantity;
+            fulvicAcidPercent += (fertilizer.FulvicAcidPercent / 100) * quantity;
+            
+            // Calculate PPM directly from fertilizer PPM values
+            nitrogenTotal += fertilizer.NitrogenPpm(useImperialUnits) * quantity;
+            phosphorusTotal += fertilizer.PhosphorusPpm(useImperialUnits) * quantity;
+            potassiumTotal += fertilizer.PotassiumPpm(useImperialUnits) * quantity;
+            calciumTotal += fertilizer.CalciumPpm(useImperialUnits) * quantity;
+            magnesiumTotal += fertilizer.MagnesiumPpm(useImperialUnits) * quantity;
+            sulfurTotal += fertilizer.SulfurPpm(useImperialUnits) * quantity;
+            boronTotal += fertilizer.BoronPpm(useImperialUnits) * quantity;
+            copperTotal += fertilizer.CopperPpm(useImperialUnits) * quantity;
+            ironTotal += fertilizer.IronPpm(useImperialUnits) * quantity;
+            manganeseTotal += fertilizer.ManganesePpm(useImperialUnits) * quantity;
+            molybdenumTotal += fertilizer.MolybdenumPpm(useImperialUnits) * quantity;
+            zincTotal += fertilizer.ZincPpm(useImperialUnits) * quantity;
+            chlorineTotal += fertilizer.ChlorinePpm(useImperialUnits) * quantity;
+            silicaTotal += fertilizer.SilicaPpm(useImperialUnits) * quantity;
+            humicAcidTotal += fertilizer.HumicAcidPpm(useImperialUnits) * quantity;
+            fulvicAcidTotal += fertilizer.FulvicAcidPpm(useImperialUnits) * quantity;
         }
         
-        // Convert to PPM (mg/L or mg/gal depending on units)
+        // Convert percentages to actual percentages if there are any fertilizers in the mix
         if (totalGrams > 0)
         {
-            // Calculate PPM in water-based solution
-            // If imperial units are used, we need to adjust for gallons vs liters
-            double conversionFactor = 1.0;
-            if (useImperialUnits)
-            {
-                conversionFactor = 1.0 / 3.78541;
-            }
-            
-            nitrogenTotal = (nitrogenTotal / totalGrams) * conversionFactor;
-            phosphorusTotal = (phosphorusTotal / totalGrams) * conversionFactor;
-            potassiumTotal = (potassiumTotal / totalGrams) * conversionFactor;
-            calciumTotal = (calciumTotal / totalGrams) * conversionFactor;
-            magnesiumTotal = (magnesiumTotal / totalGrams) * conversionFactor;
-            sulfurTotal = (sulfurTotal / totalGrams) * conversionFactor;
-            boronTotal = (boronTotal / totalGrams) * conversionFactor;
-            copperTotal = (copperTotal / totalGrams) * conversionFactor;
-            ironTotal = (ironTotal / totalGrams) * conversionFactor;
-            manganeseTotal = (manganeseTotal / totalGrams) * conversionFactor;
-            molybdenumTotal = (molybdenumTotal / totalGrams) * conversionFactor;
-            zincTotal = (zincTotal / totalGrams) * conversionFactor;
-            chlorineTotal = (chlorineTotal / totalGrams) * conversionFactor;
-            silicaTotal = (silicaTotal / totalGrams) * conversionFactor;
-            humicAcidTotal = (humicAcidTotal / totalGrams) * conversionFactor;
-            fulvicAcidTotal = (fulvicAcidTotal / totalGrams) * conversionFactor;
+            nitrogenPercent = (nitrogenPercent / totalGrams) * 100;
+            phosphorusPercent = (phosphorusPercent / totalGrams) * 100;
+            potassiumPercent = (potassiumPercent / totalGrams) * 100;
+            calciumPercent = (calciumPercent / totalGrams) * 100;
+            magnesiumPercent = (magnesiumPercent / totalGrams) * 100;
+            sulfurPercent = (sulfurPercent / totalGrams) * 100;
+            boronPercent = (boronPercent / totalGrams) * 100;
+            copperPercent = (copperPercent / totalGrams) * 100;
+            ironPercent = (ironPercent / totalGrams) * 100;
+            manganesePercent = (manganesePercent / totalGrams) * 100;
+            molybdenumPercent = (molybdenumPercent / totalGrams) * 100;
+            zincPercent = (zincPercent / totalGrams) * 100;
+            chlorinePercent = (chlorinePercent / totalGrams) * 100;
+            silicaPercent = (silicaPercent / totalGrams) * 100;
+            humicAcidPercent = (humicAcidPercent / totalGrams) * 100;
+            fulvicAcidPercent = (fulvicAcidPercent / totalGrams) * 100;
         }
         
-        // Update the UI
-        NitrogenPpmLabel.Text = (nitrogenTotal * 1000).ToString("F1");
-        PhosphorusPpmLabel.Text = (phosphorusTotal * 1000).ToString("F1");
-        PotassiumPpmLabel.Text = (potassiumTotal * 1000).ToString("F1");
-        CalciumPpmLabel.Text = (calciumTotal * 1000).ToString("F1");
-        MagnesiumPpmLabel.Text = (magnesiumTotal * 1000).ToString("F1");
-        SulfurPpmLabel.Text = (sulfurTotal * 1000).ToString("F1");
-        BoronPpmLabel.Text = (boronTotal * 1000).ToString("F1");
-        CopperPpmLabel.Text = (copperTotal * 1000).ToString("F1");
-        IronPpmLabel.Text = (ironTotal * 1000).ToString("F1");
-        ManganesePpmLabel.Text = (manganeseTotal * 1000).ToString("F1");
-        MolybdenumPpmLabel.Text = (molybdenumTotal * 1000).ToString("F1");
-        ZincPpmLabel.Text = (zincTotal * 1000).ToString("F1");
-        ChlorinePpmLabel.Text = (chlorineTotal * 1000).ToString("F1");
-        SilicaPpmLabel.Text = (silicaTotal * 1000).ToString("F1");
-        HumicAcidPpmLabel.Text = (humicAcidTotal * 1000).ToString("F1");
-        FulvicAcidPpmLabel.Text = (fulvicAcidTotal * 1000).ToString("F1");
+        // No need for a conversion factor here - already applied in the PPM methods
+        
+        // Update the UI for percentages
+        NitrogenPercentLabel.Text = nitrogenPercent.ToString("F2");
+        PhosphorusPercentLabel.Text = phosphorusPercent.ToString("F2");
+        PotassiumPercentLabel.Text = potassiumPercent.ToString("F2");
+        CalciumPercentLabel.Text = calciumPercent.ToString("F2");
+        MagnesiumPercentLabel.Text = magnesiumPercent.ToString("F2");
+        SulfurPercentLabel.Text = sulfurPercent.ToString("F2");
+        BoronPercentLabel.Text = boronPercent.ToString("F2");
+        CopperPercentLabel.Text = copperPercent.ToString("F2");
+        IronPercentLabel.Text = ironPercent.ToString("F2");
+        ManganesePercentLabel.Text = manganesePercent.ToString("F2");
+        MolybdenumPercentLabel.Text = molybdenumPercent.ToString("F2");
+        ZincPercentLabel.Text = zincPercent.ToString("F2");
+        ChlorinePercentLabel.Text = chlorinePercent.ToString("F2");
+        SilicaPercentLabel.Text = silicaPercent.ToString("F2");
+        HumicAcidPercentLabel.Text = humicAcidPercent.ToString("F2");
+        FulvicAcidPercentLabel.Text = fulvicAcidPercent.ToString("F2");
+        
+        // Update the UI for PPM - no need to apply conversionFactor since it's already done in the PPM methods
+        NitrogenPpmLabel.Text = nitrogenTotal.ToString("F2");
+        PhosphorusPpmLabel.Text = phosphorusTotal.ToString("F2");
+        PotassiumPpmLabel.Text = potassiumTotal.ToString("F2");
+        CalciumPpmLabel.Text = calciumTotal.ToString("F2");
+        MagnesiumPpmLabel.Text = magnesiumTotal.ToString("F2");
+        SulfurPpmLabel.Text = sulfurTotal.ToString("F2");
+        BoronPpmLabel.Text = boronTotal.ToString("F2");
+        CopperPpmLabel.Text = copperTotal.ToString("F2");
+        IronPpmLabel.Text = ironTotal.ToString("F2");
+        ManganesePpmLabel.Text = manganeseTotal.ToString("F2");
+        MolybdenumPpmLabel.Text = molybdenumTotal.ToString("F2");
+        ZincPpmLabel.Text = zincTotal.ToString("F2");
+        ChlorinePpmLabel.Text = chlorineTotal.ToString("F2");
+        SilicaPpmLabel.Text = silicaTotal.ToString("F2");
+        HumicAcidPpmLabel.Text = humicAcidTotal.ToString("F2");
+        FulvicAcidPpmLabel.Text = fulvicAcidTotal.ToString("F2");
     }
 
     private async void UpdateUnitDisplay()
