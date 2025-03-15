@@ -1,5 +1,11 @@
-using System.Diagnostics;
 using FertCalculatorMaui.Services;
+using System.Diagnostics;
+using System.IO;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
+#if ANDROID
+using Android.Runtime;
+#endif
 
 namespace FertCalculatorMaui;
 
@@ -44,6 +50,7 @@ public partial class App : Application
                 Debug.WriteLine("Running on Android platform");
                 
                 // Register global exception handler for Android
+#if ANDROID
                 Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, args) =>
                 {
                     Exception e = args.Exception;
@@ -57,6 +64,7 @@ public partial class App : Application
                     }
                     catch {}
                 };
+#endif
             }
             
             var window = new Window(new AppShell());
