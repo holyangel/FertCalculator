@@ -562,22 +562,19 @@ public partial class MainPage : ContentPage
     private async void OnMenuClicked(object sender, EventArgs e)
     {
         string action = await DisplayActionSheet("Menu", "Cancel", null, 
-            "Manage Fertilizers", 
-            "Collapse Mix Window", 
+            "Load Mix", 
             "Save Mix", 
             "Clear Mix", 
-            "Load Mix", 
             "Compare Mixes", 
-            "Import", 
-            "Export");
+            "Collapse Mix Window", 
+            "Manage Fertilizers",  
+            "Import Fertilizers/Mixes", 
+            "Export Fertilizers/Mixes");
 
         switch (action)
         {
-            case "Manage Fertilizers":
-                OnManageFertilizersClicked(sender, e);
-                break;
-            case "Collapse Mix Window":
-                OnToggleMixVisibilityClicked(sender, e);
+            case "Load Mix":
+                OnLoadMixFromPopupClicked(sender, e);
                 break;
             case "Save Mix":
                 OnSaveMixClicked(sender, e);
@@ -585,16 +582,19 @@ public partial class MainPage : ContentPage
             case "Clear Mix":
                 OnClearMixClicked(sender, e);
                 break;
-            case "Load Mix":
-                OnLoadMixFromPopupClicked(sender, e);
-                break;
             case "Compare Mixes":
                 OnCompareMixesClicked(sender, e);
                 break;
-            case "Import":
+            case "Collapse Mix Window":
+                OnToggleMixVisibilityClicked(sender, e);
+                break;
+            case "Manage Fertilizers":
+                OnManageFertilizersClicked(sender, e);
+                break;
+            case "Import Fertilizers/Mixes":
                 OnImportClicked(sender, e);
                 break;
-            case "Export":
+            case "Export Fertilizers/Mixes":
                 OnExportClicked(sender, e);
                 break;
         }
