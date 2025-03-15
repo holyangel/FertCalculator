@@ -20,25 +20,33 @@
                         Margin="5">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="*,Auto,Auto" Padding="10">
-                        <Label Text="{Binding Name}" 
-                               VerticalOptions="Center" 
-                               FontSize="16" />
-                        <Button Text="Edit" 
-                                Grid.Column="1" 
+                    <Grid ColumnDefinitions="55,*,Auto" Padding="10">
+                        <Button Grid.Column="0" 
                                 CommandParameter="{Binding Name}"
                                 Clicked="OnEditFertilizerClicked"
-                                WidthRequest="70"
-                                HeightRequest="40"
-                                Margin="5,0"
-                                FontSize="Small" />
-                        <Button Text="Add to Mix" 
-                                Grid.Column="2" 
+                                Margin="0,0,5,0"
+                                Scale=".7">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="MaterialIcons"
+                                                 Glyph="&#xe254;"
+                                                 Color="White" />
+                            </Button.ImageSource>
+                        </Button>
+
+                        <Label Text="{Binding Name}"  Grid.Column="1"
+                               VerticalOptions="Center" 
+                               FontSize="16" />
+
+                        <Button Grid.Column="2" 
                                 CommandParameter="{Binding Name}"
                                 Clicked="OnAddToMixClicked"
-                                WidthRequest="100"
-                                HeightRequest="40"
-                                FontSize="Small" />
+                                Margin="5,0,0,0">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="MaterialIcons"
+                                                 Glyph="&#xe800;"
+                                                 Color="White" />
+                            </Button.ImageSource>
+                        </Button>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
