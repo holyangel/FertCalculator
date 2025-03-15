@@ -489,16 +489,59 @@ public partial class MainPage : ContentPage
         await Navigation.PushAsync(new ManageFertilizersPage(fileService, availableFertilizers));
     }
     
-    private void OnStepperValueChanged(object sender, ValueChangedEventArgs e)
+    private void OnIncrementSmallClicked(object sender, EventArgs e)
     {
-        if (sender is Stepper stepper)
+        if (sender is Button button && button.CommandParameter is string fertilizerName)
         {
-            string fertilizerName = stepper.ClassId;
             var mixItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
             
             if (mixItem != null)
             {
-                mixItem.Quantity = e.NewValue;
+                mixItem.Quantity += 0.1; // Increment by 0.1 gram
+                mixItem.Quantity = Math.Round(mixItem.Quantity, 1); // Round to 1 decimal place for precision
+                UpdateNutrientTotals();
+            }
+        }
+    }
+    
+    private void OnDecrementSmallClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is string fertilizerName)
+        {
+            var mixItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            
+            if (mixItem != null && mixItem.Quantity >= 0.1)
+            {
+                mixItem.Quantity -= 0.1; // Decrement by 0.1 gram
+                mixItem.Quantity = Math.Round(mixItem.Quantity, 1); // Round to 1 decimal place for precision
+                UpdateNutrientTotals();
+            }
+        }
+    }
+    
+    private void OnIncrementGramClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is string fertilizerName)
+        {
+            var mixItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            
+            if (mixItem != null)
+            {
+                mixItem.Quantity += 1.0; // Increment by 1 gram
+                UpdateNutrientTotals();
+            }
+        }
+    }
+    
+    private void OnDecrementGramClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is string fertilizerName)
+        {
+            var mixItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            
+            if (mixItem != null && mixItem.Quantity >= 1.0)
+            {
+                mixItem.Quantity -= 1.0; // Decrement by 1 gram, but don't go below 0
                 UpdateNutrientTotals();
             }
         }

@@ -7,12 +7,21 @@
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" Padding="10">
         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5">
             <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
-            
-            <Button Text="Add Fertilizer to Mix" 
-                    Clicked="OnManageFertilizersClicked" 
-                    HorizontalOptions="Center"
-                    Margin="0,5,0,10" />
-                    
+            <HorizontalStackLayout Spacing="2">
+                <Button Text="Add Fertilizer to Mix" 
+                        Clicked="OnManageFertilizersClicked" 
+                        HorizontalOptions="Center"
+                        Margin="0,5,0,10" />
+                <Button Text="Save Mix" 
+                        Clicked="OnSaveMixClicked" 
+                        HorizontalOptions="Start" 
+                        Margin="0,5,0,10"/>
+                <Button Text="Clear Mix" 
+                        Clicked="OnClearMixClicked" 
+                        HorizontalOptions="Start" 
+                        Margin="0,5,0,10"/>
+            </HorizontalStackLayout>
+
             <CollectionView x:Name="MixListView" 
                             SelectionMode="Single"
                             HeightRequest="200">
@@ -23,36 +32,53 @@
                                 <Label Text="{Binding FertilizerName}" FontAttributes="Bold" />
                                 <HorizontalStackLayout>
                                     <Label Text="{Binding Quantity}" />
-                                    <Label Text=" g/L" />
+                                    <Label Text=" g/L" x:Name="UnitLabel" />
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
-                            <Stepper Grid.Column="1" 
-                                     Value="{Binding Quantity}" 
-                                     Minimum="0" 
-                                     Maximum="100" 
-                                     Increment="0.1"
-                                     ValueChanged="OnStepperValueChanged"
-                                     ClassId="{Binding FertilizerName}" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" HorizontalOptions="Center">
+                                <HorizontalStackLayout Spacing="2">
+                                    <Button Text="+0.1" 
+                                            CommandParameter="{Binding FertilizerName}"
+                                            Clicked="OnIncrementSmallClicked"
+                                            WidthRequest="65"
+                                            HeightRequest="25"
+                                            FontSize="Small" />
+                                    <Button Text="+1" 
+                                            CommandParameter="{Binding FertilizerName}"
+                                            Clicked="OnIncrementGramClicked"
+                                            WidthRequest="65"
+                                            HeightRequest="25"
+                                            FontSize="Small" />
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout Spacing="2">
+                                    <Button Text="-0.1" 
+                                            CommandParameter="{Binding FertilizerName}"
+                                            Clicked="OnDecrementSmallClicked"
+                                            WidthRequest="65"
+                                            HeightRequest="25"
+                                            FontSize="Small" />
+                                    <Button Text="-1" 
+                                            CommandParameter="{Binding FertilizerName}"
+                                            Clicked="OnDecrementGramClicked"
+                                            WidthRequest="65"
+                                            HeightRequest="25"
+                                            FontSize="Small" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            
                             <Button Text="Remove" 
                                     Grid.Column="2" 
                                     CommandParameter="{Binding FertilizerName}" 
                                     Clicked="OnRemoveFromMixClicked" 
-                                    WidthRequest="80"
-                                    HeightRequest="35"
+                                    WidthRequest="85"
+                                    HeightRequest="25"
                                     FontSize="Small" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            
-            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,5,0,0">
-                <Button Text="Save Mix" 
-                        Clicked="OnSaveMixClicked" 
-                        HorizontalOptions="Start" />
-                <Button Text="Clear Mix" 
-                        Clicked="OnClearMixClicked" 
-                        HorizontalOptions="Start" />
-            </HorizontalStackLayout>
+
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                 <Label Text="Metric (per liter)" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
                 <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" />
