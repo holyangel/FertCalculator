@@ -21,26 +21,37 @@ public partial class CompareMixPage : ContentPage
             Ingredients = currentMixIngredients 
         };
         
-        var emptyMix = new FertilizerMix { 
-            Name = "Empty Mix", 
-            Ingredients = new List<FertilizerQuantity>() 
-        };
-        
-        // Load fertilizers to populate available list
-        _ = LoadAndInitializeAsync(currentMix, emptyMix, useImperialUnits);
+        // Load fertilizers and mixes to populate available lists
+        _ = LoadAndInitializeAsync(currentMix, useImperialUnits);
     }
     
-    private async Task LoadAndInitializeAsync(FertilizerMix mix1, FertilizerMix mix2, bool useImperialUnits)
+    private async Task LoadAndInitializeAsync(FertilizerMix currentMix, bool useImperialUnits)
     {
         try
         {
             // Load available fertilizers
             var availableFertilizers = await _fileService.LoadFertilizersAsync();
             
+            // Load available mixes
+            var availableMixes = await _fileService.LoadMixesAsync();
+            
             if (availableFertilizers != null)
             {
+                // Add the current mix to the available mixes for selection
+                if (availableMixes == null)
+                {
+                    availableMixes = new ObservableCollection<FertilizerMix>();
+                }
+                
+                // Check if current mix has ingredients before adding
+                if (currentMix.Ingredients != null && currentMix.Ingredients.Count > 0)
+                {
+                    // Add current mix at the beginning of the list
+                    availableMixes.Insert(0, currentMix);
+                }
+                
                 // Initialize view model with loaded data
-                _viewModel = new CompareMixViewModel(mix1, mix2, availableFertilizers, useImperialUnits);
+                _viewModel = new CompareMixViewModel(currentMix, availableFertilizers, availableMixes, useImperialUnits);
                 _viewModel.CloseCommand = new Command(async () => await Navigation.PopAsync());
                 BindingContext = _viewModel;
             }
@@ -60,7 +71,13 @@ public partial class CompareMixPage : ContentPage
     public CompareMixPage(FertilizerMix mix1, FertilizerMix mix2, List<Fertilizer> availableFertilizers, bool useImperialUnits)
     {
         InitializeComponent();
-        _viewModel = new CompareMixViewModel(mix1, mix2, availableFertilizers, useImperialUnits);
+        
+        // Create a collection with just these two mixes
+        var mixes = new ObservableCollection<FertilizerMix> { mix1, mix2 };
+        
+        _viewModel = new CompareMixViewModel(mix1, availableFertilizers, mixes, useImperialUnits);
+        _viewModel.SelectedMix1 = mix1;
+        _viewModel.SelectedMix2 = mix2;
         _viewModel.CloseCommand = new Command(async () => await Navigation.PopModalAsync());
         BindingContext = _viewModel;
     }
@@ -71,6 +88,7 @@ public class CompareMixViewModel : INotifyPropertyChanged
     private FertilizerMix _mix1;
     private FertilizerMix _mix2;
     private List<Fertilizer> _availableFertilizers;
+    private ObservableCollection<FertilizerMix> _availableMixes;
     private bool _useImperialUnits;
     private const double GALLON_TO_LITER = 3.78541;
 
@@ -114,16 +132,33 @@ public class CompareMixViewModel : INotifyPropertyChanged
 
     // Command for closing the page
     public ICommand? CloseCommand { get; set; }
+    
+    // Command for toggling between metric and imperial units
+    public ICommand ToggleUnitCommand { get; private set; }
+    
+    // Color for the unit toggle button
+    public Color UnitButtonColor => UseImperialUnits ? Colors.DarkOrange : Colors.DarkGreen;
 
-    public CompareMixViewModel(FertilizerMix mix1, FertilizerMix mix2, List<Fertilizer> availableFertilizers, bool useImperialUnits)
+    public CompareMixViewModel(FertilizerMix initialMix, List<Fertilizer> availableFertilizers, ObservableCollection<FertilizerMix> availableMixes, bool useImperialUnits)
     {
-        _mix1 = mix1;
-        _mix2 = mix2;
+        _mix1 = initialMix;
+        _mix2 = availableMixes.Count > 1 ? availableMixes[1] : new FertilizerMix { Name = "Empty Mix", Ingredients = new List<FertilizerQuantity>() };
         _availableFertilizers = availableFertilizers;
+        _availableMixes = availableMixes;
         _useImperialUnits = useImperialUnits;
+        
+        // Initialize commands
+        ToggleUnitCommand = new Command(ExecuteToggleUnit);
         
         // Calculate the nutrient values for both mixes
         CalculateAllNutrients();
+    }
+
+    // Toggle between metric and imperial units
+    private void ExecuteToggleUnit()
+    {
+        UseImperialUnits = !UseImperialUnits;
+        OnPropertyChanged(nameof(UnitButtonColor));
     }
 
     // Properties for unit selection
@@ -138,13 +173,62 @@ public class CompareMixViewModel : INotifyPropertyChanged
                 CalculateAllNutrients();
                 OnPropertyChanged(nameof(UseImperialUnits));
                 OnPropertyChanged(nameof(UnitLabel));
+                OnPropertyChanged(nameof(UnitButtonColor));
             }
         }
     }
 
-    // Mix names
-    public string Mix1Name => _mix1.Name;
-    public string Mix2Name => _mix2.Name;
+    // Available mixes for selection
+    public ObservableCollection<FertilizerMix> AvailableMixes => _availableMixes;
+
+    // Selected mixes
+    private FertilizerMix _selectedMix1;
+    public FertilizerMix SelectedMix1
+    {
+        get => _selectedMix1 ?? _mix1;
+        set
+        {
+            if (_selectedMix1 != value && value != null)
+            {
+                _selectedMix1 = value;
+                _mix1 = value;
+                CalculateAllNutrients();
+                OnPropertyChanged(nameof(SelectedMix1));
+                OnPropertyChanged(nameof(Mix1Name));
+                OnPropertyChanged(nameof(Mix1IngredientCount));
+                OnPropertyChanged(nameof(Mix1Ingredients));
+            }
+        }
+    }
+
+    private FertilizerMix _selectedMix2;
+    public FertilizerMix SelectedMix2
+    {
+        get => _selectedMix2 ?? _mix2;
+        set
+        {
+            if (_selectedMix2 != value && value != null)
+            {
+                _selectedMix2 = value;
+                _mix2 = value;
+                CalculateAllNutrients();
+                OnPropertyChanged(nameof(SelectedMix2));
+                OnPropertyChanged(nameof(Mix2Name));
+                OnPropertyChanged(nameof(Mix2IngredientCount));
+                OnPropertyChanged(nameof(Mix2Ingredients));
+            }
+        }
+    }
+
+    // Mix names and ingredient counts
+    public string Mix1Name => _mix1?.Name ?? "Mix 1";
+    public string Mix2Name => _mix2?.Name ?? "Mix 2";
+    
+    public int Mix1IngredientCount => _mix1?.Ingredients?.Count ?? 0;
+    public int Mix2IngredientCount => _mix2?.Ingredients?.Count ?? 0;
+    
+    public List<FertilizerQuantity> Mix1Ingredients => _mix1?.Ingredients ?? new List<FertilizerQuantity>();
+    public List<FertilizerQuantity> Mix2Ingredients => _mix2?.Ingredients ?? new List<FertilizerQuantity>();
 
     // Mix 1 nutrient properties
     public double Mix1NitrogenPpm
@@ -641,91 +725,208 @@ public class CompareMixViewModel : INotifyPropertyChanged
 
     private void CalculateMixNutrients(FertilizerMix mix, int mixNumber)
     {
-        // Reset all nutrient totals
-        double nitrogenTotal = 0;
-        double phosphorusTotal = 0;
-        double potassiumTotal = 0;
-        double calciumTotal = 0;
-        double magnesiumTotal = 0;
-        double sulfurTotal = 0;
-        double boronTotal = 0;
-        double copperTotal = 0;
-        double ironTotal = 0;
-        double manganeseTotal = 0;
-        double molybdenumTotal = 0;
-        double zincTotal = 0;
-        double chlorineTotal = 0;
-        double silicaTotal = 0;
-        double humicAcidTotal = 0;
-        double fulvicAcidTotal = 0;
-        
-        // Calculate totals for each ingredient in the mix
+        // If mix is null or has no ingredients, set all values to 0
+        if (mix == null || mix.Ingredients == null || mix.Ingredients.Count == 0)
+        {
+            if (mixNumber == 1)
+            {
+                _mix1NitrogenPpm = 0;
+                _mix1PhosphorusPpm = 0;
+                _mix1PotassiumPpm = 0;
+                _mix1CalciumPpm = 0;
+                _mix1MagnesiumPpm = 0;
+                _mix1SulfurPpm = 0;
+                _mix1BoronPpm = 0;
+                _mix1CopperPpm = 0;
+                _mix1IronPpm = 0;
+                _mix1ManganesePpm = 0;
+                _mix1MolybdenumPpm = 0;
+                _mix1ZincPpm = 0;
+                _mix1ChlorinePpm = 0;
+                _mix1SilicaPpm = 0;
+                _mix1HumicAcidPpm = 0;
+                _mix1FulvicAcidPpm = 0;
+                
+                // Notify all Mix 1 properties
+                OnPropertyChanged(nameof(Mix1NitrogenPpm));
+                OnPropertyChanged(nameof(Mix1PhosphorusPpm));
+                OnPropertyChanged(nameof(Mix1PotassiumPpm));
+                OnPropertyChanged(nameof(Mix1CalciumPpm));
+                OnPropertyChanged(nameof(Mix1MagnesiumPpm));
+                OnPropertyChanged(nameof(Mix1SulfurPpm));
+                OnPropertyChanged(nameof(Mix1BoronPpm));
+                OnPropertyChanged(nameof(Mix1CopperPpm));
+                OnPropertyChanged(nameof(Mix1IronPpm));
+                OnPropertyChanged(nameof(Mix1ManganesePpm));
+                OnPropertyChanged(nameof(Mix1MolybdenumPpm));
+                OnPropertyChanged(nameof(Mix1ZincPpm));
+                OnPropertyChanged(nameof(Mix1ChlorinePpm));
+                OnPropertyChanged(nameof(Mix1SilicaPpm));
+                OnPropertyChanged(nameof(Mix1HumicAcidPpm));
+                OnPropertyChanged(nameof(Mix1FulvicAcidPpm));
+            }
+            else if (mixNumber == 2)
+            {
+                _mix2NitrogenPpm = 0;
+                _mix2PhosphorusPpm = 0;
+                _mix2PotassiumPpm = 0;
+                _mix2CalciumPpm = 0;
+                _mix2MagnesiumPpm = 0;
+                _mix2SulfurPpm = 0;
+                _mix2BoronPpm = 0;
+                _mix2CopperPpm = 0;
+                _mix2IronPpm = 0;
+                _mix2ManganesePpm = 0;
+                _mix2MolybdenumPpm = 0;
+                _mix2ZincPpm = 0;
+                _mix2ChlorinePpm = 0;
+                _mix2SilicaPpm = 0;
+                _mix2HumicAcidPpm = 0;
+                _mix2FulvicAcidPpm = 0;
+                
+                // Notify all Mix 2 properties
+                OnPropertyChanged(nameof(Mix2NitrogenPpm));
+                OnPropertyChanged(nameof(Mix2PhosphorusPpm));
+                OnPropertyChanged(nameof(Mix2PotassiumPpm));
+                OnPropertyChanged(nameof(Mix2CalciumPpm));
+                OnPropertyChanged(nameof(Mix2MagnesiumPpm));
+                OnPropertyChanged(nameof(Mix2SulfurPpm));
+                OnPropertyChanged(nameof(Mix2BoronPpm));
+                OnPropertyChanged(nameof(Mix2CopperPpm));
+                OnPropertyChanged(nameof(Mix2IronPpm));
+                OnPropertyChanged(nameof(Mix2ManganesePpm));
+                OnPropertyChanged(nameof(Mix2MolybdenumPpm));
+                OnPropertyChanged(nameof(Mix2ZincPpm));
+                OnPropertyChanged(nameof(Mix2ChlorinePpm));
+                OnPropertyChanged(nameof(Mix2SilicaPpm));
+                OnPropertyChanged(nameof(Mix2HumicAcidPpm));
+                OnPropertyChanged(nameof(Mix2FulvicAcidPpm));
+            }
+            return;
+        }
+
+        // Initialize nutrient totals
+        double nitrogenPpm = 0;
+        double phosphorusPpm = 0;
+        double potassiumPpm = 0;
+        double calciumPpm = 0;
+        double magnesiumPpm = 0;
+        double sulfurPpm = 0;
+        double boronPpm = 0;
+        double copperPpm = 0;
+        double ironPpm = 0;
+        double manganesePpm = 0;
+        double molybdenumPpm = 0;
+        double zincPpm = 0;
+        double chlorinePpm = 0;
+        double silicaPpm = 0;
+        double humicAcidPpm = 0;
+        double fulvicAcidPpm = 0;
+
+        // Calculate total nutrients for the mix
         foreach (var ingredient in mix.Ingredients)
         {
-            // Find the fertilizer details
+            // Find the fertilizer in the available list
             var fertilizer = _availableFertilizers.FirstOrDefault(f => f.Name == ingredient.FertilizerName);
             if (fertilizer != null)
             {
+                // Calculate PPM based on quantity and fertilizer percentages
                 double quantity = ingredient.Quantity;
                 
-                // Add to totals for each nutrient, using the selected unit system
-                nitrogenTotal += fertilizer.NitrogenPpm(UseImperialUnits) * quantity;
-                phosphorusTotal += fertilizer.PhosphorusPpm(UseImperialUnits) * quantity;
-                potassiumTotal += fertilizer.PotassiumPpm(UseImperialUnits) * quantity;
-                calciumTotal += fertilizer.CalciumPpm(UseImperialUnits) * quantity;
-                magnesiumTotal += fertilizer.MagnesiumPpm(UseImperialUnits) * quantity;
-                sulfurTotal += fertilizer.SulfurPpm(UseImperialUnits) * quantity;
-                boronTotal += fertilizer.BoronPpm(UseImperialUnits) * quantity;
-                copperTotal += fertilizer.CopperPpm(UseImperialUnits) * quantity;
-                ironTotal += fertilizer.IronPpm(UseImperialUnits) * quantity;
-                manganeseTotal += fertilizer.ManganesePpm(UseImperialUnits) * quantity;
-                molybdenumTotal += fertilizer.MolybdenumPpm(UseImperialUnits) * quantity;
-                zincTotal += fertilizer.ZincPpm(UseImperialUnits) * quantity;
-                chlorineTotal += fertilizer.ChlorinePpm(UseImperialUnits) * quantity;
-                silicaTotal += fertilizer.SilicaPpm(UseImperialUnits) * quantity;
-                humicAcidTotal += fertilizer.HumicAcidPpm(UseImperialUnits) * quantity;
-                fulvicAcidTotal += fertilizer.FulvicAcidPpm(UseImperialUnits) * quantity;
+                // Apply unit conversion if using imperial units
+                nitrogenPpm += fertilizer.NitrogenPpm(_useImperialUnits) * quantity;
+                phosphorusPpm += fertilizer.PhosphorusPpm(_useImperialUnits) * quantity;
+                potassiumPpm += fertilizer.PotassiumPpm(_useImperialUnits) * quantity;
+                calciumPpm += fertilizer.CalciumPpm(_useImperialUnits) * quantity;
+                magnesiumPpm += fertilizer.MagnesiumPpm(_useImperialUnits) * quantity;
+                sulfurPpm += fertilizer.SulfurPpm(_useImperialUnits) * quantity;
+                boronPpm += fertilizer.BoronPpm(_useImperialUnits) * quantity;
+                copperPpm += fertilizer.CopperPpm(_useImperialUnits) * quantity;
+                ironPpm += fertilizer.IronPpm(_useImperialUnits) * quantity;
+                manganesePpm += fertilizer.ManganesePpm(_useImperialUnits) * quantity;
+                molybdenumPpm += fertilizer.MolybdenumPpm(_useImperialUnits) * quantity;
+                zincPpm += fertilizer.ZincPpm(_useImperialUnits) * quantity;
+                chlorinePpm += fertilizer.ChlorinePpm(_useImperialUnits) * quantity;
+                silicaPpm += fertilizer.SilicaPpm(_useImperialUnits) * quantity;
+                humicAcidPpm += fertilizer.HumicAcidPpm(_useImperialUnits) * quantity;
+                fulvicAcidPpm += fertilizer.FulvicAcidPpm(_useImperialUnits) * quantity;
             }
         }
-        
+
         // Update the appropriate mix properties
         if (mixNumber == 1)
         {
-            Mix1NitrogenPpm = nitrogenTotal;
-            Mix1PhosphorusPpm = phosphorusTotal;
-            Mix1PotassiumPpm = potassiumTotal;
-            Mix1CalciumPpm = calciumTotal;
-            Mix1MagnesiumPpm = magnesiumTotal;
-            Mix1SulfurPpm = sulfurTotal;
-            Mix1BoronPpm = boronTotal;
-            Mix1CopperPpm = copperTotal;
-            Mix1IronPpm = ironTotal;
-            Mix1ManganesePpm = manganeseTotal;
-            Mix1MolybdenumPpm = molybdenumTotal;
-            Mix1ZincPpm = zincTotal;
-            Mix1ChlorinePpm = chlorineTotal;
-            Mix1SilicaPpm = silicaTotal;
-            Mix1HumicAcidPpm = humicAcidTotal;
-            Mix1FulvicAcidPpm = fulvicAcidTotal;
+            _mix1NitrogenPpm = Math.Round(nitrogenPpm, 2);
+            _mix1PhosphorusPpm = Math.Round(phosphorusPpm, 2);
+            _mix1PotassiumPpm = Math.Round(potassiumPpm, 2);
+            _mix1CalciumPpm = Math.Round(calciumPpm, 2);
+            _mix1MagnesiumPpm = Math.Round(magnesiumPpm, 2);
+            _mix1SulfurPpm = Math.Round(sulfurPpm, 2);
+            _mix1BoronPpm = Math.Round(boronPpm, 2);
+            _mix1CopperPpm = Math.Round(copperPpm, 2);
+            _mix1IronPpm = Math.Round(ironPpm, 2);
+            _mix1ManganesePpm = Math.Round(manganesePpm, 2);
+            _mix1MolybdenumPpm = Math.Round(molybdenumPpm, 2);
+            _mix1ZincPpm = Math.Round(zincPpm, 2);
+            _mix1ChlorinePpm = Math.Round(chlorinePpm, 2);
+            _mix1SilicaPpm = Math.Round(silicaPpm, 2);
+            _mix1HumicAcidPpm = Math.Round(humicAcidPpm, 2);
+            _mix1FulvicAcidPpm = Math.Round(fulvicAcidPpm, 2);
+            
+            // Notify all Mix 1 properties
+            OnPropertyChanged(nameof(Mix1NitrogenPpm));
+            OnPropertyChanged(nameof(Mix1PhosphorusPpm));
+            OnPropertyChanged(nameof(Mix1PotassiumPpm));
+            OnPropertyChanged(nameof(Mix1CalciumPpm));
+            OnPropertyChanged(nameof(Mix1MagnesiumPpm));
+            OnPropertyChanged(nameof(Mix1SulfurPpm));
+            OnPropertyChanged(nameof(Mix1BoronPpm));
+            OnPropertyChanged(nameof(Mix1CopperPpm));
+            OnPropertyChanged(nameof(Mix1IronPpm));
+            OnPropertyChanged(nameof(Mix1ManganesePpm));
+            OnPropertyChanged(nameof(Mix1MolybdenumPpm));
+            OnPropertyChanged(nameof(Mix1ZincPpm));
+            OnPropertyChanged(nameof(Mix1ChlorinePpm));
+            OnPropertyChanged(nameof(Mix1SilicaPpm));
+            OnPropertyChanged(nameof(Mix1HumicAcidPpm));
+            OnPropertyChanged(nameof(Mix1FulvicAcidPpm));
         }
         else if (mixNumber == 2)
         {
-            Mix2NitrogenPpm = nitrogenTotal;
-            Mix2PhosphorusPpm = phosphorusTotal;
-            Mix2PotassiumPpm = potassiumTotal;
-            Mix2CalciumPpm = calciumTotal;
-            Mix2MagnesiumPpm = magnesiumTotal;
-            Mix2SulfurPpm = sulfurTotal;
-            Mix2BoronPpm = boronTotal;
-            Mix2CopperPpm = copperTotal;
-            Mix2IronPpm = ironTotal;
-            Mix2ManganesePpm = manganeseTotal;
-            Mix2MolybdenumPpm = molybdenumTotal;
-            Mix2ZincPpm = zincTotal;
-            Mix2ChlorinePpm = chlorineTotal;
-            Mix2SilicaPpm = silicaTotal;
-            Mix2HumicAcidPpm = humicAcidTotal;
-            Mix2FulvicAcidPpm = fulvicAcidTotal;
+            _mix2NitrogenPpm = Math.Round(nitrogenPpm, 2);
+            _mix2PhosphorusPpm = Math.Round(phosphorusPpm, 2);
+            _mix2PotassiumPpm = Math.Round(potassiumPpm, 2);
+            _mix2CalciumPpm = Math.Round(calciumPpm, 2);
+            _mix2MagnesiumPpm = Math.Round(magnesiumPpm, 2);
+            _mix2SulfurPpm = Math.Round(sulfurPpm, 2);
+            _mix2BoronPpm = Math.Round(boronPpm, 2);
+            _mix2CopperPpm = Math.Round(copperPpm, 2);
+            _mix2IronPpm = Math.Round(ironPpm, 2);
+            _mix2ManganesePpm = Math.Round(manganesePpm, 2);
+            _mix2MolybdenumPpm = Math.Round(molybdenumPpm, 2);
+            _mix2ZincPpm = Math.Round(zincPpm, 2);
+            _mix2ChlorinePpm = Math.Round(chlorinePpm, 2);
+            _mix2SilicaPpm = Math.Round(silicaPpm, 2);
+            _mix2HumicAcidPpm = Math.Round(humicAcidPpm, 2);
+            _mix2FulvicAcidPpm = Math.Round(fulvicAcidPpm, 2);
+            
+            // Notify all Mix 2 properties
+            OnPropertyChanged(nameof(Mix2NitrogenPpm));
+            OnPropertyChanged(nameof(Mix2PhosphorusPpm));
+            OnPropertyChanged(nameof(Mix2PotassiumPpm));
+            OnPropertyChanged(nameof(Mix2CalciumPpm));
+            OnPropertyChanged(nameof(Mix2MagnesiumPpm));
+            OnPropertyChanged(nameof(Mix2SulfurPpm));
+            OnPropertyChanged(nameof(Mix2BoronPpm));
+            OnPropertyChanged(nameof(Mix2CopperPpm));
+            OnPropertyChanged(nameof(Mix2IronPpm));
+            OnPropertyChanged(nameof(Mix2ManganesePpm));
+            OnPropertyChanged(nameof(Mix2MolybdenumPpm));
+            OnPropertyChanged(nameof(Mix2ZincPpm));
+            OnPropertyChanged(nameof(Mix2ChlorinePpm));
+            OnPropertyChanged(nameof(Mix2SilicaPpm));
+            OnPropertyChanged(nameof(Mix2HumicAcidPpm));
+            OnPropertyChanged(nameof(Mix2FulvicAcidPpm));
         }
     }
 
