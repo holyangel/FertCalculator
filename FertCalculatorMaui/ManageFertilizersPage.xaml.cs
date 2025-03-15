@@ -16,6 +16,30 @@ public partial class ManageFertilizersPage : ContentPage
         
         // Set the ItemsSource for the CollectionView
         FertilizerListView.ItemsSource = availableFertilizers;
+        
+        // Subscribe to the FertilizersUpdated message from any instance of AddFertilizerPage
+        MessagingCenter.Subscribe<object, Fertilizer>(this, "FertilizersUpdated", async (sender, fertilizer) => 
+        {
+            // Reload fertilizers from file
+            await ReloadFertilizersAsync();
+        });
+    }
+    
+    private async Task ReloadFertilizersAsync()
+    {
+        // Load the latest fertilizers from the file
+        var updatedFertilizers = await fileService.LoadFertilizersAsync();
+        
+        // Clear and repopulate the collection
+        availableFertilizers.Clear();
+        foreach (var fertilizer in updatedFertilizers)
+        {
+            availableFertilizers.Add(fertilizer);
+        }
+        
+        // Refresh the list view
+        FertilizerListView.ItemsSource = null;
+        FertilizerListView.ItemsSource = availableFertilizers;
     }
     
     private async void OnAddFertilizerClicked(object sender, EventArgs e)
@@ -76,12 +100,19 @@ public partial class ManageFertilizersPage : ContentPage
         await fileService.SaveFertilizersAsync(availableFertilizers.ToList());
     }
     
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         
-        // Refresh the list when the page appears
-        FertilizerListView.ItemsSource = null;
-        FertilizerListView.ItemsSource = availableFertilizers;
+        // Reload fertilizers from file when the page appears
+        await ReloadFertilizersAsync();
+    }
+    
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        
+        // Unsubscribe from MessagingCenter to prevent memory leaks
+        MessagingCenter.Unsubscribe<object, Fertilizer>(this, "FertilizersUpdated");
     }
 }
