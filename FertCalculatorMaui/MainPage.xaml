@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FertCalculatorMaui.MainPage"
+             Title="Fertilizer Calculator">
+
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*" Padding="10">
+        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5" Margin="5">
+            <Label Text="Available Fertilizers" FontSize="16" FontAttributes="Bold" />
+            <CollectionView x:Name="FertilizerListView" 
+                            SelectionMode="Single" 
+                            SelectionChanged="OnFertilizerSelected"
+                            HeightRequest="200">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5">
+                            <Label Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            <Button Text="Add New Fertilizer" 
+                    Clicked="OnAddFertilizerClicked" 
+                    Margin="0,10,0,0" />
+        </VerticalStackLayout>
+        
+        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="5" Margin="5">
+            <Label Text="Current Mix" FontSize="16" FontAttributes="Bold" />
+            <CollectionView x:Name="MixListView" 
+                            SelectionMode="Single"
+                            HeightRequest="200">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,Auto" Padding="5">
+                            <Label Text="{Binding FertilizerName}" Grid.Column="0" VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" Spacing="5">
+                                <Entry Text="{Binding Quantity}" 
+                                       WidthRequest="70"
+                                       Keyboard="Numeric"
+                                       Completed="OnQuantityChanged" />
+                                <Label Text="g/L" VerticalOptions="Center" x:Name="UnitLabel" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            <Button Text="Remove Selected" 
+                    Clicked="OnRemoveFertilizerClicked" 
+                    Margin="0,10,0,0" />
+        </VerticalStackLayout>
+        
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+            <ScrollView>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Nutrient Totals" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                    
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="5">
+                        <Label Text="Nutrient" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
+                        <Label Text="%" Grid.Row="0" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label Text="PPM" Grid.Row="0" Grid.Column="2" FontAttributes="Bold" HorizontalOptions="Center" />
+                    
+                        <Label Text="Nitrogen (N)" Grid.Row="1" Grid.Column="0" />
+                        <Label x:Name="NitrogenPercentLabel" Text="0.00" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
+                        <Label x:Name="NitrogenPpmLabel" Text="0.00" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
+                        
+                        <Label Text="Phosphorus (P)" Grid.Row="2" Grid.Column="0" />
+                        <Label x:Name="PhosphorusPercentLabel" Text="0.00" Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" />
+                        <Label x:Name="PhosphorusPpmLabel" Text="0.00" Grid.Row="2" Grid.Column="2" HorizontalOptions="Center" />
+                        
+                        <Label Text="Potassium (K)" Grid.Row="3" Grid.Column="0" />
+                        <Label x:Name="PotassiumPercentLabel" Text="0.00" Grid.Row="3" Grid.Column="1" HorizontalOptions="Center" />
+                        <Label x:Name="PotassiumPpmLabel" Text="0.00" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" />
+                        
+                        <!-- Add more nutrients as needed -->
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+        
+        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="10" Margin="5" HorizontalOptions="Center">
+            <Button Text="Save Mix" Clicked="OnSaveMixClicked" />
+            <Button Text="Load Mix" Clicked="OnLoadMixClicked" />
+            <Button Text="Clear Mix" Clicked="OnClearMixClicked" />
+            <Button Text="Toggle Units" Clicked="OnToggleUnitsClicked" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>
