@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Microsoft.Maui.Storage;
 
 namespace FertCalculatorMaui
 {
@@ -213,16 +214,45 @@ namespace FertCalculatorMaui
     // Helper class for application settings
     public class AppSettings : INotifyPropertyChanged
     {
+        private const string UNIT_PREFERENCE_KEY = "UseImperialUnits";
         private bool useImperialUnits;
+        
+        public AppSettings()
+        {
+            // Load settings from preferences
+            try
+            {
+                UseImperialUnits = Preferences.Default.Get(UNIT_PREFERENCE_KEY, false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading settings: {ex.Message}");
+                // Use default value if there's an error
+                UseImperialUnits = false;
+            }
+        }
         
         public bool UseImperialUnits
         {
             get => useImperialUnits;
             set 
             { 
-                useImperialUnits = value; 
-                OnPropertyChanged(nameof(UseImperialUnits));
-                OnPropertyChanged(nameof(UnitLabel));
+                if (useImperialUnits != value)
+                {
+                    useImperialUnits = value; 
+                    OnPropertyChanged(nameof(UseImperialUnits));
+                    OnPropertyChanged(nameof(UnitLabel));
+                    
+                    // Save the setting when it changes
+                    try
+                    {
+                        Preferences.Default.Set(UNIT_PREFERENCE_KEY, value);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error saving settings: {ex.Message}");
+                    }
+                }
             }
         }
         

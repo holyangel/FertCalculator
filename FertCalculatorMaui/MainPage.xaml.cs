@@ -93,6 +93,54 @@ public partial class MainPage : ContentPage
         try
         {
             var fertilizers = await fileService.LoadFertilizersAsync();
+            
+            // If no fertilizers are found, try to import the default ones
+            if (fertilizers == null || fertilizers.Count == 0)
+            {
+                Debug.WriteLine("No fertilizers found. Attempting to import default fertilizers.");
+                
+                // List all embedded resources to help diagnose issues
+                var resourceNames = GetType().Assembly.GetManifestResourceNames();
+                Debug.WriteLine($"Available embedded resources ({resourceNames.Length}):");
+                foreach (var resourceName in resourceNames)
+                {
+                    Debug.WriteLine($"  - {resourceName}");
+                }
+                
+                // Get the embedded Fertilizers.xml resource
+                using (Stream resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml"))
+                {
+                    if (resourceStream != null)
+                    {
+                        Debug.WriteLine("Found embedded Fertilizers.xml resource. Importing...");
+                        
+                        // Import the data using the existing import functionality
+                        var importResult = await fileService.ImportDataAsync(resourceStream);
+                        
+                        if (importResult.Success && importResult.ImportedData != null && 
+                            importResult.ImportedData.Fertilizers != null && 
+                            importResult.ImportedData.Fertilizers.Count > 0)
+                        {
+                            Debug.WriteLine($"Successfully imported {importResult.ImportedData.Fertilizers.Count} default fertilizers");
+                            
+                            // Save the imported fertilizers
+                            await fileService.SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
+                            
+                            // Update our fertilizers list with the imported data
+                            fertilizers = importResult.ImportedData.Fertilizers;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Failed to import default fertilizers from embedded resource");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Embedded Fertilizers.xml resource not found");
+                    }
+                }
+            }
+            
             if (fertilizers != null)
             {
                 availableFertilizers.Clear();

@@ -22,6 +22,79 @@ public class FileService
     private const string FERTILIZERS_FILENAME = "Fertilizers.xml";
     private const string MIXES_FILENAME = "Mixes.xml";
 
+    public FileService()
+    {
+        // Initialize the app data directory with default files if needed
+        InitializeDefaultFilesAsync().ConfigureAwait(false);
+    }
+
+    private async Task InitializeDefaultFilesAsync()
+    {
+        try
+        {
+            string fertilizersPath = Path.Combine(GetAppDataDirectory(), FERTILIZERS_FILENAME);
+            
+            // Check if Fertilizers.xml exists in the app data directory
+            if (!File.Exists(fertilizersPath))
+            {
+                System.Console.WriteLine($"Fertilizers.xml not found in app data directory. Attempting to import from embedded resource.");
+                
+                // List all embedded resources to debug
+                var resourceNames = GetType().Assembly.GetManifestResourceNames();
+                foreach (var resourceName in resourceNames)
+                {
+                    System.Console.WriteLine($"Found embedded resource: {resourceName}");
+                }
+                
+                // Get the embedded Fertilizers.xml resource
+                using (Stream resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml"))
+                {
+                    if (resourceStream != null)
+                    {
+                        // Import the data using the existing import functionality
+                        var importResult = await ImportDataAsync(resourceStream);
+                        
+                        if (importResult.Success && importResult.ImportedData != null)
+                        {
+                            System.Console.WriteLine($"Successfully imported default fertilizers from embedded resource");
+                            
+                            // Save the imported fertilizers
+                            if (importResult.ImportedData.Fertilizers != null && importResult.ImportedData.Fertilizers.Count > 0)
+                            {
+                                await SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
+                                System.Console.WriteLine($"Saved {importResult.ImportedData.Fertilizers.Count} default fertilizers");
+                            }
+                            
+                            // Save any imported mixes if they exist
+                            if (importResult.ImportedData.Mixes != null && importResult.ImportedData.Mixes.Count > 0)
+                            {
+                                await SaveMixesAsync(new ObservableCollection<FertilizerMix>(importResult.ImportedData.Mixes));
+                                System.Console.WriteLine($"Saved {importResult.ImportedData.Mixes.Count} default mixes");
+                            }
+                        }
+                        else
+                        {
+                            System.Console.WriteLine($"Failed to import default fertilizers from embedded resource");
+                        }
+                    }
+                    else
+                    {
+                        System.Console.WriteLine($"Embedded resource FertCalculatorMaui.Fertilizers.xml not found. Make sure it's properly configured in the project file.");
+                    }
+                }
+            }
+            else
+            {
+                System.Console.WriteLine($"Fertilizers.xml already exists at {fertilizersPath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Error initializing default files: {ex.Message}");
+            System.Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+    }
+
     public async Task<List<Fertilizer>> LoadFertilizersAsync()
     {
         try
