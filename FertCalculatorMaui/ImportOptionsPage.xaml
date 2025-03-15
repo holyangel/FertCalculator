@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:FertCalculatorMaui"
              x:Class="FertCalculatorMaui.ImportOptionsPage"
              Title="Import Options">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <VerticalStackLayout Spacing="10" Padding="20">
-        <Label Text="Select Import Options" 
-               FontSize="Title" 
-               HorizontalOptions="Center"
-               Margin="0,0,0,20" />
-        
         <Border Stroke="Gray" 
                 StrokeThickness="1" 
                 StrokeShape="RoundRectangle 10"
@@ -18,36 +21,37 @@
                        FontAttributes="Bold" 
                        FontSize="Subtitle" />
                 
-                <Grid ColumnDefinitions="*, Auto" RowSpacing="10">
+                <HorizontalStackLayout Margin="0,5,0,5">
+                    <CheckBox IsChecked="{Binding ImportFertilizers}" />
                     <Label Text="Import Fertilizers" 
-                           VerticalOptions="Center" 
-                           Grid.Row="0" Grid.Column="0" />
-                    <CheckBox IsChecked="{Binding ImportFertilizers}" 
-                              Grid.Row="0" Grid.Column="1" />
-                    
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                
+                <HorizontalStackLayout Margin="0,5,0,5">
+                    <CheckBox IsChecked="{Binding ImportMixes}" />
                     <Label Text="Import Mixes" 
-                           VerticalOptions="Center" 
-                           Grid.Row="1" Grid.Column="0" />
-                    <CheckBox IsChecked="{Binding ImportMixes}" 
-                              Grid.Row="1" Grid.Column="1" />
-                </Grid>
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
                 
                 <Label Text="When duplicate names are found:" 
                        FontAttributes="Bold" 
                        FontSize="Subtitle"
                        Margin="0,10,0,0" />
                 
-                <RadioButton Content="Skip (Keep existing items)" 
-                             IsChecked="{Binding SkipDuplicates}"
-                             GroupName="DuplicateHandling" />
+                <RadioButton Content="Skip (Keep existing items)"
+                             IsChecked="{Binding DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Skip}"
+                             GroupName="DuplicateHandling"
+                             Margin="0,5,0,5" />
                 
-                <RadioButton Content="Replace (Overwrite existing items)" 
-                             IsChecked="{Binding ReplaceDuplicates}"
-                             GroupName="DuplicateHandling" />
+                <RadioButton Content="Replace (Overwrite existing items)"
+                             IsChecked="{Binding DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Replace}"
+                             GroupName="DuplicateHandling"
+                             Margin="0,5,0,5" />
                 
-                <RadioButton Content="Rename (Add numbering to imported items)" 
-                             IsChecked="{Binding RenameDuplicates}"
-                             GroupName="DuplicateHandling" />
+                <RadioButton Content="Rename (Add numbering to imported items)"
+                             IsChecked="{Binding DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Rename}"
+                             GroupName="DuplicateHandling"
+                             Margin="0,5,0,5" />
             </VerticalStackLayout>
         </Border>
         
