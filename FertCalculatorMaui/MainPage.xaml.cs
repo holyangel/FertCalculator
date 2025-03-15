@@ -381,7 +381,19 @@ public partial class MainPage : ContentPage
         }
         
         // Navigate to save mix page
-        await Navigation.PushAsync(new SaveMixPage(fileService, currentMix.ToList()));
+        var saveMixPage = new SaveMixPage(fileService, currentMix.ToList());
+        
+        // Subscribe to the SaveCompletedEvent to refresh the mixes list after saving
+        saveMixPage.ViewModel.SaveCompletedEvent += async (s, args) =>
+        {
+            if (args.Success)
+            {
+                // Reload the mixes after saving
+                await LoadMixesAsync();
+            }
+        };
+        
+        await Navigation.PushAsync(saveMixPage);
     }
 
     private async void OnLoadMixClicked(object sender, EventArgs e)

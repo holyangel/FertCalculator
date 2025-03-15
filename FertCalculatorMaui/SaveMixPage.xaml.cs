@@ -8,6 +8,8 @@ public partial class SaveMixPage : ContentPage
 {
     private SaveMixViewModel _viewModel;
     
+    public SaveMixViewModel ViewModel => _viewModel;
+    
     public SaveMixPage(FileService fileService, List<FertilizerQuantity> ingredients)
     {
         InitializeComponent();
@@ -22,6 +24,10 @@ public partial class SaveMixPage : ContentPage
                 await DisplayAlert("Success", "Mix saved successfully.", "OK");
                 await Navigation.PopAsync();
             }
+            else
+            {
+                await DisplayAlert("Error", e.ErrorMessage ?? "Failed to save mix.", "OK");
+            }
         };
         
         BindingContext = _viewModel;
@@ -29,6 +35,12 @@ public partial class SaveMixPage : ContentPage
     
     private void OnSaveClicked(object sender, EventArgs e)
     {
+        if (string.IsNullOrWhiteSpace(_viewModel.MixName))
+        {
+            DisplayAlert("Error", "Please enter a name for this mix.", "OK");
+            return;
+        }
+        
         if (_viewModel.SaveCommand.CanExecute(null))
         {
             _viewModel.SaveCommand.Execute(null);
@@ -164,6 +176,18 @@ public class SaveMixViewModel : INotifyPropertyChanged
             var existingMix = existingMixes.FirstOrDefault(m => m.Name.Equals(mix.Name, StringComparison.OrdinalIgnoreCase));
             if (existingMix != null)
             {
+                // Ask user if they want to replace the existing mix
+                bool replace = await Application.Current.MainPage.DisplayAlert(
+                    "Mix Already Exists", 
+                    $"A mix named '{mix.Name}' already exists. Do you want to replace it?", 
+                    "Replace", "Cancel");
+                
+                if (!replace)
+                {
+                    IsSaving = false;
+                    return;
+                }
+                
                 // Replace the existing mix
                 int index = existingMixes.IndexOf(existingMix);
                 existingMixes[index] = mix;

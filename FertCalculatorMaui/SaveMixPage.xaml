@@ -8,7 +8,10 @@
         <Label Text="Save Fertilizer Mix" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
         
         <Label Text="Mix Name" />
-        <Entry x:Name="MixNameEntry" Placeholder="Enter a name for this mix" />
+        <Entry x:Name="MixNameEntry" Placeholder="Enter a name for this mix" Text="{Binding MixName}" />
+        
+        <!-- Error message display -->
+        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
         
         <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Margin="0,20,0,0">
             <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" />
