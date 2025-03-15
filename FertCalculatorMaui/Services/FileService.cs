@@ -93,8 +93,14 @@ public class FileService
             if (!File.Exists(filePath))
                 return null;
 
-            using FileStream stream = File.OpenRead(filePath);
-            return await LoadFromXmlAsync<T>(stream);
+            // Use Task.Run to perform file operations on a background thread
+            return await Task.Run(async () => 
+            {
+                using (FileStream stream = File.OpenRead(filePath))
+                {
+                    return await LoadFromXmlAsync<T>(stream);
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -107,11 +113,15 @@ public class FileService
     {
         try
         {
-            var serializer = new XmlSerializer(typeof(T));
-
-            using StreamReader reader = new StreamReader(stream);
-            var result = serializer.Deserialize(reader) as T;
-            return result;
+            return await Task.Run(() => 
+            {
+                var serializer = new XmlSerializer(typeof(T));
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    var result = serializer.Deserialize(reader) as T;
+                    return result;
+                }
+            });
         }
         catch (Exception ex)
         {
@@ -126,20 +136,45 @@ public class FileService
         {
             string filePath = Path.Combine(GetAppDataDirectory(), fileName);
             
-            // Create directory if it doesn't exist
-            string directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
-
-            using FileStream stream = File.Create(filePath);
-            var serializer = new XmlSerializer(typeof(T));
-            serializer.Serialize(stream, data);
+            // Ensure the directory exists
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             
-            return true;
+            // Use Task.Run to perform the serialization on a background thread
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    // Create a temporary file path
+                    string tempFilePath = Path.Combine(GetAppDataDirectory(), $"temp_{Guid.NewGuid()}.xml");
+                    
+                    // Serialize to the temporary file first
+                    using (var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+                        serializer.Serialize(fileStream, data);
+                    }
+                    
+                    // If the target file exists, delete it
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                    
+                    // Move the temporary file to the target file
+                    File.Move(tempFilePath, filePath);
+                    
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine($"Error in SaveToXmlAsync: {ex.Message}");
+                    return false;
+                }
+            });
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"Error saving XML file: {ex.Message}");
+            System.Console.WriteLine($"Error in SaveToXmlAsync: {ex.Message}");
             return false;
         }
     }
@@ -256,37 +291,72 @@ public class FileService
             // Get the Android context
             var context = Android.App.Application.Context;
             
-            // Create a file in the Downloads directory
-            var downloadsDir = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads);
-            var destinationFile = new JavaFile(downloadsDir, fileName);
+            // Create content values for the new file
+            var contentValues = new Android.Content.ContentValues();
+            contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
+            contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "application/xml");
             
-            // Copy the source file to the destination
-            using (var sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
-            using (var destinationStream = new FileStream(destinationFile.AbsolutePath, FileMode.Create, FileAccess.Write))
+            // For Android 10 (API 29) and above, use MediaStore
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Q)
             {
-                await sourceStream.CopyToAsync(destinationStream);
+                contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, Android.OS.Environment.DirectoryDownloads);
+                
+                // Get the content resolver
+                var contentResolver = context.ContentResolver;
+                
+                // Insert the new file
+                var uri = contentResolver.Insert(Android.Provider.MediaStore.Downloads.ExternalContentUri, contentValues);
+                
+                if (uri != null)
+                {
+                    // Open output stream to the new file
+                    using (var outputStream = contentResolver.OpenOutputStream(uri))
+                    using (var inputStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        if (outputStream != null)
+                        {
+                            await inputStream.CopyToAsync(outputStream);
+                            
+                            // Show a toast notification
+                            Android.Widget.Toast.MakeText(
+                                context, 
+                                $"File saved to Downloads/{fileName}", 
+                                Android.Widget.ToastLength.Long).Show();
+                                
+                            return true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // For older Android versions, use the traditional approach
+                var downloadsDir = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads);
+                var destinationFile = new Java.IO.File(downloadsDir, fileName);
+                
+                // Copy the source file to the destination
+                using (var sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+                using (var destinationStream = new FileStream(destinationFile.AbsolutePath, FileMode.Create, FileAccess.Write))
+                {
+                    await sourceStream.CopyToAsync(destinationStream);
+                }
+                
+                // Notify the media scanner about the new file
+                var mediaScanIntent = new Android.Content.Intent(Android.Content.Intent.ActionMediaScannerScanFile);
+                var fileUri = Android.Net.Uri.FromFile(destinationFile);
+                mediaScanIntent.SetData(fileUri);
+                context.SendBroadcast(mediaScanIntent);
+                
+                // Show a toast notification
+                Android.Widget.Toast.MakeText(
+                    context, 
+                    $"File saved to Downloads/{fileName}", 
+                    Android.Widget.ToastLength.Long).Show();
+                    
+                return true;
             }
             
-            // Create a content intent to notify the system
-            var intent = new Android.Content.Intent(Android.Content.Intent.ActionView);
-            
-            // Get the file URI using FileProvider
-            var fileUri = AndroidX.Core.Content.FileProvider.GetUriForFile(
-                context,
-                context.PackageName + ".fileprovider",
-                destinationFile);
-                
-            // Set the data and type
-            intent.SetDataAndType(fileUri, "application/xml");
-            intent.AddFlags(Android.Content.ActivityFlags.GrantReadUriPermission);
-            
-            // Show a toast notification
-            Android.Widget.Toast.MakeText(
-                context, 
-                $"File saved to Downloads/{fileName}", 
-                Android.Widget.ToastLength.Long).Show();
-                
-            return true;
+            return false;
         }
         catch (Exception ex)
         {
@@ -307,8 +377,8 @@ public class FileService
             // Use the Windows file save picker
             var fileSavePicker = new Windows.Storage.Pickers.FileSavePicker();
             
-            // Initialize the picker with the window handle
-            var window = new Microsoft.UI.Xaml.Window();
+            // Get the current window handle
+            var window = Microsoft.Maui.Controls.Application.Current.Windows[0].Handler.PlatformView;
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
             WinRT.Interop.InitializeWithWindow.Initialize(fileSavePicker, hwnd);
             
