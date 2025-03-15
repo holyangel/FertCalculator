@@ -27,7 +27,11 @@
                             HeightRequest="200">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="*,Auto,Auto" Padding="5">
+                        <Grid ColumnDefinitions="*,Auto" Padding="5">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnFertilizerTapped" CommandParameter="{Binding FertilizerName}" />
+                            </Grid.GestureRecognizers>
+                            
                             <VerticalStackLayout Grid.Column="0">
                                 <Label Text="{Binding FertilizerName}" FontAttributes="Bold" />
                                 <HorizontalStackLayout>
@@ -36,43 +40,12 @@
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
                             
-                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center" HorizontalOptions="Center">
-                                <HorizontalStackLayout Spacing="2">
-                                    <Button Text="+0.1" 
-                                            CommandParameter="{Binding FertilizerName}"
-                                            Clicked="OnIncrementSmallClicked"
-                                            WidthRequest="65"
-                                            HeightRequest="25"
-                                            FontSize="Small" />
-                                    <Button Text="+1" 
-                                            CommandParameter="{Binding FertilizerName}"
-                                            Clicked="OnIncrementGramClicked"
-                                            WidthRequest="65"
-                                            HeightRequest="25"
-                                            FontSize="Small" />
-                                </HorizontalStackLayout>
-                                <HorizontalStackLayout Spacing="2">
-                                    <Button Text="-0.1" 
-                                            CommandParameter="{Binding FertilizerName}"
-                                            Clicked="OnDecrementSmallClicked"
-                                            WidthRequest="65"
-                                            HeightRequest="25"
-                                            FontSize="Small" />
-                                    <Button Text="-1" 
-                                            CommandParameter="{Binding FertilizerName}"
-                                            Clicked="OnDecrementGramClicked"
-                                            WidthRequest="65"
-                                            HeightRequest="25"
-                                            FontSize="Small" />
-                                </HorizontalStackLayout>
-                            </VerticalStackLayout>
-                            
                             <Button Text="Remove" 
-                                    Grid.Column="2" 
+                                    Grid.Column="1" 
                                     CommandParameter="{Binding FertilizerName}" 
                                     Clicked="OnRemoveFromMixClicked" 
                                     WidthRequest="85"
-                                    HeightRequest="25"
+                                    HeightRequest="35"
                                     FontSize="Small" />
                         </Grid>
                     </DataTemplate>

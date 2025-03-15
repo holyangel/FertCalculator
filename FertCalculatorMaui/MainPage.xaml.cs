@@ -547,6 +547,29 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private async void OnFertilizerTapped(object sender, TappedEventArgs e)
+    {
+        if (e.Parameter is string fertilizerName)
+        {
+            var mixItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            
+            if (mixItem != null)
+            {
+                var editPage = new EditQuantityPage(fertilizerName, mixItem.Quantity, useImperialUnits);
+                
+                // Subscribe to the QuantityChanged event
+                editPage.QuantityChanged += (s, args) =>
+                {
+                    // Update the quantity in the current mix
+                    mixItem.Quantity = args.Quantity;
+                    UpdateNutrientTotals();
+                };
+                
+                await Navigation.PushAsync(editPage);
+            }
+        }
+    }
+
     private void AddFertilizerToMix(Fertilizer fertilizer)
     {
         // Check if the fertilizer is already in the mix
