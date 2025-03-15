@@ -203,6 +203,7 @@ public partial class MainPage : ContentPage
         double silicaTotal = 0;
         double humicAcidTotal = 0;
         double fulvicAcidTotal = 0;
+        double totalNutrientTotal = 0;
         
         double totalGrams = 0;
         
@@ -223,6 +224,7 @@ public partial class MainPage : ContentPage
         double silicaPercent = 0;
         double humicAcidPercent = 0;
         double fulvicAcidPercent = 0;
+        double totalNutrientPercent = 0;
         
         // Calculate for each fertilizer in the mix
         foreach (var item in currentMix)
@@ -250,6 +252,7 @@ public partial class MainPage : ContentPage
             silicaPercent += (fertilizer.SilicaPercent / 100) * quantity;
             humicAcidPercent += (fertilizer.HumicAcidPercent / 100) * quantity;
             fulvicAcidPercent += (fertilizer.FulvicAcidPercent / 100) * quantity;
+            totalNutrientPercent += (fertilizer.TotalNutrientPercent / 100) * quantity;
             
             // Calculate PPM directly from fertilizer PPM values
             nitrogenTotal += fertilizer.NitrogenPpm(useImperialUnits) * quantity;
@@ -268,6 +271,7 @@ public partial class MainPage : ContentPage
             silicaTotal += fertilizer.SilicaPpm(useImperialUnits) * quantity;
             humicAcidTotal += fertilizer.HumicAcidPpm(useImperialUnits) * quantity;
             fulvicAcidTotal += fertilizer.FulvicAcidPpm(useImperialUnits) * quantity;
+            totalNutrientTotal += fertilizer.TotalNutrientPpm(useImperialUnits) * quantity;
         }
         
         // Convert percentages to actual percentages if there are any fertilizers in the mix
@@ -289,6 +293,7 @@ public partial class MainPage : ContentPage
             silicaPercent = (silicaPercent / totalGrams) * 100;
             humicAcidPercent = (humicAcidPercent / totalGrams) * 100;
             fulvicAcidPercent = (fulvicAcidPercent / totalGrams) * 100;
+            totalNutrientPercent = (totalNutrientPercent / totalGrams) * 100;
         }
         
         // No need for a conversion factor here - already applied in the PPM methods
@@ -310,6 +315,7 @@ public partial class MainPage : ContentPage
         SilicaPercentLabel.Text = silicaPercent.ToString("F2");
         HumicAcidPercentLabel.Text = humicAcidPercent.ToString("F2");
         FulvicAcidPercentLabel.Text = fulvicAcidPercent.ToString("F2");
+        TotalNutrientPercentLabel.Text = (nitrogenPercent + phosphorusPercent + potassiumPercent + calciumPercent + magnesiumPercent + sulfurPercent + boronPercent + copperPercent + ironPercent + manganesePercent + molybdenumPercent + zincPercent + chlorinePercent + silicaPercent + humicAcidPercent + fulvicAcidPercent).ToString("F2");
         
         // Update the UI for PPM - no need to apply conversionFactor since it's already done in the PPM methods
         NitrogenPpmLabel.Text = nitrogenTotal.ToString("F2");
@@ -328,6 +334,7 @@ public partial class MainPage : ContentPage
         SilicaPpmLabel.Text = silicaTotal.ToString("F2");
         HumicAcidPpmLabel.Text = humicAcidTotal.ToString("F2");
         FulvicAcidPpmLabel.Text = fulvicAcidTotal.ToString("F2");
+        TotalNutrientPpmLabel.Text = (nitrogenTotal + phosphorusTotal + potassiumTotal + calciumTotal + magnesiumTotal + sulfurTotal + boronTotal + copperTotal + ironTotal + manganeseTotal + molybdenumTotal + zincTotal + chlorineTotal + silicaTotal + humicAcidTotal + fulvicAcidTotal).ToString("F2");
     }
 
     private async void UpdateUnitDisplay()

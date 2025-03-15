@@ -163,6 +163,10 @@ namespace FertCalculatorMaui
         public double HumicAcidPpm(bool useImperial = false) => GetPpmValue(HumicAcidPercent, useImperial);
         public double FulvicAcidPpm(bool useImperial = false) => GetPpmValue(FulvicAcidPercent, useImperial);
 
+        // Total nutrient calculations
+        public double TotalNutrientPercent => NitrogenPercent + PhosphorusPercent + PotassiumPercent + CalciumPercent + MagnesiumPercent + SulfurPercent + BoronPercent + CopperPercent + IronPercent + ManganesePercent + MolybdenumPercent + ZincPercent + ChlorinePercent + SilicaPercent + HumicAcidPercent + FulvicAcidPercent;
+        public double TotalNutrientPpm(bool useImperial = false) => GetPpmValue(TotalNutrientPercent, useImperial);
+
         // Conversion helpers for P2O5 and K2O
         public static double P2O5ToP(double p2o5Value) => p2o5Value * 0.4364;
         public static double K2OToK(double k2oValue) => k2oValue * 0.8301;
