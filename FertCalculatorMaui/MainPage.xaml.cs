@@ -10,12 +10,23 @@ public partial class MainPage : ContentPage
     private ObservableCollection<Fertilizer> availableFertilizers;
     private ObservableCollection<FertilizerMix> savedMixes;
     private ObservableCollection<FertilizerQuantity> currentMix;
-    private bool isMetricUnits = true; // true = per liter, false = per gallon
+    private bool useImperialUnits = false; // false = per liter (metric), true = per gallon (imperial)
     private const double GALLON_TO_LITER = 3.78541;
     private string fertilizerDbPath = "Fertilizers.xml";
     private string mixesDbPath = "Mixes.xml";
     private readonly FileService fileService;
-    private string unitLabelText = "g/L"; // Default unit text
+    private AppSettings appSettings;
+
+    public bool UseImperialUnits
+    {
+        get => useImperialUnits;
+        set
+        {
+            useImperialUnits = value;
+            UpdateUnitDisplay();
+            UpdateNutrientTotals();
+        }
+    }
 
     public MainPage(FileService fileService)
     {
@@ -40,6 +51,13 @@ public partial class MainPage : ContentPage
             currentMix = new ObservableCollection<FertilizerQuantity>();
             Debug.WriteLine("Collections initialized");
             
+            // Initialize settings
+            appSettings = new AppSettings();
+            UseImperialUnits = appSettings.UseImperialUnits;
+            
+            // Set the binding context for the switch
+            BindingContext = this;
+            
             // Load saved data
             _ = LoadFertilizersAsync();
             _ = LoadMixesAsync();
@@ -49,7 +67,7 @@ public partial class MainPage : ContentPage
             MixListView.ItemsSource = currentMix;
             Debug.WriteLine("Data bindings set up");
             
-            // Set up unit toggle
+            // Set up unit display
             UpdateUnitDisplay();
             Debug.WriteLine("MainPage constructor completed");
         }
@@ -159,9 +177,23 @@ public partial class MainPage : ContentPage
 
     private void UpdateNutrientTotals()
     {
+        // Initialize all nutrient totals to 0
         double nitrogenTotal = 0;
         double phosphorusTotal = 0;
         double potassiumTotal = 0;
+        double calciumTotal = 0;
+        double magnesiumTotal = 0;
+        double sulfurTotal = 0;
+        double boronTotal = 0;
+        double copperTotal = 0;
+        double ironTotal = 0;
+        double manganeseTotal = 0;
+        double molybdenumTotal = 0;
+        double zincTotal = 0;
+        double chlorineTotal = 0;
+        double silicaTotal = 0;
+        double humicAcidTotal = 0;
+        double fulvicAcidTotal = 0;
         
         foreach (var item in currentMix)
         {
@@ -171,42 +203,87 @@ public partial class MainPage : ContentPage
             {
                 double quantity = item.Quantity;
                 
-                // If using gallons, adjust calculation
-                if (!isMetricUnits)
-                {
-                    quantity *= GALLON_TO_LITER;
-                }
-                
-                nitrogenTotal += fertilizer.NitrogenPercent * quantity / 100;
-                phosphorusTotal += fertilizer.PhosphorusPercent * quantity / 100;
-                potassiumTotal += fertilizer.PotassiumPercent * quantity / 100;
+                // Calculate PPM based on nutrient percentages
+                nitrogenTotal += fertilizer.CalculateNitrogenPpm(useImperialUnits) * quantity / 1000;
+                phosphorusTotal += fertilizer.CalculatePhosphorusPpm(useImperialUnits) * quantity / 1000;
+                potassiumTotal += fertilizer.CalculatePotassiumPpm(useImperialUnits) * quantity / 1000;
+                calciumTotal += fertilizer.CalculateCalciumPpm(useImperialUnits) * quantity / 1000;
+                magnesiumTotal += fertilizer.CalculateMagnesiumPpm(useImperialUnits) * quantity / 1000;
+                sulfurTotal += fertilizer.CalculateSulfurPpm(useImperialUnits) * quantity / 1000;
+                boronTotal += fertilizer.CalculateBoronPpm(useImperialUnits) * quantity / 1000;
+                copperTotal += fertilizer.CalculateCopperPpm(useImperialUnits) * quantity / 1000;
+                ironTotal += fertilizer.CalculateIronPpm(useImperialUnits) * quantity / 1000;
+                manganeseTotal += fertilizer.CalculateManganesePpm(useImperialUnits) * quantity / 1000;
+                molybdenumTotal += fertilizer.CalculateMolybdenumPpm(useImperialUnits) * quantity / 1000;
+                zincTotal += fertilizer.CalculateZincPpm(useImperialUnits) * quantity / 1000;
+                chlorineTotal += fertilizer.CalculateChlorinePpm(useImperialUnits) * quantity / 1000;
+                silicaTotal += fertilizer.CalculateSilicaPpm(useImperialUnits) * quantity / 1000;
+                humicAcidTotal += fertilizer.CalculateHumicAcidPpm(useImperialUnits) * quantity / 1000;
+                fulvicAcidTotal += fertilizer.CalculateFulvicAcidPpm(useImperialUnits) * quantity / 1000;
             }
         }
         
-        // Update UI with totals
-        NitrogenPercentLabel.Text = nitrogenTotal.ToString("F2");
-        PhosphorusPercentLabel.Text = phosphorusTotal.ToString("F2");
-        PotassiumPercentLabel.Text = potassiumTotal.ToString("F2");
+        // Update PPM header based on units
+        PpmHeaderLabel.Text = useImperialUnits ? "PPM (per gal)" : "PPM (per L)";
         
-        NitrogenPpmLabel.Text = (nitrogenTotal * 10).ToString("F1");
-        PhosphorusPpmLabel.Text = (phosphorusTotal * 10).ToString("F1");
-        PotassiumPpmLabel.Text = (potassiumTotal * 10).ToString("F1");
+        // Update UI with totals (percentages)
+        NitrogenPercentLabel.Text = (nitrogenTotal * 100).ToString("F2");
+        PhosphorusPercentLabel.Text = (phosphorusTotal * 100).ToString("F2");
+        PotassiumPercentLabel.Text = (potassiumTotal * 100).ToString("F2");
+        CalciumPercentLabel.Text = (calciumTotal * 100).ToString("F2");
+        MagnesiumPercentLabel.Text = (magnesiumTotal * 100).ToString("F2");
+        SulfurPercentLabel.Text = (sulfurTotal * 100).ToString("F2");
+        BoronPercentLabel.Text = (boronTotal * 100).ToString("F2");
+        CopperPercentLabel.Text = (copperTotal * 100).ToString("F2");
+        IronPercentLabel.Text = (ironTotal * 100).ToString("F2");
+        ManganesePercentLabel.Text = (manganeseTotal * 100).ToString("F2");
+        MolybdenumPercentLabel.Text = (molybdenumTotal * 100).ToString("F2");
+        ZincPercentLabel.Text = (zincTotal * 100).ToString("F2");
+        ChlorinePercentLabel.Text = (chlorineTotal * 100).ToString("F2");
+        SilicaPercentLabel.Text = (silicaTotal * 100).ToString("F2");
+        HumicAcidPercentLabel.Text = (humicAcidTotal * 100).ToString("F2");
+        FulvicAcidPercentLabel.Text = (fulvicAcidTotal * 100).ToString("F2");
+        
+        // Update UI with totals (PPM)
+        NitrogenPpmLabel.Text = (nitrogenTotal * 1000).ToString("F1");
+        PhosphorusPpmLabel.Text = (phosphorusTotal * 1000).ToString("F1");
+        PotassiumPpmLabel.Text = (potassiumTotal * 1000).ToString("F1");
+        CalciumPpmLabel.Text = (calciumTotal * 1000).ToString("F1");
+        MagnesiumPpmLabel.Text = (magnesiumTotal * 1000).ToString("F1");
+        SulfurPpmLabel.Text = (sulfurTotal * 1000).ToString("F1");
+        BoronPpmLabel.Text = (boronTotal * 1000).ToString("F1");
+        CopperPpmLabel.Text = (copperTotal * 1000).ToString("F1");
+        IronPpmLabel.Text = (ironTotal * 1000).ToString("F1");
+        ManganesePpmLabel.Text = (manganeseTotal * 1000).ToString("F1");
+        MolybdenumPpmLabel.Text = (molybdenumTotal * 1000).ToString("F1");
+        ZincPpmLabel.Text = (zincTotal * 1000).ToString("F1");
+        ChlorinePpmLabel.Text = (chlorineTotal * 1000).ToString("F1");
+        SilicaPpmLabel.Text = (silicaTotal * 1000).ToString("F1");
+        HumicAcidPpmLabel.Text = (humicAcidTotal * 1000).ToString("F1");
+        FulvicAcidPpmLabel.Text = (fulvicAcidTotal * 1000).ToString("F1");
     }
 
     private void UpdateUnitDisplay()
     {
-        // Update the unit text field (used for binding)
-        unitLabelText = isMetricUnits ? "g/L" : "g/gal";
+        // Update the unit label for the mix entries
+        UnitLabel.Text = useImperialUnits ? "g/gal" : "g/L";
         
-        // Force the collection view to refresh so it picks up the new unit text
+        // Update the units type label
+        UnitsTypeLabel.Text = useImperialUnits ? "Imperial Units (per gallon)" : "Metric Units (per liter)";
+        
+        // Save the setting
+        appSettings.UseImperialUnits = useImperialUnits;
+        _ = fileService.SaveToXmlAsync(appSettings, "AppSettings.xml");
+        
+        // Force the collection view to refresh
         var temp = MixListView.ItemsSource;
         MixListView.ItemsSource = null;
         MixListView.ItemsSource = temp;
     }
 
-    private void OnToggleUnitsClicked(object sender, EventArgs e)
+    private void OnUnitsToggled(object sender, ToggledEventArgs e)
     {
-        isMetricUnits = !isMetricUnits;
+        useImperialUnits = e.Value;
         UpdateUnitDisplay();
         UpdateNutrientTotals();
     }
@@ -282,5 +359,36 @@ public partial class MainPage : ContentPage
                 UpdateNutrientTotals();
             }
         }
+    }
+    
+    private async void OnCompareMixesClicked(object sender, EventArgs e)
+    {
+        if (currentMix.Count == 0)
+        {
+            await DisplayAlert("No Mix", "Create a mix first before comparing", "OK");
+            return;
+        }
+        
+        // Navigate to compare mix page with the current mix
+        await Navigation.PushAsync(new CompareMixPage(fileService, currentMix.ToList(), useImperialUnits));
+    }
+    
+    private async void OnImportClicked(object sender, EventArgs e)
+    {
+        // Navigate to import options page
+        await Navigation.PushAsync(new ImportOptionsPage(fileService));
+    }
+    
+    private async void OnExportClicked(object sender, EventArgs e)
+    {
+        // Check if there are fertilizers or mixes to export
+        if (availableFertilizers.Count == 0 && savedMixes.Count == 0)
+        {
+            await DisplayAlert("Nothing to Export", "There are no fertilizers or mixes to export", "OK");
+            return;
+        }
+        
+        // Navigate to export options page
+        await Navigation.PushAsync(new ExportOptionsPage(fileService, availableFertilizers.ToList(), savedMixes.ToList()));
     }
 }

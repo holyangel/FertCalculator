@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FertCalculatorMaui.ExportOptionsPage"
+             Title="Export Options">
+    <VerticalStackLayout Spacing="10" Padding="20">
+        <Label Text="Select Export Options" 
+               FontSize="Title" 
+               HorizontalOptions="Center"
+               Margin="0,0,0,20" />
+        
+        <Border Stroke="Gray" 
+                StrokeThickness="1" 
+                StrokeShape="RoundRectangle 10"
+                Padding="15">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Select what to export:" 
+                       FontAttributes="Bold" 
+                       FontSize="Subtitle" />
+                
+                <Grid ColumnDefinitions="*, Auto" RowSpacing="10">
+                    <Label Text="Export Fertilizers" 
+                           VerticalOptions="Center" 
+                           Grid.Row="0" Grid.Column="0" />
+                    <CheckBox IsChecked="{Binding ExportFertilizers}" 
+                              Grid.Row="0" Grid.Column="1" />
+                    
+                    <Label Text="Export Mixes" 
+                           VerticalOptions="Center" 
+                           Grid.Row="1" Grid.Column="0" />
+                    <CheckBox IsChecked="{Binding ExportMixes}" 
+                              Grid.Row="1" Grid.Column="1" />
+                </Grid>
+                
+                <Label Text="Select export file type:" 
+                       FontAttributes="Bold" 
+                       FontSize="Subtitle"
+                       Margin="0,10,0,0" />
+                
+                <RadioButton Content="XML File (.xml)" 
+                             IsChecked="{Binding ExportToXml}"
+                             GroupName="FileType" />
+                
+                <RadioButton Content="JSON File (.json)" 
+                             IsChecked="{Binding ExportToJson}"
+                             GroupName="FileType" />
+                
+                <Entry Placeholder="File name (without extension)" 
+                       Text="{Binding FileName}"
+                       Margin="0,10,0,0" />
+            </VerticalStackLayout>
+        </Border>
+        
+        <Label Text="{Binding StatusMessage}"
+               TextColor="{Binding StatusColor}"
+               HorizontalOptions="Center"
+               Margin="0,15,0,0"
+               IsVisible="{Binding HasStatus}" />
+        
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,20,0,0">
+            <Button Text="Export" 
+                    Command="{Binding ExportCommand}"
+                    WidthRequest="120"
+                    IsEnabled="{Binding CanExport}" />
+            
+            <Button Text="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    WidthRequest="120" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

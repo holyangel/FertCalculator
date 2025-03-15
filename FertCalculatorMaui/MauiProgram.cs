@@ -18,7 +18,14 @@ public static class MauiProgram
 
         // Register services
         builder.Services.AddSingleton<FileService>();
+        
+        // Register pages
         builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddTransient<AddFertilizerPage>();
+        builder.Services.AddTransient<SaveMixPage>();
+        builder.Services.AddTransient<CompareMixPage>();
+        builder.Services.AddTransient<ImportOptionsPage>();
+        builder.Services.AddTransient<ExportOptionsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

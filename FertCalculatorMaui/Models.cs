@@ -25,6 +25,9 @@ namespace FertCalculatorMaui
         private double silicaPercent;
         private double humicAcidPercent;
         private double fulvicAcidPercent;
+        
+        // Constants for unit conversion
+        private const double GALLON_TO_LITER = 3.78541;
 
         // Properties to store original input format and values
         public bool IsPhosphorusInOxideForm { get; set; }
@@ -135,7 +138,32 @@ namespace FertCalculatorMaui
             set { fulvicAcidPercent = value; OnPropertyChanged(nameof(FulvicAcidPercent)); OnPropertyChanged(nameof(FulvicAcidPpm)); }
         }
 
-        // Convert percentage to decimal (divide by 100) and multiply by 1000 to get mg/L (PPM)
+        // PPM calculation with support for metric/imperial units
+        private double GetPpmValue(double percentValue, bool useImperial = false)
+        {
+            double basePpm = (percentValue / 100) * 1000;
+            return useImperial ? basePpm / GALLON_TO_LITER : basePpm;
+        }
+
+        // Properties that calculate PPM values with unit conversion
+        public double NitrogenPpm(bool useImperial = false) => GetPpmValue(NitrogenPercent, useImperial);
+        public double PhosphorusPpm(bool useImperial = false) => GetPpmValue(PhosphorusPercent, useImperial);
+        public double PotassiumPpm(bool useImperial = false) => GetPpmValue(PotassiumPercent, useImperial);
+        public double CalciumPpm(bool useImperial = false) => GetPpmValue(CalciumPercent, useImperial);
+        public double MagnesiumPpm(bool useImperial = false) => GetPpmValue(MagnesiumPercent, useImperial);
+        public double SulfurPpm(bool useImperial = false) => GetPpmValue(SulfurPercent, useImperial);
+        public double BoronPpm(bool useImperial = false) => GetPpmValue(BoronPercent, useImperial);
+        public double CopperPpm(bool useImperial = false) => GetPpmValue(CopperPercent, useImperial);
+        public double IronPpm(bool useImperial = false) => GetPpmValue(IronPercent, useImperial);
+        public double ManganesePpm(bool useImperial = false) => GetPpmValue(ManganesePercent, useImperial);
+        public double MolybdenumPpm(bool useImperial = false) => GetPpmValue(MolybdenumPercent, useImperial);
+        public double ZincPpm(bool useImperial = false) => GetPpmValue(ZincPercent, useImperial);
+        public double ChlorinePpm(bool useImperial = false) => GetPpmValue(ChlorinePercent, useImperial);
+        public double SilicaPpm(bool useImperial = false) => GetPpmValue(SilicaPercent, useImperial);
+        public double HumicAcidPpm(bool useImperial = false) => GetPpmValue(HumicAcidPercent, useImperial);
+        public double FulvicAcidPpm(bool useImperial = false) => GetPpmValue(FulvicAcidPercent, useImperial);
+
+        // Original PPM properties for backwards compatibility
         public double NitrogenPpm => (NitrogenPercent / 100) * 1000;
         public double PhosphorusPpm => (PhosphorusPercent / 100) * 1000;
         public double PotassiumPpm => (PotassiumPercent / 100) * 1000;
@@ -152,6 +180,10 @@ namespace FertCalculatorMaui
         public double SilicaPpm => (SilicaPercent / 100) * 1000;
         public double HumicAcidPpm => (HumicAcidPercent / 100) * 1000;
         public double FulvicAcidPpm => (FulvicAcidPercent / 100) * 1000;
+
+        // Conversion helpers for P2O5 and K2O
+        public static double P2O5ToP(double p2o5Value) => p2o5Value * 0.4364;
+        public static double K2OToK(double k2oValue) => k2oValue * 0.8301;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
@@ -197,5 +229,30 @@ namespace FertCalculatorMaui
     {
         public List<Fertilizer> Fertilizers { get; set; } = new List<Fertilizer>();
         public List<FertilizerMix> Mixes { get; set; } = new List<FertilizerMix>();
+    }
+
+    // Helper class for application settings
+    public class AppSettings : INotifyPropertyChanged
+    {
+        private bool useImperialUnits;
+        
+        public bool UseImperialUnits
+        {
+            get => useImperialUnits;
+            set 
+            { 
+                useImperialUnits = value; 
+                OnPropertyChanged(nameof(UseImperialUnits));
+                OnPropertyChanged(nameof(UnitLabel));
+            }
+        }
+        
+        public string UnitLabel => UseImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
+        
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

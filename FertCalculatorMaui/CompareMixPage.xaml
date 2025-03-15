@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FertCalculatorMaui.CompareMixPage"
+             Title="Compare Mixes">
+    <Grid Padding="10" RowSpacing="10" ColumnSpacing="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Header -->
+        <Label Text="Mix 1" 
+               Grid.Row="0" Grid.Column="0" 
+               FontSize="18" FontAttributes="Bold" 
+               HorizontalOptions="Center" />
+        <Label Text="Mix 2" 
+               Grid.Row="0" Grid.Column="1" 
+               FontSize="18" FontAttributes="Bold" 
+               HorizontalOptions="Center" />
+
+        <!-- Scrollable comparison tables -->
+        <ScrollView Grid.Row="1" Grid.Column="0">
+            <VerticalStackLayout Spacing="5">
+                <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5">
+                    <Grid Padding="5" RowSpacing="2" ColumnSpacing="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="Mix Name:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
+                        <Label Text="{Binding Mix1Name}" Grid.Row="0" Grid.Column="1" />
+
+                        <Label Text="Total Ingredients:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold" />
+                        <Label Text="{Binding Mix1IngredientCount}" Grid.Row="1" Grid.Column="1" />
+                    </Grid>
+                </Border>
+
+                <Label Text="Ingredients" FontAttributes="Bold" Margin="0,10,0,0" />
+                <CollectionView ItemsSource="{Binding Mix1Ingredients}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5" ColumnSpacing="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding FertilizerName}" Grid.Column="0" />
+                                <Label Text="{Binding Quantity, StringFormat='{0:F2} g'}" Grid.Column="1" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Nutrients" FontAttributes="Bold" Margin="0,10,0,0" />
+                <Grid ColumnSpacing="5" RowSpacing="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Text="Nitrogen (N)" Grid.Row="0" Grid.Column="0" />
+                    <Label Text="{Binding Mix1NitrogenPpm, StringFormat='{0:F2}'}" Grid.Row="0" Grid.Column="1" />
+
+                    <Label Text="Phosphorus (P)" Grid.Row="1" Grid.Column="0" />
+                    <Label Text="{Binding Mix1PhosphorusPpm, StringFormat='{0:F2}'}" Grid.Row="1" Grid.Column="1" />
+
+                    <Label Text="Potassium (K)" Grid.Row="2" Grid.Column="0" />
+                    <Label Text="{Binding Mix1PotassiumPpm, StringFormat='{0:F2}'}" Grid.Row="2" Grid.Column="1" />
+
+                    <Label Text="Calcium (Ca)" Grid.Row="3" Grid.Column="0" />
+                    <Label Text="{Binding Mix1CalciumPpm, StringFormat='{0:F2}'}" Grid.Row="3" Grid.Column="1" />
+
+                    <Label Text="Magnesium (Mg)" Grid.Row="4" Grid.Column="0" />
+                    <Label Text="{Binding Mix1MagnesiumPpm, StringFormat='{0:F2}'}" Grid.Row="4" Grid.Column="1" />
+
+                    <Label Text="Sulfur (S)" Grid.Row="5" Grid.Column="0" />
+                    <Label Text="{Binding Mix1SulfurPpm, StringFormat='{0:F2}'}" Grid.Row="5" Grid.Column="1" />
+
+                    <Label Text="Boron (B)" Grid.Row="6" Grid.Column="0" />
+                    <Label Text="{Binding Mix1BoronPpm, StringFormat='{0:F2}'}" Grid.Row="6" Grid.Column="1" />
+
+                    <Label Text="Copper (Cu)" Grid.Row="7" Grid.Column="0" />
+                    <Label Text="{Binding Mix1CopperPpm, StringFormat='{0:F2}'}" Grid.Row="7" Grid.Column="1" />
+
+                    <Label Text="Iron (Fe)" Grid.Row="8" Grid.Column="0" />
+                    <Label Text="{Binding Mix1IronPpm, StringFormat='{0:F2}'}" Grid.Row="8" Grid.Column="1" />
+
+                    <Label Text="Manganese (Mn)" Grid.Row="9" Grid.Column="0" />
+                    <Label Text="{Binding Mix1ManganesePpm, StringFormat='{0:F2}'}" Grid.Row="9" Grid.Column="1" />
+
+                    <Label Text="Molybdenum (Mo)" Grid.Row="10" Grid.Column="0" />
+                    <Label Text="{Binding Mix1MolybdenumPpm, StringFormat='{0:F2}'}" Grid.Row="10" Grid.Column="1" />
+
+                    <Label Text="Zinc (Zn)" Grid.Row="11" Grid.Column="0" />
+                    <Label Text="{Binding Mix1ZincPpm, StringFormat='{0:F2}'}" Grid.Row="11" Grid.Column="1" />
+
+                    <Label Text="Chlorine (Cl)" Grid.Row="12" Grid.Column="0" />
+                    <Label Text="{Binding Mix1ChlorinePpm, StringFormat='{0:F2}'}" Grid.Row="12" Grid.Column="1" />
+
+                    <Label Text="Silica (Si)" Grid.Row="13" Grid.Column="0" />
+                    <Label Text="{Binding Mix1SilicaPpm, StringFormat='{0:F2}'}" Grid.Row="13" Grid.Column="1" />
+
+                    <Label Text="Humic Acid" Grid.Row="14" Grid.Column="0" />
+                    <Label Text="{Binding Mix1HumicAcidPpm, StringFormat='{0:F2}'}" Grid.Row="14" Grid.Column="1" />
+
+                    <Label Text="Fulvic Acid" Grid.Row="15" Grid.Column="0" />
+                    <Label Text="{Binding Mix1FulvicAcidPpm, StringFormat='{0:F2}'}" Grid.Row="15" Grid.Column="1" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ScrollView Grid.Row="1" Grid.Column="1">
+            <VerticalStackLayout Spacing="5">
+                <Border Stroke="Gray" StrokeThickness="1" StrokeShape="RoundRectangle 5">
+                    <Grid Padding="5" RowSpacing="2" ColumnSpacing="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="Mix Name:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
+                        <Label Text="{Binding Mix2Name}" Grid.Row="0" Grid.Column="1" />
+
+                        <Label Text="Total Ingredients:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold" />
+                        <Label Text="{Binding Mix2IngredientCount}" Grid.Row="1" Grid.Column="1" />
+                    </Grid>
+                </Border>
+
+                <Label Text="Ingredients" FontAttributes="Bold" Margin="0,10,0,0" />
+                <CollectionView ItemsSource="{Binding Mix2Ingredients}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5" ColumnSpacing="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding FertilizerName}" Grid.Column="0" />
+                                <Label Text="{Binding Quantity, StringFormat='{0:F2} g'}" Grid.Column="1" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Nutrients" FontAttributes="Bold" Margin="0,10,0,0" />
+                <Grid ColumnSpacing="5" RowSpacing="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label Text="Nitrogen (N)" Grid.Row="0" Grid.Column="0" />
+                    <Label Text="{Binding Mix2NitrogenPpm, StringFormat='{0:F2}'}" Grid.Row="0" Grid.Column="1" />
+
+                    <Label Text="Phosphorus (P)" Grid.Row="1" Grid.Column="0" />
+                    <Label Text="{Binding Mix2PhosphorusPpm, StringFormat='{0:F2}'}" Grid.Row="1" Grid.Column="1" />
+
+                    <Label Text="Potassium (K)" Grid.Row="2" Grid.Column="0" />
+                    <Label Text="{Binding Mix2PotassiumPpm, StringFormat='{0:F2}'}" Grid.Row="2" Grid.Column="1" />
+
+                    <Label Text="Calcium (Ca)" Grid.Row="3" Grid.Column="0" />
+                    <Label Text="{Binding Mix2CalciumPpm, StringFormat='{0:F2}'}" Grid.Row="3" Grid.Column="1" />
+
+                    <Label Text="Magnesium (Mg)" Grid.Row="4" Grid.Column="0" />
+                    <Label Text="{Binding Mix2MagnesiumPpm, StringFormat='{0:F2}'}" Grid.Row="4" Grid.Column="1" />
+
+                    <Label Text="Sulfur (S)" Grid.Row="5" Grid.Column="0" />
+                    <Label Text="{Binding Mix2SulfurPpm, StringFormat='{0:F2}'}" Grid.Row="5" Grid.Column="1" />
+
+                    <Label Text="Boron (B)" Grid.Row="6" Grid.Column="0" />
+                    <Label Text="{Binding Mix2BoronPpm, StringFormat='{0:F2}'}" Grid.Row="6" Grid.Column="1" />
+
+                    <Label Text="Copper (Cu)" Grid.Row="7" Grid.Column="0" />
+                    <Label Text="{Binding Mix2CopperPpm, StringFormat='{0:F2}'}" Grid.Row="7" Grid.Column="1" />
+
+                    <Label Text="Iron (Fe)" Grid.Row="8" Grid.Column="0" />
+                    <Label Text="{Binding Mix2IronPpm, StringFormat='{0:F2}'}" Grid.Row="8" Grid.Column="1" />
+
+                    <Label Text="Manganese (Mn)" Grid.Row="9" Grid.Column="0" />
+                    <Label Text="{Binding Mix2ManganesePpm, StringFormat='{0:F2}'}" Grid.Row="9" Grid.Column="1" />
+
+                    <Label Text="Molybdenum (Mo)" Grid.Row="10" Grid.Column="0" />
+                    <Label Text="{Binding Mix2MolybdenumPpm, StringFormat='{0:F2}'}" Grid.Row="10" Grid.Column="1" />
+
+                    <Label Text="Zinc (Zn)" Grid.Row="11" Grid.Column="0" />
+                    <Label Text="{Binding Mix2ZincPpm, StringFormat='{0:F2}'}" Grid.Row="11" Grid.Column="1" />
+
+                    <Label Text="Chlorine (Cl)" Grid.Row="12" Grid.Column="0" />
+                    <Label Text="{Binding Mix2ChlorinePpm, StringFormat='{0:F2}'}" Grid.Row="12" Grid.Column="1" />
+
+                    <Label Text="Silica (Si)" Grid.Row="13" Grid.Column="0" />
+                    <Label Text="{Binding Mix2SilicaPpm, StringFormat='{0:F2}'}" Grid.Row="13" Grid.Column="1" />
+
+                    <Label Text="Humic Acid" Grid.Row="14" Grid.Column="0" />
+                    <Label Text="{Binding Mix2HumicAcidPpm, StringFormat='{0:F2}'}" Grid.Row="14" Grid.Column="1" />
+
+                    <Label Text="Fulvic Acid" Grid.Row="15" Grid.Column="0" />
+                    <Label Text="{Binding Mix2FulvicAcidPpm, StringFormat='{0:F2}'}" Grid.Row="15" Grid.Column="1" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- Footer -->
+        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                              HorizontalOptions="Center" Spacing="10">
+            <Label Text="{Binding UnitLabel}" VerticalOptions="Center" />
+            <Switch IsToggled="{Binding UseImperialUnits}" />
+            <Button Text="Close" Command="{Binding CloseCommand}" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FertCalculatorMaui.ImportOptionsPage"
+             Title="Import Options">
+    <VerticalStackLayout Spacing="10" Padding="20">
+        <Label Text="Select Import Options" 
+               FontSize="Title" 
+               HorizontalOptions="Center"
+               Margin="0,0,0,20" />
+        
+        <Border Stroke="Gray" 
+                StrokeThickness="1" 
+                StrokeShape="RoundRectangle 10"
+                Padding="15">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="Select what to import:" 
+                       FontAttributes="Bold" 
+                       FontSize="Subtitle" />
+                
+                <Grid ColumnDefinitions="*, Auto" RowSpacing="10">
+                    <Label Text="Import Fertilizers" 
+                           VerticalOptions="Center" 
+                           Grid.Row="0" Grid.Column="0" />
+                    <CheckBox IsChecked="{Binding ImportFertilizers}" 
+                              Grid.Row="0" Grid.Column="1" />
+                    
+                    <Label Text="Import Mixes" 
+                           VerticalOptions="Center" 
+                           Grid.Row="1" Grid.Column="0" />
+                    <CheckBox IsChecked="{Binding ImportMixes}" 
+                              Grid.Row="1" Grid.Column="1" />
+                </Grid>
+                
+                <Label Text="When duplicate names are found:" 
+                       FontAttributes="Bold" 
+                       FontSize="Subtitle"
+                       Margin="0,10,0,0" />
+                
+                <RadioButton Content="Skip (Keep existing items)" 
+                             IsChecked="{Binding SkipDuplicates}"
+                             GroupName="DuplicateHandling" />
+                
+                <RadioButton Content="Replace (Overwrite existing items)" 
+                             IsChecked="{Binding ReplaceDuplicates}"
+                             GroupName="DuplicateHandling" />
+                
+                <RadioButton Content="Rename (Add numbering to imported items)" 
+                             IsChecked="{Binding RenameDuplicates}"
+                             GroupName="DuplicateHandling" />
+            </VerticalStackLayout>
+        </Border>
+        
+        <Label Text="{Binding StatusMessage}"
+               TextColor="{Binding StatusColor}"
+               HorizontalOptions="Center"
+               Margin="0,15,0,0"
+               IsVisible="{Binding HasStatus}" />
+        
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,20,0,0">
+            <Button Text="Import" 
+                    Command="{Binding ImportCommand}"
+                    WidthRequest="120"
+                    IsEnabled="{Binding CanImport}" />
+            
+            <Button Text="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    WidthRequest="120" />
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>
