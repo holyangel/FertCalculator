@@ -18,36 +18,42 @@
                        FontAttributes="Bold" 
                        FontSize="Subtitle" />
                 
-                <Grid ColumnDefinitions="*, Auto" RowSpacing="10">
+                <HorizontalStackLayout Margin="0,5,0,5">
+                    <CheckBox IsChecked="{Binding ExportFertilizers}" />
                     <Label Text="Export Fertilizers" 
-                           VerticalOptions="Center" 
-                           Grid.Row="0" Grid.Column="0" />
-                    <CheckBox IsChecked="{Binding ExportFertilizers}" 
-                              Grid.Row="0" Grid.Column="1" />
-                    
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                
+                <HorizontalStackLayout Margin="0,5,0,5">
+                    <CheckBox IsChecked="{Binding ExportMixes}" />
                     <Label Text="Export Mixes" 
-                           VerticalOptions="Center" 
-                           Grid.Row="1" Grid.Column="0" />
-                    <CheckBox IsChecked="{Binding ExportMixes}" 
-                              Grid.Row="1" Grid.Column="1" />
-                </Grid>
-                
-                <Label Text="Select export file type:" 
-                       FontAttributes="Bold" 
-                       FontSize="Subtitle"
-                       Margin="0,10,0,0" />
-                
-                <RadioButton Content="XML File (.xml)" 
-                             IsChecked="{Binding ExportToXml}"
-                             GroupName="FileType" />
-                
-                <RadioButton Content="JSON File (.json)" 
-                             IsChecked="{Binding ExportToJson}"
-                             GroupName="FileType" />
+                           VerticalOptions="Center" />
+                </HorizontalStackLayout>
                 
                 <Entry Placeholder="File name (without extension)" 
                        Text="{Binding FileName}"
                        Margin="0,10,0,0" />
+                       
+                <Label Text="Export Method" 
+                       FontSize="16" 
+                       FontAttributes="Bold"
+                       Margin="0,20,0,10" />
+                
+                <HorizontalStackLayout Margin="0,5,0,5">
+                    <RadioButton IsChecked="{Binding UseShareMethod}"
+                                 GroupName="ExportMethod" />
+                    <Label Text="Share File" 
+                           VerticalOptions="Center"
+                           ToolTipProperties.Text="Share the file via email, messaging apps, etc." />
+                </HorizontalStackLayout>
+                
+                <HorizontalStackLayout Margin="0,5,0,5">
+                    <RadioButton IsChecked="{Binding UseSaveToDirectoryMethod}"
+                                 GroupName="ExportMethod" />
+                    <Label Text="Save to Documents" 
+                           VerticalOptions="Center"
+                           ToolTipProperties.Text="Save the file to your Documents folder" />
+                </HorizontalStackLayout>
             </VerticalStackLayout>
         </Border>
         

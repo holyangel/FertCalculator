@@ -48,6 +48,8 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
     private string _statusColor = "Gray";
     private bool _hasStatus;
     private string _errorMessage = string.Empty;
+    private bool _useShareMethod = true;
+    private bool _useSaveToDirectoryMethod = false;
 
     public ExportOptionsViewModel(FileService fileService, List<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
     {
@@ -161,6 +163,32 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
     public ICommand ExportCommand { get; }
     public ICommand? CancelCommand { get; set; }
 
+    public bool UseShareMethod
+    {
+        get => _useShareMethod;
+        set
+        {
+            if (_useShareMethod != value)
+            {
+                _useShareMethod = value;
+                OnPropertyChanged(nameof(UseShareMethod));
+            }
+        }
+    }
+
+    public bool UseSaveToDirectoryMethod
+    {
+        get => _useSaveToDirectoryMethod;
+        set
+        {
+            if (_useSaveToDirectoryMethod != value)
+            {
+                _useSaveToDirectoryMethod = value;
+                OnPropertyChanged(nameof(UseSaveToDirectoryMethod));
+            }
+        }
+    }
+
     private async void ExecuteExport()
     {
         // Clear any previous errors
@@ -218,11 +246,20 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
                 return;
             }
             
-            // Share the file
-            UpdateStatus("Opening share dialog...", "Blue");
-            bool shareSuccess = await _fileService.ShareFileAsync(tempFilePath, "Share Fertilizer Calculator Data");
+            // Use the appropriate method based on user selection
+            UpdateStatus(UseShareMethod ? "Opening share dialog..." : "Opening save dialog...", "Blue");
+            bool success = false;
             
-            if (shareSuccess)
+            if (UseShareMethod)
+            {
+                success = await _fileService.ShareFileAsync(tempFilePath, "Share Fertilizer Calculator Data");
+            }
+            else
+            {
+                success = await _fileService.SaveFileToDirectoryAsync(tempFilePath, fileName);
+            }
+            
+            if (success)
             {
                 UpdateStatus("Export completed successfully!", "Green");
                 ExportCompleted?.Invoke(this, new ExportResult { Success = true });
@@ -230,7 +267,7 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
             else
             {
                 UpdateStatus("Export was canceled or failed.", "Red");
-                ExportCompleted?.Invoke(this, new ExportResult { Success = false, Error = "Sharing was canceled or failed." });
+                ExportCompleted?.Invoke(this, new ExportResult { Success = false, Error = "Export was canceled or failed." });
             }
         }
         catch (Exception ex)
