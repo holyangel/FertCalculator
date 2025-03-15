@@ -12,16 +12,12 @@
         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5" x:Name="CurrentMixSection">
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
                 <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
-                <Button Clicked="OnToggleMixVisibilityClicked" 
+                <Button Text="▼" 
+                        Clicked="OnToggleMixVisibilityClicked" 
                         x:Name="ToggleMixVisibilityButton"
-                        Margin="0,5,0,10"
-                        ToolTipProperties.Text="Add Fertilizer">
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialIcons"
-                                         Glyph="&#xe5cf;"
-                                         Color="White" />
-                    </Button.ImageSource>
-                </Button>
+                        WidthRequest="40"
+                        HeightRequest="35"
+                        FontSize="Small" />
             </HorizontalStackLayout>
             
             <HorizontalStackLayout Spacing="12" x:Name="MixButtonsLayout" Margin="15,0,0,0" VerticalOptions="Center">
