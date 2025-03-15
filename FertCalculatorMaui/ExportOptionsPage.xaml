@@ -4,11 +4,6 @@
              x:Class="FertCalculatorMaui.ExportOptionsPage"
              Title="Export Options">
     <VerticalStackLayout Spacing="10" Padding="20">
-        <Label Text="Select Export Options" 
-               FontSize="Title" 
-               HorizontalOptions="Center"
-               Margin="0,0,0,20" />
-        
         <Border Stroke="Gray" 
                 StrokeThickness="1" 
                 StrokeShape="RoundRectangle 10"
