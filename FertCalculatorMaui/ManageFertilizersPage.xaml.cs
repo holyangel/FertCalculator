@@ -1,5 +1,6 @@
 using FertCalculatorMaui.Services;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace FertCalculatorMaui;
 
@@ -30,9 +31,12 @@ public partial class ManageFertilizersPage : ContentPage
         // Load the latest fertilizers from the file
         var updatedFertilizers = await fileService.LoadFertilizersAsync();
         
+        // Sort fertilizers alphabetically by name
+        var sortedFertilizers = updatedFertilizers.OrderBy(f => f.Name).ToList();
+        
         // Clear and repopulate the collection
         availableFertilizers.Clear();
-        foreach (var fertilizer in updatedFertilizers)
+        foreach (var fertilizer in sortedFertilizers)
         {
             availableFertilizers.Add(fertilizer);
         }
@@ -65,6 +69,14 @@ public partial class ManageFertilizersPage : ContentPage
         {
             availableFertilizers.Remove(selectedFertilizer);
             SaveFertilizers();
+            
+            // Resort the collection to maintain alphabetical order
+            var sortedFertilizers = availableFertilizers.OrderBy(f => f.Name).ToList();
+            availableFertilizers.Clear();
+            foreach (var fertilizer in sortedFertilizers)
+            {
+                availableFertilizers.Add(fertilizer);
+            }
         }
     }
     
