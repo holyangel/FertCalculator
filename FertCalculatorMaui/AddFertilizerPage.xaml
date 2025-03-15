@@ -61,6 +61,22 @@
                 <Entry x:Name="ZincEntry" Placeholder="%" Keyboard="Numeric" Grid.Row="5" Grid.Column="1" />
             </Grid>
             
+            <Label Text="Additional Nutrients" FontSize="16" FontAttributes="Bold" Margin="0,20,0,0" />
+            
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,10,0,0">
+                <Label Text="Chlorine (Cl)" Grid.Row="0" Grid.Column="0" />
+                <Entry x:Name="ChlorineEntry" Placeholder="%" Keyboard="Numeric" Grid.Row="0" Grid.Column="1" />
+                
+                <Label Text="Silica (Si)" Grid.Row="1" Grid.Column="0" />
+                <Entry x:Name="SilicaEntry" Placeholder="%" Keyboard="Numeric" Grid.Row="1" Grid.Column="1" />
+                
+                <Label Text="Humic Acid" Grid.Row="2" Grid.Column="0" />
+                <Entry x:Name="HumicAcidEntry" Placeholder="%" Keyboard="Numeric" Grid.Row="2" Grid.Column="1" />
+                
+                <Label Text="Fulvic Acid" Grid.Row="3" Grid.Column="0" />
+                <Entry x:Name="FulvicAcidEntry" Placeholder="%" Keyboard="Numeric" Grid.Row="3" Grid.Column="1" />
+            </Grid>
+            
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Margin="0,30,0,0">
                 <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" />
                 <Button Text="Cancel" Clicked="OnCancelClicked" WidthRequest="100" />

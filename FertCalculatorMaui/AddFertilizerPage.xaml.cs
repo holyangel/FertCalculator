@@ -60,6 +60,10 @@ public partial class AddFertilizerPage : ContentPage
         ManganeseEntry.Text = existingFertilizer.ManganesePercent.ToString();
         MolybdenumEntry.Text = existingFertilizer.MolybdenumPercent.ToString();
         ZincEntry.Text = existingFertilizer.ZincPercent.ToString();
+        ChlorineEntry.Text = existingFertilizer.ChlorinePercent.ToString();
+        SilicaEntry.Text = existingFertilizer.SilicaPercent.ToString();
+        HumicAcidEntry.Text = existingFertilizer.HumicAcidPercent.ToString();
+        FulvicAcidEntry.Text = existingFertilizer.FulvicAcidPercent.ToString();
     }
 
     private async Task LoadFertilizersAsync()
@@ -140,6 +144,10 @@ public partial class AddFertilizerPage : ContentPage
         TryParseEntry(ManganeseEntry, value => fertilizer.ManganesePercent = value);
         TryParseEntry(MolybdenumEntry, value => fertilizer.MolybdenumPercent = value);
         TryParseEntry(ZincEntry, value => fertilizer.ZincPercent = value);
+        TryParseEntry(ChlorineEntry, value => fertilizer.ChlorinePercent = value);
+        TryParseEntry(SilicaEntry, value => fertilizer.SilicaPercent = value);
+        TryParseEntry(HumicAcidEntry, value => fertilizer.HumicAcidPercent = value);
+        TryParseEntry(FulvicAcidEntry, value => fertilizer.FulvicAcidPercent = value);
 
         // Add to list if new
         if (!availableFertilizers.Contains(fertilizer))
@@ -181,7 +189,8 @@ public partial class AddFertilizerPage : ContentPage
             NitrogenEntry, PhosphorusEntry, PotassiumEntry, 
             CalciumEntry, MagnesiumEntry, SulfurEntry,
             BoronEntry, CopperEntry, IronEntry,
-            ManganeseEntry, MolybdenumEntry, ZincEntry
+            ManganeseEntry, MolybdenumEntry, ZincEntry,
+            ChlorineEntry, SilicaEntry, HumicAcidEntry, FulvicAcidEntry
         };
         
         var regex = new Regex(@"^$|^\d*\.?\d*$"); // Empty or valid decimal number
