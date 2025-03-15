@@ -45,97 +45,97 @@ namespace FertCalculatorMaui
         public double NitrogenPercent
         {
             get => nitrogenPercent;
-            set { nitrogenPercent = value; OnPropertyChanged(nameof(NitrogenPercent)); OnPropertyChanged(nameof(NitrogenPpm)); }
+            set { nitrogenPercent = value; OnPropertyChanged(nameof(NitrogenPercent)); }
         }
 
         public double PhosphorusPercent
         {
             get => phosphorusPercent;
-            set { phosphorusPercent = value; OnPropertyChanged(nameof(PhosphorusPercent)); OnPropertyChanged(nameof(PhosphorusPpm)); }
+            set { phosphorusPercent = value; OnPropertyChanged(nameof(PhosphorusPercent)); }
         }
 
         public double PotassiumPercent
         {
             get => potassiumPercent;
-            set { potassiumPercent = value; OnPropertyChanged(nameof(PotassiumPercent)); OnPropertyChanged(nameof(PotassiumPpm)); }
+            set { potassiumPercent = value; OnPropertyChanged(nameof(PotassiumPercent)); }
         }
 
         public double CalciumPercent
         {
             get => calciumPercent;
-            set { calciumPercent = value; OnPropertyChanged(nameof(CalciumPercent)); OnPropertyChanged(nameof(CalciumPpm)); }
+            set { calciumPercent = value; OnPropertyChanged(nameof(CalciumPercent)); }
         }
 
         public double MagnesiumPercent
         {
             get => magnesiumPercent;
-            set { magnesiumPercent = value; OnPropertyChanged(nameof(MagnesiumPercent)); OnPropertyChanged(nameof(MagnesiumPpm)); }
+            set { magnesiumPercent = value; OnPropertyChanged(nameof(MagnesiumPercent)); }
         }
 
         public double SulfurPercent
         {
             get => sulfurPercent;
-            set { sulfurPercent = value; OnPropertyChanged(nameof(SulfurPercent)); OnPropertyChanged(nameof(SulfurPpm)); }
+            set { sulfurPercent = value; OnPropertyChanged(nameof(SulfurPercent)); }
         }
 
         public double BoronPercent
         {
             get => boronPercent;
-            set { boronPercent = value; OnPropertyChanged(nameof(BoronPercent)); OnPropertyChanged(nameof(BoronPpm)); }
+            set { boronPercent = value; OnPropertyChanged(nameof(BoronPercent)); }
         }
 
         public double CopperPercent
         {
             get => copperPercent;
-            set { copperPercent = value; OnPropertyChanged(nameof(CopperPercent)); OnPropertyChanged(nameof(CopperPpm)); }
+            set { copperPercent = value; OnPropertyChanged(nameof(CopperPercent)); }
         }
 
         public double IronPercent
         {
             get => ironPercent;
-            set { ironPercent = value; OnPropertyChanged(nameof(IronPercent)); OnPropertyChanged(nameof(IronPpm)); }
+            set { ironPercent = value; OnPropertyChanged(nameof(IronPercent)); }
         }
 
         public double ManganesePercent
         {
             get => manganesePercent;
-            set { manganesePercent = value; OnPropertyChanged(nameof(ManganesePercent)); OnPropertyChanged(nameof(ManganesePpm)); }
+            set { manganesePercent = value; OnPropertyChanged(nameof(ManganesePercent)); }
         }
 
         public double MolybdenumPercent
         {
             get => molybdenumPercent;
-            set { molybdenumPercent = value; OnPropertyChanged(nameof(MolybdenumPercent)); OnPropertyChanged(nameof(MolybdenumPpm)); }
+            set { molybdenumPercent = value; OnPropertyChanged(nameof(MolybdenumPercent)); }
         }
 
         public double ZincPercent
         {
             get => zincPercent;
-            set { zincPercent = value; OnPropertyChanged(nameof(ZincPercent)); OnPropertyChanged(nameof(ZincPpm)); }
+            set { zincPercent = value; OnPropertyChanged(nameof(ZincPercent)); }
         }
 
         public double ChlorinePercent
         {
             get => chlorinePercent;
-            set { chlorinePercent = value; OnPropertyChanged(nameof(ChlorinePercent)); OnPropertyChanged(nameof(ChlorinePpm)); }
+            set { chlorinePercent = value; OnPropertyChanged(nameof(ChlorinePercent)); }
         }
 
         public double SilicaPercent
         {
             get => silicaPercent;
-            set { silicaPercent = value; OnPropertyChanged(nameof(SilicaPercent)); OnPropertyChanged(nameof(SilicaPpm)); }
+            set { silicaPercent = value; OnPropertyChanged(nameof(SilicaPercent)); }
         }
 
         public double HumicAcidPercent
         {
             get => humicAcidPercent;
-            set { humicAcidPercent = value; OnPropertyChanged(nameof(HumicAcidPercent)); OnPropertyChanged(nameof(HumicAcidPpm)); }
+            set { humicAcidPercent = value; OnPropertyChanged(nameof(HumicAcidPercent)); }
         }
 
         public double FulvicAcidPercent
         {
             get => fulvicAcidPercent;
-            set { fulvicAcidPercent = value; OnPropertyChanged(nameof(FulvicAcidPercent)); OnPropertyChanged(nameof(FulvicAcidPpm)); }
+            set { fulvicAcidPercent = value; OnPropertyChanged(nameof(FulvicAcidPercent)); }
         }
 
         // PPM calculation with support for metric/imperial units
@@ -162,24 +162,6 @@ namespace FertCalculatorMaui
         public double SilicaPpm(bool useImperial = false) => GetPpmValue(SilicaPercent, useImperial);
         public double HumicAcidPpm(bool useImperial = false) => GetPpmValue(HumicAcidPercent, useImperial);
         public double FulvicAcidPpm(bool useImperial = false) => GetPpmValue(FulvicAcidPercent, useImperial);
-
-        // Original PPM properties for backwards compatibility
-        public double NitrogenPpm => (NitrogenPercent / 100) * 1000;
-        public double PhosphorusPpm => (PhosphorusPercent / 100) * 1000;
-        public double PotassiumPpm => (PotassiumPercent / 100) * 1000;
-        public double CalciumPpm => (CalciumPercent / 100) * 1000;
-        public double MagnesiumPpm => (MagnesiumPercent / 100) * 1000;
-        public double SulfurPpm => (SulfurPercent / 100) * 1000;
-        public double BoronPpm => (BoronPercent / 100) * 1000;
-        public double CopperPpm => (CopperPercent / 100) * 1000;
-        public double IronPpm => (IronPercent / 100) * 1000;
-        public double ManganesePpm => (ManganesePercent / 100) * 1000;
-        public double MolybdenumPpm => (MolybdenumPercent / 100) * 1000;
-        public double ZincPpm => (ZincPercent / 100) * 1000;
-        public double ChlorinePpm => (ChlorinePercent / 100) * 1000;
-        public double SilicaPpm => (SilicaPercent / 100) * 1000;
-        public double HumicAcidPpm => (HumicAcidPercent / 100) * 1000;
-        public double FulvicAcidPpm => (FulvicAcidPercent / 100) * 1000;
 
         // Conversion helpers for P2O5 and K2O
         public static double P2O5ToP(double p2o5Value) => p2o5Value * 0.4364;
@@ -224,13 +206,6 @@ namespace FertCalculatorMaui
         public List<FertilizerQuantity> Ingredients { get; set; } = new List<FertilizerQuantity>();
     }
 
-    [Serializable]
-    public class ExportData
-    {
-        public List<Fertilizer> Fertilizers { get; set; } = new List<Fertilizer>();
-        public List<FertilizerMix> Mixes { get; set; } = new List<FertilizerMix>();
-    }
-
     // Helper class for application settings
     public class AppSettings : INotifyPropertyChanged
     {
@@ -247,7 +222,7 @@ namespace FertCalculatorMaui
             }
         }
         
-        public string UnitLabel => UseImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
+        public string UnitLabel => UseImperialUnits ? "PPM per gallon" : "PPM per liter";
         
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

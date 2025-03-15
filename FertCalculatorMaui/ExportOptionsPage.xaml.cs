@@ -1,29 +1,33 @@
 using System.Collections.ObjectModel;
-using System.Text.Json;
+using System.ComponentModel;
 using System.Windows.Input;
-using System.Xml.Serialization;
+using FertCalculatorMaui.Services;
 
 namespace FertCalculatorMaui;
 
 public partial class ExportOptionsPage : ContentPage
 {
-    private ExportOptionsViewModel _viewModel;
+    private ExportOptionsViewModel? _viewModel;
 
-    public ExportOptionsPage(List<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
+    public ExportOptionsPage(FileService fileService, List<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
     {
         InitializeComponent();
-        _viewModel = new ExportOptionsViewModel(fertilizers, mixes);
-        _viewModel.CancelCommand = new Command(async () => await Navigation.PopModalAsync());
-        _viewModel.ExportCompleted += async (sender, result) => 
+        _viewModel = new ExportOptionsViewModel(fileService, fertilizers, mixes)
         {
-            if (result.Success)
+            CancelCommand = new Command(async () => await Navigation.PopAsync())
+        };
+        
+        _viewModel.ExportCompleted += async (sender, e) => 
+        {
+            if (e.Success)
             {
-                await Navigation.PopModalAsync();
+                await Navigation.PopAsync();
             }
         };
+        
         BindingContext = _viewModel;
     }
-
+    
     // Event to provide results back to the caller
     public event EventHandler<ExportResult> ExportCompleted
     {
@@ -34,32 +38,32 @@ public partial class ExportOptionsPage : ContentPage
 
 public class ExportOptionsViewModel : INotifyPropertyChanged
 {
-    private List<Fertilizer> _fertilizers;
-    private ObservableCollection<FertilizerMix> _mixes;
+    private readonly FileService _fileService;
+    private readonly List<Fertilizer> _fertilizers;
+    private readonly ObservableCollection<FertilizerMix> _mixes;
     private bool _exportFertilizers = true;
     private bool _exportMixes = true;
-    private bool _exportToXml = true;
-    private bool _exportToJson;
-    private string _fileName = "FertilizerCalculatorExport";
-    private string _statusMessage;
+    private string _fileName = "FertCalculator_Export";
+    private string _statusMessage = string.Empty;
     private string _statusColor = "Gray";
     private bool _hasStatus;
+    private string _errorMessage = string.Empty;
 
-    public ExportOptionsViewModel(List<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
+    public ExportOptionsViewModel(FileService fileService, List<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
     {
-        _fertilizers = fertilizers;
-        _mixes = mixes;
+        _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+        _fertilizers = fertilizers ?? new List<Fertilizer>();
+        _mixes = mixes ?? new ObservableCollection<FertilizerMix>();
         
-        ExportCommand = new Command(ExecuteExport, CanExecuteExport);
+        ExportCommand = new Command(ExecuteExport);
         
         // Set initial status
-        UpdateStatus($"Ready to export {_fertilizers.Count} fertilizer(s) and {_mixes.Count} mix(es).", "Gray");
+        UpdateStatus($"Ready to export {_fertilizers.Count} fertilizer(s) and {_mixes.Count} mix(es) to XML.", "Gray");
     }
-
+    
     // Event for reporting back export results
-    public event EventHandler<ExportResult> ExportCompleted;
+    public event EventHandler<ExportResult>? ExportCompleted;
 
-    // Properties for UI binding
     public bool ExportFertilizers
     {
         get => _exportFertilizers;
@@ -69,8 +73,6 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
             {
                 _exportFertilizers = value;
                 OnPropertyChanged(nameof(ExportFertilizers));
-                OnPropertyChanged(nameof(CanExport));
-                ((Command)ExportCommand).ChangeCanExecute();
             }
         }
     }
@@ -84,34 +86,6 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
             {
                 _exportMixes = value;
                 OnPropertyChanged(nameof(ExportMixes));
-                OnPropertyChanged(nameof(CanExport));
-                ((Command)ExportCommand).ChangeCanExecute();
-            }
-        }
-    }
-
-    public bool ExportToXml
-    {
-        get => _exportToXml;
-        set
-        {
-            if (_exportToXml != value)
-            {
-                _exportToXml = value;
-                OnPropertyChanged(nameof(ExportToXml));
-            }
-        }
-    }
-
-    public bool ExportToJson
-    {
-        get => _exportToJson;
-        set
-        {
-            if (_exportToJson != value)
-            {
-                _exportToJson = value;
-                OnPropertyChanged(nameof(ExportToJson));
             }
         }
     }
@@ -125,8 +99,6 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
             {
                 _fileName = value;
                 OnPropertyChanged(nameof(FileName));
-                OnPropertyChanged(nameof(CanExport));
-                ((Command)ExportCommand).ChangeCanExecute();
             }
         }
     }
@@ -170,82 +142,102 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
         }
     }
 
-    public bool CanExport => (ExportFertilizers || ExportMixes) && !string.IsNullOrWhiteSpace(FileName);
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            if (_errorMessage != value)
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+                OnPropertyChanged(nameof(HasError));
+            }
+        }
+    }
 
-    // Commands
+    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
     public ICommand ExportCommand { get; }
-    public ICommand CancelCommand { get; set; }
-
-    private bool CanExecuteExport() => CanExport;
+    public ICommand? CancelCommand { get; set; }
 
     private async void ExecuteExport()
     {
+        // Clear any previous errors
+        ErrorMessage = string.Empty;
+        
         try
         {
-            var result = new ExportResult { Success = true };
+            // Validate that at least one option is selected
+            if (!ExportFertilizers && !ExportMixes)
+            {
+                ErrorMessage = "Please select at least one option to export.";
+                return;
+            }
             
-            // Prepare the export data
-            var exportData = new ExportData();
+            // Create export data
+            var exportData = new Services.ExportData();
             
             if (ExportFertilizers)
             {
                 exportData.Fertilizers.AddRange(_fertilizers);
+                UpdateStatus("Preparing fertilizers for export...", "Blue");
             }
             
             if (ExportMixes)
             {
                 exportData.Mixes.AddRange(_mixes);
+                UpdateStatus("Preparing mixes for export...", "Blue");
             }
-
-            // Determine file path and extension
-            string extension = ExportToXml ? ".xml" : ".json";
-            string fileName = $"{FileName}{extension}";
             
-            // Get the app's documents directory
-            string appDataDir = FileSystem.AppDataDirectory;
-            string filePath = Path.Combine(appDataDir, fileName);
-
-            // Save the file
-            if (ExportToXml)
+            // Ensure we have a valid filename
+            if (string.IsNullOrWhiteSpace(FileName))
             {
-                // Export to XML
-                using var stream = File.Create(filePath);
-                var serializer = new XmlSerializer(typeof(ExportData));
-                serializer.Serialize(stream, exportData);
+                FileName = "FertCalculator_Export";
+            }
+            
+            // Add .xml extension if not present
+            string fileName = FileName;
+            if (!fileName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+            {
+                fileName += ".xml";
+            }
+            
+            // Get temporary file path for export before sharing
+            string tempFilePath = Path.Combine(_fileService.GetAppDataDirectory(), $"temp_{fileName}");
+            
+            // Save to XML
+            UpdateStatus("Saving data to XML...", "Blue");
+            bool saveSuccess = await _fileService.SaveToXmlAsync(exportData, Path.GetFileName(tempFilePath));
+            
+            if (!saveSuccess)
+            {
+                ErrorMessage = "Failed to save export data.";
+                UpdateStatus("Export failed.", "Red");
+                ExportCompleted?.Invoke(this, new ExportResult { Success = false, Error = "Failed to save export data." });
+                return;
+            }
+            
+            // Share the file
+            UpdateStatus("Opening share dialog...", "Blue");
+            bool shareSuccess = await _fileService.ShareFileAsync(tempFilePath, "Share Fertilizer Calculator Data");
+            
+            if (shareSuccess)
+            {
+                UpdateStatus("Export completed successfully!", "Green");
+                ExportCompleted?.Invoke(this, new ExportResult { Success = true });
             }
             else
             {
-                // Export to JSON
-                string jsonData = JsonSerializer.Serialize(exportData, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(filePath, jsonData);
+                UpdateStatus("Export was canceled or failed.", "Red");
+                ExportCompleted?.Invoke(this, new ExportResult { Success = false, Error = "Sharing was canceled or failed." });
             }
-
-            // For sharing the file
-            try
-            {
-                await Share.RequestAsync(new ShareFileRequest
-                {
-                    Title = "Export Fertilizer Data",
-                    File = new ShareFile(filePath)
-                });
-                
-                result.FilePath = filePath;
-                UpdateStatus($"Export completed successfully! File saved to {fileName}", "Green");
-            }
-            catch (Exception ex)
-            {
-                // If sharing fails, just notify about file location
-                result.FilePath = filePath;
-                UpdateStatus($"Export completed. File saved to: {filePath}", "Green");
-            }
-
-            // Notify that export is completed
-            ExportCompleted?.Invoke(this, result);
         }
         catch (Exception ex)
         {
-            UpdateStatus($"Export failed: {ex.Message}", "Red");
-            ExportCompleted?.Invoke(this, new ExportResult { Success = false, ErrorMessage = ex.Message });
+            ErrorMessage = $"Export failed: {ex.Message}";
+            UpdateStatus("Export failed.", "Red");
+            ExportCompleted?.Invoke(this, new ExportResult { Success = false, Error = ex.Message });
         }
     }
 
@@ -256,16 +248,16 @@ public class ExportOptionsViewModel : INotifyPropertyChanged
         HasStatus = !string.IsNullOrEmpty(message);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
 
-public class ExportResult
+public class ExportResult : EventArgs
 {
     public bool Success { get; set; }
-    public string ErrorMessage { get; set; }
-    public string FilePath { get; set; }
+    public string Error { get; set; } = string.Empty;
 }

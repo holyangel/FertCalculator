@@ -137,6 +137,7 @@
             </HorizontalStackLayout>
             
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Picker x:Name="MixPicker" WidthRequest="200" Title="Select Mix" Margin="0,5,0,0" />
                 <Button Text="Compare Mixes" Clicked="OnCompareMixesClicked" />
                 <Button Text="Import" Clicked="OnImportClicked" />
                 <Button Text="Export" Clicked="OnExportClicked" />

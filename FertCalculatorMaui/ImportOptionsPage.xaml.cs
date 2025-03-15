@@ -1,65 +1,148 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
+using FertCalculatorMaui.Services;
 
 namespace FertCalculatorMaui;
 
 public partial class ImportOptionsPage : ContentPage
 {
-    private ImportOptionsViewModel _viewModel;
+    private ImportOptionsViewModel? _viewModel;
+    private readonly FileService _fileService;
+    private readonly ObservableCollection<Fertilizer> _availableFertilizers;
+    private readonly ObservableCollection<FertilizerMix> _savedMixes;
+    
+    // Static readonly collections for file picker types - XML only
+    private static readonly Dictionary<DevicePlatform, IEnumerable<string>> _filePickerTypes = new()
+    {
+        { DevicePlatform.Android, new[] { "application/xml" } },
+        { DevicePlatform.iOS, new[] { "public.xml" } },
+        { DevicePlatform.WinUI, new[] { ".xml" } },
+        { DevicePlatform.MacCatalyst, new[] { "public.xml" } }
+    };
 
-    public ImportOptionsPage(ExportData importData, List<Fertilizer> existingFertilizers, ObservableCollection<FertilizerMix> existingMixes)
+    public ImportOptionsPage(FileService fileService, ObservableCollection<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
     {
         InitializeComponent();
-        _viewModel = new ImportOptionsViewModel(importData, existingFertilizers, existingMixes);
-        _viewModel.CancelCommand = new Command(async () => await Navigation.PopModalAsync());
-        _viewModel.ImportCompleted += async (sender, result) => 
-        {
-            if (result.Success)
-            {
-                await Navigation.PopModalAsync();
-            }
-        };
-        BindingContext = _viewModel;
+        _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+        _availableFertilizers = fertilizers ?? new ObservableCollection<Fertilizer>();
+        _savedMixes = mixes ?? new ObservableCollection<FertilizerMix>();
+        
+        // Show file picker to select the import file
+        _ = PickAndImportFileAsync();
     }
 
-    // Event to provide results back to the caller
-    public event EventHandler<ImportResult> ImportCompleted
+    private async Task PickAndImportFileAsync()
     {
-        add => _viewModel.ImportCompleted += value;
-        remove => _viewModel.ImportCompleted -= value;
+        try
+        {
+            var result = await FilePicker.PickAsync(new PickOptions
+            {
+                FileTypes = new FilePickerFileType(_filePickerTypes),
+                PickerTitle = "Select an XML file to import"
+            });
+
+            if (result != null)
+            {
+                string extension = Path.GetExtension(result.FileName).ToLowerInvariant();
+                
+                try
+                {
+                    // Only handle XML files
+                    if (extension == ".xml")
+                    {
+                        // Import from XML
+                        using var stream = await result.OpenReadAsync();
+                        var importResult = await _fileService.ImportDataAsync(stream);
+                        
+                        if (importResult.Success && importResult.ImportedData != null)
+                        {
+                            // Create the view model with the loaded data
+                            _viewModel = new ImportOptionsViewModel(importResult.ImportedData, _availableFertilizers.ToList(), _savedMixes.ToList())
+                            {
+                                FileService = _fileService,
+                                CancelCommand = new Command(async () => await Navigation.PopAsync())
+                            };
+                            
+                            _viewModel.ImportCompleted += async (s, e) => 
+                            {
+                                if (e.Success)
+                                {
+                                    await Navigation.PopAsync();
+                                }
+                            };
+                            BindingContext = _viewModel;
+                        }
+                        else
+                        {
+                            string errorMessage = !string.IsNullOrEmpty(importResult.Error) 
+                                ? $"Failed to load import data: {importResult.Error}" 
+                                : "Failed to load import data from the selected file.";
+                            
+                            await DisplayAlert("Error", errorMessage, "OK");
+                            await Navigation.PopAsync();
+                        }
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", "Unsupported file format. Please select an XML file.", "OK");
+                        await Navigation.PopAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", $"An error occurred while importing: {ex.Message}", "OK");
+                    await Navigation.PopAsync();
+                }
+            }
+            else
+            {
+                // User canceled the file picking
+                await Navigation.PopAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"An error occurred while picking a file: {ex.Message}", "OK");
+            await Navigation.PopAsync();
+        }
     }
 }
 
 public class ImportOptionsViewModel : INotifyPropertyChanged
 {
-    private ExportData _importData;
-    private List<Fertilizer> _existingFertilizers;
-    private ObservableCollection<FertilizerMix> _existingMixes;
+    private readonly ExportData _importData;
+    private readonly List<Fertilizer> _existingFertilizers;
+    private readonly List<FertilizerMix> _existingMixes;
     private bool _importFertilizers = true;
     private bool _importMixes = true;
-    private bool _skipDuplicates = true;
-    private bool _replaceDuplicates;
-    private bool _renameDuplicates;
-    private string _statusMessage;
+    private string _statusMessage = string.Empty;
     private string _statusColor = "Gray";
     private bool _hasStatus;
+    private string _errorMessage = string.Empty;
+    private bool _isBusy;
 
-    public ImportOptionsViewModel(ExportData importData, List<Fertilizer> existingFertilizers, ObservableCollection<FertilizerMix> existingMixes)
+    public ImportOptionsViewModel(ExportData importData, List<Fertilizer> existingFertilizers, List<FertilizerMix> existingMixes)
     {
-        _importData = importData;
-        _existingFertilizers = existingFertilizers;
-        _existingMixes = existingMixes;
+        _importData = importData ?? throw new ArgumentNullException(nameof(importData));
+        _existingFertilizers = existingFertilizers ?? new List<Fertilizer>();
+        _existingMixes = existingMixes ?? new List<FertilizerMix>();
         
-        ImportCommand = new Command(ExecuteImport, CanExecuteImport);
+        ImportCommand = new Command(ExecuteImport);
+        
+        // Count available data
+        int newFertilizersCount = CountNewFertilizers();
+        int newMixesCount = CountNewMixes();
         
         // Set initial status
-        UpdateStatus($"Ready to import {_importData.Fertilizers.Count} fertilizer(s) and {_importData.Mixes.Count} mix(es).", "Gray");
+        UpdateStatus($"Found {newFertilizersCount} new fertilizer(s) and {newMixesCount} new mix(es) to import.", "Gray");
     }
-
+    
+    public FileService FileService { get; set; }
+    
     // Event for reporting back import results
     public event EventHandler<ImportResult> ImportCompleted;
 
-    // Properties for UI binding
     public bool ImportFertilizers
     {
         get => _importFertilizers;
@@ -69,8 +152,6 @@ public class ImportOptionsViewModel : INotifyPropertyChanged
             {
                 _importFertilizers = value;
                 OnPropertyChanged(nameof(ImportFertilizers));
-                OnPropertyChanged(nameof(CanImport));
-                ((Command)ImportCommand).ChangeCanExecute();
             }
         }
     }
@@ -84,47 +165,6 @@ public class ImportOptionsViewModel : INotifyPropertyChanged
             {
                 _importMixes = value;
                 OnPropertyChanged(nameof(ImportMixes));
-                OnPropertyChanged(nameof(CanImport));
-                ((Command)ImportCommand).ChangeCanExecute();
-            }
-        }
-    }
-
-    public bool SkipDuplicates
-    {
-        get => _skipDuplicates;
-        set
-        {
-            if (_skipDuplicates != value)
-            {
-                _skipDuplicates = value;
-                OnPropertyChanged(nameof(SkipDuplicates));
-            }
-        }
-    }
-
-    public bool ReplaceDuplicates
-    {
-        get => _replaceDuplicates;
-        set
-        {
-            if (_replaceDuplicates != value)
-            {
-                _replaceDuplicates = value;
-                OnPropertyChanged(nameof(ReplaceDuplicates));
-            }
-        }
-    }
-
-    public bool RenameDuplicates
-    {
-        get => _renameDuplicates;
-        set
-        {
-            if (_renameDuplicates != value)
-            {
-                _renameDuplicates = value;
-                OnPropertyChanged(nameof(RenameDuplicates));
             }
         }
     }
@@ -168,153 +208,216 @@ public class ImportOptionsViewModel : INotifyPropertyChanged
         }
     }
 
-    public bool CanImport => ImportFertilizers || ImportMixes;
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            if (_errorMessage != value)
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+                OnPropertyChanged(nameof(HasError));
+            }
+        }
+    }
+    
+    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+    
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set
+        {
+            if (_isBusy != value)
+            {
+                _isBusy = value;
+                OnPropertyChanged(nameof(IsBusy));
+            }
+        }
+    }
 
-    // Commands
     public ICommand ImportCommand { get; }
     public ICommand CancelCommand { get; set; }
 
-    private bool CanExecuteImport() => CanImport;
-
-    private void ExecuteImport()
+    private async void ExecuteImport()
     {
+        if (FileService == null)
+        {
+            ErrorMessage = "File service is not available.";
+            return;
+        }
+        
+        // Clear any previous errors
+        ErrorMessage = string.Empty;
+        IsBusy = true;
+        
         try
         {
-            var result = new ImportResult { Success = true };
+            // Validate that at least one option is selected
+            if (!ImportFertilizers && !ImportMixes)
+            {
+                ErrorMessage = "Please select at least one option to import.";
+                IsBusy = false;
+                return;
+            }
             
-            // Track counts for status reporting
-            int fertilizersAdded = 0;
-            int fertilizersSkipped = 0;
-            int fertilizersReplaced = 0;
-            int mixesAdded = 0;
-            int mixesSkipped = 0;
-            int mixesReplaced = 0;
-
+            List<Fertilizer> fertilizersToSave = new List<Fertilizer>(_existingFertilizers);
+            List<FertilizerMix> mixesToSave = new List<FertilizerMix>(_existingMixes);
+            
+            int importedFertilizersCount = 0;
+            int importedMixesCount = 0;
+            
             // Import fertilizers if selected
-            if (ImportFertilizers)
+            if (ImportFertilizers && _importData.Fertilizers.Count > 0)
             {
-                foreach (var importFertilizer in _importData.Fertilizers)
+                UpdateStatus("Importing fertilizers...", "Blue");
+                
+                // Find new fertilizers (ones that don't exist in the current list)
+                foreach (var fertilizer in _importData.Fertilizers)
                 {
-                    // Check if fertilizer with same name exists
-                    var existingFertilizer = _existingFertilizers.FirstOrDefault(f => f.Name == importFertilizer.Name);
-                    
-                    if (existingFertilizer != null)
+                    // Check if fertilizer already exists (by name)
+                    if (!fertilizersToSave.Any(f => f.Name.Equals(fertilizer.Name, StringComparison.OrdinalIgnoreCase)))
                     {
-                        // Handle duplicates according to selected option
-                        if (SkipDuplicates)
-                        {
-                            fertilizersSkipped++;
-                            continue;
-                        }
-                        else if (ReplaceDuplicates)
-                        {
-                            // Remove existing fertilizer
-                            _existingFertilizers.Remove(existingFertilizer);
-                            fertilizersReplaced++;
-                        }
-                        else if (RenameDuplicates)
-                        {
-                            // Rename the imported fertilizer
-                            int counter = 1;
-                            string newName;
-                            do
-                            {
-                                newName = $"{importFertilizer.Name} ({counter})";
-                                counter++;
-                            } while (_existingFertilizers.Any(f => f.Name == newName));
-                            
-                            importFertilizer.Name = newName;
-                        }
+                        fertilizersToSave.Add(fertilizer);
+                        importedFertilizersCount++;
                     }
-                    
-                    // Add the fertilizer
-                    _existingFertilizers.Add(importFertilizer);
-                    fertilizersAdded++;
-                    result.ImportedFertilizers.Add(importFertilizer);
+                }
+                
+                // Sort fertilizers alphabetically
+                fertilizersToSave = fertilizersToSave.OrderBy(f => f.Name).ToList();
+                
+                // Save updated fertilizers list
+                bool fertilizersSaved = await FileService.SaveFertilizersAsync(fertilizersToSave);
+                if (!fertilizersSaved)
+                {
+                    throw new Exception("Failed to save imported fertilizers.");
                 }
             }
-
+            
             // Import mixes if selected
-            if (ImportMixes)
+            if (ImportMixes && _importData.Mixes.Count > 0)
             {
-                foreach (var importMix in _importData.Mixes)
+                UpdateStatus("Importing mixes...", "Blue");
+                
+                // Add all fertilizers first to ensure mix ingredients exist
+                if (!ImportFertilizers && _importData.Fertilizers.Count > 0)
                 {
-                    // Verify all ingredients exist
-                    bool allIngredientsExist = importMix.Ingredients.All(ingredient => 
-                        _existingFertilizers.Any(f => f.Name == ingredient.FertilizerName));
-                    
-                    if (!allIngredientsExist)
+                    // If fertilizers aren't selected for import, we still need to make sure
+                    // any required fertilizers for mixes exist
+                    foreach (var mix in _importData.Mixes)
                     {
-                        mixesSkipped++;
-                        continue; // Skip mixes with missing ingredients
-                    }
-
-                    // Check if mix with same name exists
-                    var existingMix = _existingMixes.FirstOrDefault(m => m.Name == importMix.Name);
-                    
-                    if (existingMix != null)
-                    {
-                        // Handle duplicates according to selected option
-                        if (SkipDuplicates)
+                        foreach (var ingredient in mix.Ingredients)
                         {
-                            mixesSkipped++;
-                            continue;
-                        }
-                        else if (ReplaceDuplicates)
-                        {
-                            // Remove existing mix
-                            _existingMixes.Remove(existingMix);
-                            mixesReplaced++;
-                        }
-                        else if (RenameDuplicates)
-                        {
-                            // Rename the imported mix
-                            int counter = 1;
-                            string newName;
-                            do
+                            // Check if this ingredient fertilizer exists
+                            bool fertilizerExists = fertilizersToSave.Any(f => 
+                                f.Name.Equals(ingredient.FertilizerName, StringComparison.OrdinalIgnoreCase));
+                                
+                            if (!fertilizerExists)
                             {
-                                newName = $"{importMix.Name} ({counter})";
-                                counter++;
-                            } while (_existingMixes.Any(m => m.Name == newName));
-                            
-                            importMix.Name = newName;
+                                // Try to find it in the import data
+                                var requiredFertilizer = _importData.Fertilizers.FirstOrDefault(f => 
+                                    f.Name.Equals(ingredient.FertilizerName, StringComparison.OrdinalIgnoreCase));
+                                    
+                                if (requiredFertilizer != null)
+                                {
+                                    // Add the required fertilizer
+                                    fertilizersToSave.Add(requiredFertilizer);
+                                }
+                            }
                         }
                     }
                     
-                    // Add the mix
-                    _existingMixes.Add(importMix);
-                    mixesAdded++;
-                    result.ImportedMixes.Add(importMix);
+                    // Sort and save fertilizers if we added any required ones
+                    fertilizersToSave = fertilizersToSave.OrderBy(f => f.Name).ToList();
+                    await FileService.SaveFertilizersAsync(fertilizersToSave);
+                }
+                
+                // Find new mixes (ones that don't exist in the current list)
+                foreach (var mix in _importData.Mixes)
+                {
+                    // Check if this mix already exists (by name)
+                    if (!mixesToSave.Any(m => m.Name.Equals(mix.Name, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        // Verify that all ingredients exist in the available fertilizers
+                        bool allIngredientsExist = true;
+                        
+                        foreach (var ingredient in mix.Ingredients)
+                        {
+                            if (!fertilizersToSave.Any(f => f.Name.Equals(ingredient.FertilizerName, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                allIngredientsExist = false;
+                                break;
+                            }
+                        }
+                        
+                        if (allIngredientsExist)
+                        {
+                            mixesToSave.Add(mix);
+                            importedMixesCount++;
+                        }
+                        else
+                        {
+                            UpdateStatus($"Skipped mix '{mix.Name}' because some ingredients are missing.", "Orange");
+                        }
+                    }
+                }
+                
+                // Save updated mixes list
+                bool mixesSaved = await FileService.SaveMixesAsync(new ObservableCollection<FertilizerMix>(mixesToSave));
+                if (!mixesSaved)
+                {
+                    throw new Exception("Failed to save imported mixes.");
                 }
             }
-
-            // Sort fertilizers alphabetically
-            List<Fertilizer> sortedFertilizers = _existingFertilizers.OrderBy(f => f.Name).ToList();
-            _existingFertilizers.Clear();
-            foreach (var fertilizer in sortedFertilizers)
-            {
-                _existingFertilizers.Add(fertilizer);
-            }
-
-            // Update result counts
-            result.FertilizersAdded = fertilizersAdded;
-            result.FertilizersSkipped = fertilizersSkipped;
-            result.FertilizersReplaced = fertilizersReplaced;
-            result.MixesAdded = mixesAdded;
-            result.MixesSkipped = mixesSkipped;
-            result.MixesReplaced = mixesReplaced;
-
-            // Show success status
-            UpdateStatus($"Import completed successfully!", "Green");
-
-            // Notify that import is completed
-            ImportCompleted?.Invoke(this, result);
+            
+            // Update status with results
+            string result = $"Imported {importedFertilizersCount} fertilizer(s) and {importedMixesCount} mix(es).";
+            UpdateStatus(result, "Green");
+            
+            // Notify of completion
+            ImportCompleted?.Invoke(this, new ImportResult { 
+                Success = true, 
+                ImportedFertilizersCount = importedFertilizersCount,
+                ImportedMixesCount = importedMixesCount 
+            });
         }
         catch (Exception ex)
         {
-            UpdateStatus($"Import failed: {ex.Message}", "Red");
-            ImportCompleted?.Invoke(this, new ImportResult { Success = false, ErrorMessage = ex.Message });
+            ErrorMessage = $"Import failed: {ex.Message}";
+            UpdateStatus("Import failed.", "Red");
+            ImportCompleted?.Invoke(this, new ImportResult { Success = false, Error = ex.Message });
         }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private int CountNewFertilizers()
+    {
+        int count = 0;
+        foreach (var fertilizer in _importData.Fertilizers)
+        {
+            if (!_existingFertilizers.Any(f => f.Name.Equals(fertilizer.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    private int CountNewMixes()
+    {
+        int count = 0;
+        foreach (var mix in _importData.Mixes)
+        {
+            if (!_existingMixes.Any(m => m.Name.Equals(mix.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     private void UpdateStatus(string message, string color)
@@ -324,23 +427,18 @@ public class ImportOptionsViewModel : INotifyPropertyChanged
         HasStatus = !string.IsNullOrEmpty(message);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
     protected void OnPropertyChanged(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
 
-public class ImportResult
+public class ImportResult : EventArgs
 {
     public bool Success { get; set; }
-    public string ErrorMessage { get; set; }
-    public List<Fertilizer> ImportedFertilizers { get; set; } = new List<Fertilizer>();
-    public List<FertilizerMix> ImportedMixes { get; set; } = new List<FertilizerMix>();
-    public int FertilizersAdded { get; set; }
-    public int FertilizersSkipped { get; set; }
-    public int FertilizersReplaced { get; set; }
-    public int MixesAdded { get; set; }
-    public int MixesSkipped { get; set; }
-    public int MixesReplaced { get; set; }
+    public string Error { get; set; } = string.Empty;
+    public int ImportedFertilizersCount { get; set; }
+    public int ImportedMixesCount { get; set; }
 }

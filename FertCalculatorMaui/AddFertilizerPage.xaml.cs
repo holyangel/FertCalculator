@@ -6,7 +6,7 @@ namespace FertCalculatorMaui;
 public partial class AddFertilizerPage : ContentPage
 {
     private readonly FileService fileService;
-    private List<Fertilizer> availableFertilizers;
+    private List<Fertilizer> availableFertilizers = new List<Fertilizer>();
     private const string fertilizerDbPath = "Fertilizers.xml";
 
     public AddFertilizerPage(FileService fileService)

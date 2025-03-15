@@ -11,9 +11,6 @@ public partial class MainPage : ContentPage
     private ObservableCollection<FertilizerMix> savedMixes;
     private ObservableCollection<FertilizerQuantity> currentMix;
     private bool useImperialUnits = false; // false = per liter (metric), true = per gallon (imperial)
-    private const double GALLON_TO_LITER = 3.78541;
-    private string fertilizerDbPath = "Fertilizers.xml";
-    private string mixesDbPath = "Mixes.xml";
     private readonly FileService fileService;
     private AppSettings appSettings;
 
@@ -90,7 +87,7 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            var fertilizers = await fileService.LoadFromXmlAsync<List<Fertilizer>>(fertilizerDbPath);
+            var fertilizers = await fileService.LoadFertilizersAsync();
             if (fertilizers != null)
             {
                 availableFertilizers.Clear();
@@ -103,7 +100,7 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error loading fertilizers: {ex.Message}", "OK");
+            await DisplayAlert("Error", $"Failed to load fertilizers: {ex.Message}", "OK");
         }
     }
 
@@ -111,7 +108,7 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            var mixes = await fileService.LoadFromXmlAsync<List<FertilizerMix>>(mixesDbPath);
+            var mixes = await fileService.LoadMixesAsync();
             if (mixes != null)
             {
                 savedMixes.Clear();
@@ -119,36 +116,64 @@ public partial class MainPage : ContentPage
                 {
                     savedMixes.Add(mix);
                 }
+                
+                // Update the picker
+                MixPicker.ItemsSource = savedMixes.Select(m => m.Name).ToList();
+                MixPicker.IsEnabled = savedMixes.Count > 0;
             }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Error loading mixes: {ex.Message}", "OK");
+            await DisplayAlert("Error", $"Failed to load mixes: {ex.Message}", "OK");
         }
     }
 
-    private async void OnFertilizerSelected(object sender, SelectionChangedEventArgs e)
+    private void OnFertilizerSelected(object sender, SelectionChangedEventArgs e)
     {
-        if (e.CurrentSelection.FirstOrDefault() is Fertilizer selectedFertilizer)
+        if (e.CurrentSelection.Count > 0)
         {
-            // Check if already in mix
-            if (currentMix.Any(i => i.FertilizerName == selectedFertilizer.Name))
+            var selectedFertilizer = e.CurrentSelection[0] as Fertilizer;
+            if (selectedFertilizer != null)
             {
-                await DisplayAlert("Already Added", "This fertilizer is already in the current mix.", "OK");
-                FertilizerListView.SelectedItem = null;
-                return;
+                // If the fertilizer is already in the mix, increment its quantity
+                var existingItem = currentMix.FirstOrDefault(item => item.FertilizerName == selectedFertilizer.Name);
+                if (existingItem != null)
+                {
+                    existingItem.Quantity += 1;
+                }
+                else
+                {
+                    // Add 1 gram of the selected fertilizer to the mix
+                    currentMix.Add(new FertilizerQuantity { FertilizerName = selectedFertilizer.Name, Quantity = 1 });
+                }
+                
+                // Update the UI
+                UpdateNutrientTotals();
             }
-
-            // Add to mix
-            var quantity = new FertilizerQuantity
-            {
-                FertilizerName = selectedFertilizer.Name,
-                Quantity = 1.0 // Default quantity
-            };
-
-            currentMix.Add(quantity);
-            UpdateNutrientTotals();
+            
+            // Clear selection
             FertilizerListView.SelectedItem = null;
+        }
+    }
+    
+    private void OnQuantityChanged(object sender, EventArgs e)
+    {
+        if (sender is Entry entry && entry.BindingContext is FertilizerQuantity item)
+        {
+            // Ensure the quantity is a valid number
+            if (double.TryParse(entry.Text, out double quantity))
+            {
+                // Update the quantity in the model
+                item.Quantity = quantity;
+                
+                // Update nutrient calculations
+                UpdateNutrientTotals();
+            }
+            else
+            {
+                // If not a valid number, revert to previous value
+                entry.Text = item.Quantity.ToString();
+            }
         }
     }
 
@@ -159,25 +184,18 @@ public partial class MainPage : ContentPage
 
     private void OnRemoveFertilizerClicked(object sender, EventArgs e)
     {
-        if (MixListView.SelectedItem is FertilizerQuantity selectedItem)
+        if (sender is Button button && button.CommandParameter is FertilizerQuantity item)
         {
-            currentMix.Remove(selectedItem);
+            currentMix.Remove(item);
+            
+            // Update nutrient totals
             UpdateNutrientTotals();
         }
-        else
-        {
-            DisplayAlert("No Selection", "Please select a fertilizer to remove", "OK");
-        }
-    }
-
-    private void OnQuantityChanged(object sender, EventArgs e)
-    {
-        UpdateNutrientTotals();
     }
 
     private void UpdateNutrientTotals()
     {
-        // Initialize all nutrient totals to 0
+        // Calculate nutrient totals
         double nitrogenTotal = 0;
         double phosphorusTotal = 0;
         double potassiumTotal = 0;
@@ -195,56 +213,66 @@ public partial class MainPage : ContentPage
         double humicAcidTotal = 0;
         double fulvicAcidTotal = 0;
         
+        double totalGrams = 0;
+        
+        // Calculate for each fertilizer in the mix
         foreach (var item in currentMix)
         {
-            // Find the fertilizer in the available list
             var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == item.FertilizerName);
-            if (fertilizer != null)
-            {
-                double quantity = item.Quantity;
-                
-                // Calculate PPM based on nutrient percentages
-                nitrogenTotal += fertilizer.CalculateNitrogenPpm(useImperialUnits) * quantity / 1000;
-                phosphorusTotal += fertilizer.CalculatePhosphorusPpm(useImperialUnits) * quantity / 1000;
-                potassiumTotal += fertilizer.CalculatePotassiumPpm(useImperialUnits) * quantity / 1000;
-                calciumTotal += fertilizer.CalculateCalciumPpm(useImperialUnits) * quantity / 1000;
-                magnesiumTotal += fertilizer.CalculateMagnesiumPpm(useImperialUnits) * quantity / 1000;
-                sulfurTotal += fertilizer.CalculateSulfurPpm(useImperialUnits) * quantity / 1000;
-                boronTotal += fertilizer.CalculateBoronPpm(useImperialUnits) * quantity / 1000;
-                copperTotal += fertilizer.CalculateCopperPpm(useImperialUnits) * quantity / 1000;
-                ironTotal += fertilizer.CalculateIronPpm(useImperialUnits) * quantity / 1000;
-                manganeseTotal += fertilizer.CalculateManganesePpm(useImperialUnits) * quantity / 1000;
-                molybdenumTotal += fertilizer.CalculateMolybdenumPpm(useImperialUnits) * quantity / 1000;
-                zincTotal += fertilizer.CalculateZincPpm(useImperialUnits) * quantity / 1000;
-                chlorineTotal += fertilizer.CalculateChlorinePpm(useImperialUnits) * quantity / 1000;
-                silicaTotal += fertilizer.CalculateSilicaPpm(useImperialUnits) * quantity / 1000;
-                humicAcidTotal += fertilizer.CalculateHumicAcidPpm(useImperialUnits) * quantity / 1000;
-                fulvicAcidTotal += fertilizer.CalculateFulvicAcidPpm(useImperialUnits) * quantity / 1000;
-            }
+            if (fertilizer == null) continue;
+            
+            double grams = item.Quantity;
+            totalGrams += grams;
+            
+            // Calculate weighted contribution of each nutrient
+            nitrogenTotal += (fertilizer.NitrogenPercent / 100) * grams;
+            phosphorusTotal += (fertilizer.PhosphorusPercent / 100) * grams;
+            potassiumTotal += (fertilizer.PotassiumPercent / 100) * grams;
+            calciumTotal += (fertilizer.CalciumPercent / 100) * grams;
+            magnesiumTotal += (fertilizer.MagnesiumPercent / 100) * grams;
+            sulfurTotal += (fertilizer.SulfurPercent / 100) * grams;
+            boronTotal += (fertilizer.BoronPercent / 100) * grams;
+            copperTotal += (fertilizer.CopperPercent / 100) * grams;
+            ironTotal += (fertilizer.IronPercent / 100) * grams;
+            manganeseTotal += (fertilizer.ManganesePercent / 100) * grams;
+            molybdenumTotal += (fertilizer.MolybdenumPercent / 100) * grams;
+            zincTotal += (fertilizer.ZincPercent / 100) * grams;
+            chlorineTotal += (fertilizer.ChlorinePercent / 100) * grams;
+            silicaTotal += (fertilizer.SilicaPercent / 100) * grams;
+            humicAcidTotal += (fertilizer.HumicAcidPercent / 100) * grams;
+            fulvicAcidTotal += (fertilizer.FulvicAcidPercent / 100) * grams;
         }
         
-        // Update PPM header based on units
-        PpmHeaderLabel.Text = useImperialUnits ? "PPM (per gal)" : "PPM (per L)";
+        // Convert to PPM (mg/L or mg/gal depending on units)
+        if (totalGrams > 0)
+        {
+            // Calculate PPM in water-based solution
+            // If imperial units are used, we need to adjust for gallons vs liters
+            double conversionFactor = 1.0;
+            if (useImperialUnits)
+            {
+                conversionFactor = 1.0 / 3.78541;
+            }
+            
+            nitrogenTotal = (nitrogenTotal / totalGrams) * conversionFactor;
+            phosphorusTotal = (phosphorusTotal / totalGrams) * conversionFactor;
+            potassiumTotal = (potassiumTotal / totalGrams) * conversionFactor;
+            calciumTotal = (calciumTotal / totalGrams) * conversionFactor;
+            magnesiumTotal = (magnesiumTotal / totalGrams) * conversionFactor;
+            sulfurTotal = (sulfurTotal / totalGrams) * conversionFactor;
+            boronTotal = (boronTotal / totalGrams) * conversionFactor;
+            copperTotal = (copperTotal / totalGrams) * conversionFactor;
+            ironTotal = (ironTotal / totalGrams) * conversionFactor;
+            manganeseTotal = (manganeseTotal / totalGrams) * conversionFactor;
+            molybdenumTotal = (molybdenumTotal / totalGrams) * conversionFactor;
+            zincTotal = (zincTotal / totalGrams) * conversionFactor;
+            chlorineTotal = (chlorineTotal / totalGrams) * conversionFactor;
+            silicaTotal = (silicaTotal / totalGrams) * conversionFactor;
+            humicAcidTotal = (humicAcidTotal / totalGrams) * conversionFactor;
+            fulvicAcidTotal = (fulvicAcidTotal / totalGrams) * conversionFactor;
+        }
         
-        // Update UI with totals (percentages)
-        NitrogenPercentLabel.Text = (nitrogenTotal * 100).ToString("F2");
-        PhosphorusPercentLabel.Text = (phosphorusTotal * 100).ToString("F2");
-        PotassiumPercentLabel.Text = (potassiumTotal * 100).ToString("F2");
-        CalciumPercentLabel.Text = (calciumTotal * 100).ToString("F2");
-        MagnesiumPercentLabel.Text = (magnesiumTotal * 100).ToString("F2");
-        SulfurPercentLabel.Text = (sulfurTotal * 100).ToString("F2");
-        BoronPercentLabel.Text = (boronTotal * 100).ToString("F2");
-        CopperPercentLabel.Text = (copperTotal * 100).ToString("F2");
-        IronPercentLabel.Text = (ironTotal * 100).ToString("F2");
-        ManganesePercentLabel.Text = (manganeseTotal * 100).ToString("F2");
-        MolybdenumPercentLabel.Text = (molybdenumTotal * 100).ToString("F2");
-        ZincPercentLabel.Text = (zincTotal * 100).ToString("F2");
-        ChlorinePercentLabel.Text = (chlorineTotal * 100).ToString("F2");
-        SilicaPercentLabel.Text = (silicaTotal * 100).ToString("F2");
-        HumicAcidPercentLabel.Text = (humicAcidTotal * 100).ToString("F2");
-        FulvicAcidPercentLabel.Text = (fulvicAcidTotal * 100).ToString("F2");
-        
-        // Update UI with totals (PPM)
+        // Update the UI
         NitrogenPpmLabel.Text = (nitrogenTotal * 1000).ToString("F1");
         PhosphorusPpmLabel.Text = (phosphorusTotal * 1000).ToString("F1");
         PotassiumPpmLabel.Text = (potassiumTotal * 1000).ToString("F1");
@@ -263,17 +291,26 @@ public partial class MainPage : ContentPage
         FulvicAcidPpmLabel.Text = (fulvicAcidTotal * 1000).ToString("F1");
     }
 
-    private void UpdateUnitDisplay()
+    private async void UpdateUnitDisplay()
     {
-        // Update the unit label for the mix entries
-        UnitLabel.Text = useImperialUnits ? "g/gal" : "g/L";
-        
         // Update the units type label
         UnitsTypeLabel.Text = useImperialUnits ? "Imperial Units (per gallon)" : "Metric Units (per liter)";
         
+        // Update PPM header label
+        PpmHeaderLabel.Text = useImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
+        
+        // Since UnitLabel is in a DataTemplate, we need to refresh the CollectionView
+        // to update all instances
+        MixListView.ItemsSource = null;
+        MixListView.ItemsSource = currentMix;
+        
         // Save the setting
         appSettings.UseImperialUnits = useImperialUnits;
-        _ = fileService.SaveToXmlAsync(appSettings, "AppSettings.xml");
+        bool success = await fileService.SaveToXmlAsync(appSettings, "AppSettings.xml");
+        if (!success)
+        {
+            await DisplayAlert("Error", "Failed to save settings", "OK");
+        }
         
         // Force the collection view to refresh
         var temp = MixListView.ItemsSource;
@@ -302,93 +339,104 @@ public partial class MainPage : ContentPage
 
     private async void OnLoadMixClicked(object sender, EventArgs e)
     {
-        if (savedMixes.Count == 0)
+        if (MixPicker.SelectedItem == null)
         {
-            await DisplayAlert("No Saved Mixes", "There are no saved mixes to load", "OK");
+            await DisplayAlert("Error", "Please select a mix to load", "OK");
             return;
         }
         
-        // Create a list of mix names for the user to choose from
-        string[] mixNames = savedMixes.Select(m => m.Name).ToArray();
-        string result = await DisplayActionSheet("Select a Mix", "Cancel", null, mixNames);
+        // Convert the selected item to a string safely
+        var selectedItem = MixPicker.SelectedItem;
+        string selectedMixName = selectedItem?.ToString() ?? string.Empty;
         
-        if (result != "Cancel" && !string.IsNullOrEmpty(result))
+        if (string.IsNullOrEmpty(selectedMixName))
         {
-            // Find the selected mix
-            var selectedMix = savedMixes.FirstOrDefault(m => m.Name == result);
-            if (selectedMix != null)
+            await DisplayAlert("Error", "Invalid mix selection", "OK");
+            return;
+        }
+        
+        var mix = savedMixes.FirstOrDefault(m => m.Name == selectedMixName);
+        
+        if (mix != null)
+        {
+            // Ask if user wants to replace or add to current mix
+            bool replaceCurrentMix = await DisplayAlert("Load Mix", 
+                "Do you want to replace the current mix?", 
+                "Replace", "Add to Current");
+            
+            if (replaceCurrentMix)
             {
-                // Ask if user wants to replace or add to current mix
-                bool replace = await DisplayAlert("Load Mix", "Do you want to replace the current mix?", "Replace", "Add to Current");
-                
-                if (replace)
-                {
-                    currentMix.Clear();
-                }
-                
-                // Add ingredients from selected mix
-                foreach (var ingredient in selectedMix.Ingredients)
-                {
-                    // Check if already in mix when adding
-                    if (!replace && currentMix.Any(i => i.FertilizerName == ingredient.FertilizerName))
-                    {
-                        // Skip existing items when adding to current mix
-                        continue;
-                    }
-                    
-                    currentMix.Add(new FertilizerQuantity
-                    {
-                        FertilizerName = ingredient.FertilizerName,
-                        Quantity = ingredient.Quantity
-                    });
-                }
-                
-                UpdateNutrientTotals();
+                currentMix.Clear();
             }
+            
+            // Add each ingredient from the saved mix
+            foreach (var ingredient in mix.Ingredients)
+            {
+                // Check if fertilizer exists
+                if (availableFertilizers.Any(f => f.Name == ingredient.FertilizerName))
+                {
+                    // Check if it's already in the current mix when adding
+                    var existingItem = currentMix.FirstOrDefault(i => i.FertilizerName == ingredient.FertilizerName);
+                    
+                    if (existingItem != null && !replaceCurrentMix)
+                    {
+                        // Add to existing quantity
+                        existingItem.Quantity += ingredient.Quantity;
+                    }
+                    else
+                    {
+                        // Add as new ingredient
+                        currentMix.Add(new FertilizerQuantity
+                        {
+                            FertilizerName = ingredient.FertilizerName,
+                            Quantity = ingredient.Quantity
+                        });
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("Warning", 
+                        $"Fertilizer '{ingredient.FertilizerName}' not found in available fertilizers. It will be skipped.", 
+                        "OK");
+                }
+            }
+            
+            // Update nutrient totals
+            UpdateNutrientTotals();
         }
     }
 
     private async void OnClearMixClicked(object sender, EventArgs e)
     {
-        if (currentMix.Count > 0)
+        bool confirm = await DisplayAlert("Confirm", 
+            "Are you sure you want to clear the current mix?", 
+            "Yes", "No");
+        
+        if (confirm)
         {
-            bool confirm = await DisplayAlert("Confirm", "Are you sure you want to clear the current mix?", "Yes", "No");
-            if (confirm)
-            {
-                currentMix.Clear();
-                UpdateNutrientTotals();
-            }
+            currentMix.Clear();
+            UpdateNutrientTotals();
         }
     }
-    
+
     private async void OnCompareMixesClicked(object sender, EventArgs e)
     {
         if (currentMix.Count == 0)
         {
-            await DisplayAlert("No Mix", "Create a mix first before comparing", "OK");
+            await DisplayAlert("Error", "Current mix is empty. Add some fertilizers before comparing.", "OK");
             return;
         }
         
-        // Navigate to compare mix page with the current mix
         await Navigation.PushAsync(new CompareMixPage(fileService, currentMix.ToList(), useImperialUnits));
     }
-    
+
     private async void OnImportClicked(object sender, EventArgs e)
     {
-        // Navigate to import options page
-        await Navigation.PushAsync(new ImportOptionsPage(fileService));
+        await Navigation.PushAsync(new ImportOptionsPage(fileService, availableFertilizers, savedMixes));
     }
-    
+
     private async void OnExportClicked(object sender, EventArgs e)
     {
-        // Check if there are fertilizers or mixes to export
-        if (availableFertilizers.Count == 0 && savedMixes.Count == 0)
-        {
-            await DisplayAlert("Nothing to Export", "There are no fertilizers or mixes to export", "OK");
-            return;
-        }
-        
-        // Navigate to export options page
-        await Navigation.PushAsync(new ExportOptionsPage(fileService, availableFertilizers.ToList(), savedMixes.ToList()));
+        await Navigation.PushAsync(new ExportOptionsPage(fileService, availableFertilizers.ToList(), savedMixes));
     }
 }

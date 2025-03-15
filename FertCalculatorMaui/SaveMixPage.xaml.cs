@@ -1,79 +1,214 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using FertCalculatorMaui.Services;
 
 namespace FertCalculatorMaui;
 
 public partial class SaveMixPage : ContentPage
 {
-    private readonly FileService fileService;
-    private readonly List<FertilizerQuantity> currentMix;
-    private List<FertilizerMix> savedMixes;
-    private const string mixesDbPath = "Mixes.xml";
-
-    public SaveMixPage(FileService fileService, List<FertilizerQuantity> currentMix)
+    private SaveMixViewModel _viewModel;
+    
+    public SaveMixPage(FileService fileService, List<FertilizerQuantity> ingredients)
     {
         InitializeComponent();
-        this.fileService = fileService;
-        this.currentMix = new List<FertilizerQuantity>(currentMix); // Create a copy
-        // Use discard syntax to explicitly indicate we're ignoring the task
-        _ = LoadMixesAsync();
-    }
-
-    private async Task LoadMixesAsync()
-    {
-        savedMixes = await fileService.LoadFromXmlAsync<List<FertilizerMix>>(mixesDbPath) ?? new List<FertilizerMix>();
-    }
-
-    private async void OnSaveClicked(object sender, EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(MixNameEntry.Text))
+        _viewModel = new SaveMixViewModel(fileService, ingredients);
+        
+        // Set up commands
+        _viewModel.CancelCommand = new Command(async () => await Navigation.PopAsync());
+        _viewModel.SaveCompletedEvent += async (sender, e) => 
         {
-            await DisplayAlert("Error", "Please enter a mix name", "OK");
-            return;
-        }
-
-        // Check if mix name already exists
-        if (savedMixes.Any(m => m.Name.Equals(MixNameEntry.Text, StringComparison.OrdinalIgnoreCase)))
-        {
-            bool overwrite = await DisplayAlert("Warning", "A mix with this name already exists. Do you want to overwrite it?", "Yes", "No");
-            if (!overwrite)
-                return;
-
-            // Remove existing mix with the same name
-            savedMixes.RemoveAll(m => m.Name.Equals(MixNameEntry.Text, StringComparison.OrdinalIgnoreCase));
-        }
-
-        // Create a new mix
-        var mix = new FertilizerMix
-        {
-            Name = MixNameEntry.Text,
-            Ingredients = new List<FertilizerQuantity>(currentMix) // Create a copy
+            if (e.Success)
+            {
+                await DisplayAlert("Success", "Mix saved successfully.", "OK");
+                await Navigation.PopAsync();
+            }
         };
-
-        // Add to saved mixes
-        savedMixes.Add(mix);
-
-        // Save to file
-        await SaveMixesAsync();
-
-        // Return to previous page
-        await Navigation.PopAsync();
+        
+        BindingContext = _viewModel;
     }
+    
+    private void OnSaveClicked(object sender, EventArgs e)
+    {
+        if (_viewModel.SaveCommand.CanExecute(null))
+        {
+            _viewModel.SaveCommand.Execute(null);
+        }
+    }
+    
+    private async void OnCancelClicked(object sender, EventArgs e)
+    {
+        if (_viewModel.CancelCommand != null && _viewModel.CancelCommand.CanExecute(null))
+        {
+            _viewModel.CancelCommand.Execute(null);
+        }
+        else
+        {
+            // Fallback if command not set
+            await Navigation.PopAsync();
+        }
+    }
+    
+    // Event to provide results back to the caller
+    public event EventHandler<SaveMixResult> SaveCompleted
+    {
+        add => _viewModel.SaveCompletedEvent += value;
+        remove => _viewModel.SaveCompletedEvent -= value;
+    }
+}
 
-    private async Task SaveMixesAsync()
+public class SaveMixViewModel : INotifyPropertyChanged
+{
+    private readonly FileService _fileService;
+    private readonly List<FertilizerQuantity> _ingredients;
+    private string _mixName = string.Empty;
+    private string _errorMessage = string.Empty;
+    private bool _isSaving;
+    
+    public SaveMixViewModel(FileService fileService, List<FertilizerQuantity> ingredients)
+    {
+        _fileService = fileService;
+        _ingredients = ingredients;
+        SaveCommand = new Command(ExecuteSave, CanExecuteSave);
+    }
+    
+    public string MixName
+    {
+        get => _mixName;
+        set
+        {
+            if (_mixName != value)
+            {
+                _mixName = value;
+                OnPropertyChanged(nameof(MixName));
+                ((Command)SaveCommand).ChangeCanExecute();
+            }
+        }
+    }
+    
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            if (_errorMessage != value)
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+                OnPropertyChanged(nameof(HasError));
+            }
+        }
+    }
+    
+    public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+    
+    public bool IsSaving
+    {
+        get => _isSaving;
+        set
+        {
+            if (_isSaving != value)
+            {
+                _isSaving = value;
+                OnPropertyChanged(nameof(IsSaving));
+                ((Command)SaveCommand).ChangeCanExecute();
+            }
+        }
+    }
+    
+    public System.Windows.Input.ICommand SaveCommand { get; }
+    public System.Windows.Input.ICommand CancelCommand { get; set; }
+    
+    public event EventHandler<SaveMixResult> SaveCompletedEvent;
+    
+    private bool CanExecuteSave()
+    {
+        return !string.IsNullOrWhiteSpace(MixName) && !IsSaving;
+    }
+    
+    private async void ExecuteSave()
     {
         try
         {
-            await fileService.SaveToXmlAsync(savedMixes, mixesDbPath);
-            await DisplayAlert("Success", "Mix saved successfully", "OK");
+            IsSaving = true;
+            ErrorMessage = string.Empty;
+            
+            // Validate mix name
+            if (string.IsNullOrWhiteSpace(MixName))
+            {
+                ErrorMessage = "Please enter a name for this mix.";
+                return;
+            }
+            
+            // Validate ingredients
+            if (_ingredients == null || _ingredients.Count == 0)
+            {
+                ErrorMessage = "Cannot save an empty mix. Please add at least one ingredient.";
+                return;
+            }
+            
+            // Create a new mix from the ingredients
+            var mix = new FertilizerMix
+            {
+                Name = MixName,
+                Ingredients = new List<FertilizerQuantity>(_ingredients)
+            };
+            
+            // Load existing mixes
+            var existingMixes = await _fileService.LoadMixesAsync();
+            if (existingMixes == null)
+            {
+                existingMixes = new ObservableCollection<FertilizerMix>();
+            }
+            
+            // Check if a mix with this name already exists
+            var existingMix = existingMixes.FirstOrDefault(m => m.Name.Equals(mix.Name, StringComparison.OrdinalIgnoreCase));
+            if (existingMix != null)
+            {
+                // Replace the existing mix
+                int index = existingMixes.IndexOf(existingMix);
+                existingMixes[index] = mix;
+            }
+            else
+            {
+                // Add new mix
+                existingMixes.Add(mix);
+            }
+            
+            // Save all mixes to XML
+            bool success = await _fileService.SaveMixesAsync(existingMixes);
+            
+            if (success)
+            {
+                SaveCompletedEvent?.Invoke(this, new SaveMixResult { Success = true, SavedMix = mix });
+            }
+            else
+            {
+                ErrorMessage = "Failed to save mix.";
+                SaveCompletedEvent?.Invoke(this, new SaveMixResult { Success = false, ErrorMessage = "Failed to save mix." });
+            }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to save mix: {ex.Message}", "OK");
+            ErrorMessage = $"Error saving mix: {ex.Message}";
+            SaveCompletedEvent?.Invoke(this, new SaveMixResult { Success = false, ErrorMessage = ex.Message });
+        }
+        finally
+        {
+            IsSaving = false;
         }
     }
-
-    private async void OnCancelClicked(object sender, EventArgs e)
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
+    protected virtual void OnPropertyChanged(string propertyName)
     {
-        await Navigation.PopAsync();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+}
+
+public class SaveMixResult : EventArgs
+{
+    public bool Success { get; set; }
+    public FertilizerMix? SavedMix { get; set; }
+    public string ErrorMessage { get; set; } = string.Empty;
 }
