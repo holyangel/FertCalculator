@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Xml.Serialization;
@@ -60,13 +61,17 @@ public partial class MainPage : ContentPage
             _ = LoadMixesAsync();
             
             // Set up data bindings
-            FertilizerListView.ItemsSource = availableFertilizers;
             MixListView.ItemsSource = currentMix;
             Debug.WriteLine("Data bindings set up");
             
             // Set up unit display
             UpdateUnitDisplay();
             Debug.WriteLine("MainPage constructor completed");
+            
+            // Subscribe to messages from ManageFertilizersPage
+            MessagingCenter.Subscribe<ManageFertilizersPage, Fertilizer>(this, "AddFertilizerToMix", (sender, fertilizer) => {
+                AddFertilizerToMix(fertilizer);
+            });
         }
         catch (Exception ex)
         {
@@ -128,34 +133,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void OnFertilizerSelected(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.CurrentSelection.Count > 0)
-        {
-            var selectedFertilizer = e.CurrentSelection[0] as Fertilizer;
-            if (selectedFertilizer != null)
-            {
-                // If the fertilizer is already in the mix, increment its quantity
-                var existingItem = currentMix.FirstOrDefault(item => item.FertilizerName == selectedFertilizer.Name);
-                if (existingItem != null)
-                {
-                    existingItem.Quantity += 1;
-                }
-                else
-                {
-                    // Add 1 gram of the selected fertilizer to the mix
-                    currentMix.Add(new FertilizerQuantity { FertilizerName = selectedFertilizer.Name, Quantity = 1 });
-                }
-                
-                // Update the UI
-                UpdateNutrientTotals();
-            }
-            
-            // Clear selection
-            FertilizerListView.SelectedItem = null;
-        }
-    }
-    
     private void OnQuantityChanged(object sender, EventArgs e)
     {
         if (sender is Entry entry && entry.BindingContext is FertilizerQuantity item)
@@ -181,15 +158,29 @@ public partial class MainPage : ContentPage
     {
         await Navigation.PushAsync(new AddFertilizerPage(fileService));
     }
-
-    private void OnRemoveFertilizerClicked(object sender, EventArgs e)
+    
+    private async void OnEditFertilizerClicked(object sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is FertilizerQuantity item)
+        if (sender is Button button && button.CommandParameter is string fertilizerName)
         {
-            currentMix.Remove(item);
-            
-            // Update nutrient totals
-            UpdateNutrientTotals();
+            var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
+            if (fertilizer != null)
+            {
+                await Navigation.PushAsync(new AddFertilizerPage(fileService, fertilizer));
+            }
+        }
+    }
+    
+    private void OnRemoveFromMixClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is string fertilizerName)
+        {
+            var itemToRemove = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            if (itemToRemove != null)
+            {
+                currentMix.Remove(itemToRemove);
+                UpdateNutrientTotals();
+            }
         }
     }
 
@@ -342,7 +333,7 @@ public partial class MainPage : ContentPage
     private async void UpdateUnitDisplay()
     {
         // Update the units type label
-        UnitsTypeLabel.Text = useImperialUnits ? "Imperial Units (per gallon)" : "Metric Units (per liter)";
+        UnitsTypeLabel.Text = useImperialUnits ? "Imperial (per gallon)" : "Metric (per liter)";
         
         // Update PPM header label
         PpmHeaderLabel.Text = useImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
@@ -371,6 +362,11 @@ public partial class MainPage : ContentPage
         useImperialUnits = e.Value;
         UpdateUnitDisplay();
         UpdateNutrientTotals();
+    }
+
+    private async void SaveFertilizers()
+    {
+        await fileService.SaveFertilizersAsync(availableFertilizers.ToList());
     }
 
     private async void OnSaveMixClicked(object sender, EventArgs e)
@@ -486,5 +482,50 @@ public partial class MainPage : ContentPage
     private async void OnExportClicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new ExportOptionsPage(fileService, availableFertilizers.ToList(), savedMixes));
+    }
+
+    private async void OnManageFertilizersClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new ManageFertilizersPage(fileService, availableFertilizers));
+    }
+    
+    private void OnStepperValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        if (sender is Stepper stepper)
+        {
+            string fertilizerName = stepper.ClassId;
+            var mixItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            
+            if (mixItem != null)
+            {
+                mixItem.Quantity = e.NewValue;
+                UpdateNutrientTotals();
+            }
+        }
+    }
+
+    private void AddFertilizerToMix(Fertilizer fertilizer)
+    {
+        // Check if the fertilizer is already in the mix
+        var existingItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizer.Name);
+        
+        if (existingItem == null)
+        {
+            // Add new fertilizer to the mix with default quantity of 1.0
+            currentMix.Add(new FertilizerQuantity
+            {
+                FertilizerName = fertilizer.Name,
+                Quantity = 1.0
+            });
+            
+            // Update nutrient totals
+            UpdateNutrientTotals();
+        }
+        else
+        {
+            // Increment the quantity if it already exists
+            existingItem.Quantity += 1.0;
+            UpdateNutrientTotals();
+        }
     }
 }

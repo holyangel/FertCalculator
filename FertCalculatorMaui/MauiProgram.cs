@@ -26,6 +26,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CompareMixPage>();
         builder.Services.AddTransient<ImportOptionsPage>();
         builder.Services.AddTransient<ExportOptionsPage>();
+        builder.Services.AddTransient<ManageFertilizersPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

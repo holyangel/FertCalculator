@@ -4,126 +4,150 @@
              x:Class="FertCalculatorMaui.MainPage"
              Title="Fertilizer Calculator v1.0">
 
-    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,*" Padding="10">
-        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5" Margin="5">
-            <Label Text="Available Fertilizers" FontSize="16" FontAttributes="Bold" />
-            <CollectionView x:Name="FertilizerListView" 
-                            SelectionMode="Single" 
-                            SelectionChanged="OnFertilizerSelected"
-                            HeightRequest="200">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="5">
-                            <Label Text="{Binding Name}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" Padding="10">
+        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5">
+            <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
             
-            <Button Text="Add New Fertilizer" 
-                    Clicked="OnAddFertilizerClicked" 
-                    Margin="0,10,0,0" />
-        </VerticalStackLayout>
-        
-        <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="5" Margin="5">
-            <Label Text="Current Mix" FontSize="16" FontAttributes="Bold" />
+            <Button Text="Add Fertilizer to Mix" 
+                    Clicked="OnManageFertilizersClicked" 
+                    HorizontalOptions="Center"
+                    Margin="0,5,0,10" />
+                    
             <CollectionView x:Name="MixListView" 
                             SelectionMode="Single"
                             HeightRequest="200">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="*,Auto" Padding="5">
-                            <Label Text="{Binding FertilizerName}" Grid.Column="0" VerticalOptions="Center" />
-                            <HorizontalStackLayout Grid.Column="1" Spacing="5">
-                                <Entry Text="{Binding Quantity}" 
-                                       WidthRequest="70"
-                                       Keyboard="Numeric"
-                                       Completed="OnQuantityChanged" />
-                                <Label Text="g/L" VerticalOptions="Center" x:Name="UnitLabel" />
-                            </HorizontalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto,Auto" Padding="5">
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="{Binding FertilizerName}" FontAttributes="Bold" />
+                                <HorizontalStackLayout>
+                                    <Label Text="{Binding Quantity}" />
+                                    <Label Text=" g/L" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                            <Stepper Grid.Column="1" 
+                                     Value="{Binding Quantity}" 
+                                     Minimum="0" 
+                                     Maximum="100" 
+                                     Increment="0.1"
+                                     ValueChanged="OnStepperValueChanged"
+                                     ClassId="{Binding FertilizerName}" />
+                            <Button Text="Remove" 
+                                    Grid.Column="2" 
+                                    CommandParameter="{Binding FertilizerName}" 
+                                    Clicked="OnRemoveFromMixClicked" 
+                                    WidthRequest="80"
+                                    HeightRequest="35"
+                                    FontSize="Small" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
             
-            <Button Text="Remove Selected" 
-                    Clicked="OnRemoveFertilizerClicked" 
-                    Margin="0,10,0,0" />
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center" Margin="0,5,0,0">
+                <Button Text="Save Mix" 
+                        Clicked="OnSaveMixClicked" 
+                        HorizontalOptions="Start" />
+                <Button Text="Clear Mix" 
+                        Clicked="OnClearMixClicked" 
+                        HorizontalOptions="Start" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                <Label Text="Metric (per liter)" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
+                <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" />
+            </HorizontalStackLayout>
         </VerticalStackLayout>
         
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
             <ScrollView>
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Nutrient Totals" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
-                    
-                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="5">
-                        <Label Text="Nutrient" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
-                        <Label Text="%" Grid.Row="0" Grid.Column="1" FontAttributes="Bold" HorizontalOptions="Center" />
-                        <Label x:Name="PpmHeaderLabel" Text="PPM" Grid.Row="0" Grid.Column="2" FontAttributes="Bold" HorizontalOptions="Center" />
-                    
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                        <!-- Headers -->
+                        <Label Text="Nutrient" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" />
+                        <Label Text="%" FontAttributes="Bold" Grid.Row="0" Grid.Column="1" />
+                        <Label Text="PPM (per liter)" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" x:Name="PpmHeaderLabel" />
+                        
+                        <!-- Nitrogen -->
                         <Label Text="Nitrogen (N)" Grid.Row="1" Grid.Column="0" />
-                        <Label x:Name="NitrogenPercentLabel" Text="0.00" Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="NitrogenPpmLabel" Text="0.00" Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding NitrogenPercent}" Grid.Row="1" Grid.Column="1" x:Name="NitrogenPercentLabel" />
+                        <Label Text="{Binding NitrogenPpm}" Grid.Row="1" Grid.Column="2" x:Name="NitrogenPpmLabel" />
                         
+                        <!-- Phosphorus -->
                         <Label Text="Phosphorus (P)" Grid.Row="2" Grid.Column="0" />
-                        <Label x:Name="PhosphorusPercentLabel" Text="0.00" Grid.Row="2" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="PhosphorusPpmLabel" Text="0.00" Grid.Row="2" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding PhosphorusPercent}" Grid.Row="2" Grid.Column="1" x:Name="PhosphorusPercentLabel" />
+                        <Label Text="{Binding PhosphorusPpm}" Grid.Row="2" Grid.Column="2" x:Name="PhosphorusPpmLabel" />
                         
+                        <!-- Potassium -->
                         <Label Text="Potassium (K)" Grid.Row="3" Grid.Column="0" />
-                        <Label x:Name="PotassiumPercentLabel" Text="0.00" Grid.Row="3" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="PotassiumPpmLabel" Text="0.00" Grid.Row="3" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding PotassiumPercent}" Grid.Row="3" Grid.Column="1" x:Name="PotassiumPercentLabel" />
+                        <Label Text="{Binding PotassiumPpm}" Grid.Row="3" Grid.Column="2" x:Name="PotassiumPpmLabel" />
                         
+                        <!-- Calcium -->
                         <Label Text="Calcium (Ca)" Grid.Row="4" Grid.Column="0" />
-                        <Label x:Name="CalciumPercentLabel" Text="0.00" Grid.Row="4" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="CalciumPpmLabel" Text="0.00" Grid.Row="4" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding CalciumPercent}" Grid.Row="4" Grid.Column="1" x:Name="CalciumPercentLabel" />
+                        <Label Text="{Binding CalciumPpm}" Grid.Row="4" Grid.Column="2" x:Name="CalciumPpmLabel" />
                         
+                        <!-- Magnesium -->
                         <Label Text="Magnesium (Mg)" Grid.Row="5" Grid.Column="0" />
-                        <Label x:Name="MagnesiumPercentLabel" Text="0.00" Grid.Row="5" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="MagnesiumPpmLabel" Text="0.00" Grid.Row="5" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding MagnesiumPercent}" Grid.Row="5" Grid.Column="1" x:Name="MagnesiumPercentLabel" />
+                        <Label Text="{Binding MagnesiumPpm}" Grid.Row="5" Grid.Column="2" x:Name="MagnesiumPpmLabel" />
                         
+                        <!-- Sulfur -->
                         <Label Text="Sulfur (S)" Grid.Row="6" Grid.Column="0" />
-                        <Label x:Name="SulfurPercentLabel" Text="0.00" Grid.Row="6" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="SulfurPpmLabel" Text="0.00" Grid.Row="6" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding SulfurPercent}" Grid.Row="6" Grid.Column="1" x:Name="SulfurPercentLabel" />
+                        <Label Text="{Binding SulfurPpm}" Grid.Row="6" Grid.Column="2" x:Name="SulfurPpmLabel" />
                         
+                        <!-- Boron -->
                         <Label Text="Boron (B)" Grid.Row="7" Grid.Column="0" />
-                        <Label x:Name="BoronPercentLabel" Text="0.00" Grid.Row="7" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="BoronPpmLabel" Text="0.00" Grid.Row="7" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding BoronPercent}" Grid.Row="7" Grid.Column="1" x:Name="BoronPercentLabel" />
+                        <Label Text="{Binding BoronPpm}" Grid.Row="7" Grid.Column="2" x:Name="BoronPpmLabel" />
                         
+                        <!-- Copper -->
                         <Label Text="Copper (Cu)" Grid.Row="8" Grid.Column="0" />
-                        <Label x:Name="CopperPercentLabel" Text="0.00" Grid.Row="8" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="CopperPpmLabel" Text="0.00" Grid.Row="8" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding CopperPercent}" Grid.Row="8" Grid.Column="1" x:Name="CopperPercentLabel" />
+                        <Label Text="{Binding CopperPpm}" Grid.Row="8" Grid.Column="2" x:Name="CopperPpmLabel" />
                         
+                        <!-- Iron -->
                         <Label Text="Iron (Fe)" Grid.Row="9" Grid.Column="0" />
-                        <Label x:Name="IronPercentLabel" Text="0.00" Grid.Row="9" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="IronPpmLabel" Text="0.00" Grid.Row="9" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding IronPercent}" Grid.Row="9" Grid.Column="1" x:Name="IronPercentLabel" />
+                        <Label Text="{Binding IronPpm}" Grid.Row="9" Grid.Column="2" x:Name="IronPpmLabel" />
                         
+                        <!-- Manganese -->
                         <Label Text="Manganese (Mn)" Grid.Row="10" Grid.Column="0" />
-                        <Label x:Name="ManganesePercentLabel" Text="0.00" Grid.Row="10" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="ManganesePpmLabel" Text="0.00" Grid.Row="10" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding ManganesePercent}" Grid.Row="10" Grid.Column="1" x:Name="ManganesePercentLabel" />
+                        <Label Text="{Binding ManganesePpm}" Grid.Row="10" Grid.Column="2" x:Name="ManganesePpmLabel" />
                         
+                        <!-- Molybdenum -->
                         <Label Text="Molybdenum (Mo)" Grid.Row="11" Grid.Column="0" />
-                        <Label x:Name="MolybdenumPercentLabel" Text="0.00" Grid.Row="11" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="MolybdenumPpmLabel" Text="0.00" Grid.Row="11" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding MolybdenumPercent}" Grid.Row="11" Grid.Column="1" x:Name="MolybdenumPercentLabel" />
+                        <Label Text="{Binding MolybdenumPpm}" Grid.Row="11" Grid.Column="2" x:Name="MolybdenumPpmLabel" />
                         
+                        <!-- Zinc -->
                         <Label Text="Zinc (Zn)" Grid.Row="12" Grid.Column="0" />
-                        <Label x:Name="ZincPercentLabel" Text="0.00" Grid.Row="12" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="ZincPpmLabel" Text="0.00" Grid.Row="12" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding ZincPercent}" Grid.Row="12" Grid.Column="1" x:Name="ZincPercentLabel" />
+                        <Label Text="{Binding ZincPpm}" Grid.Row="12" Grid.Column="2" x:Name="ZincPpmLabel" />
                         
+                        <!-- Chlorine -->
                         <Label Text="Chlorine (Cl)" Grid.Row="13" Grid.Column="0" />
-                        <Label x:Name="ChlorinePercentLabel" Text="0.00" Grid.Row="13" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="ChlorinePpmLabel" Text="0.00" Grid.Row="13" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding ChlorinePercent}" Grid.Row="13" Grid.Column="1" x:Name="ChlorinePercentLabel" />
+                        <Label Text="{Binding ChlorinePpm}" Grid.Row="13" Grid.Column="2" x:Name="ChlorinePpmLabel" />
                         
+                        <!-- Silica -->
                         <Label Text="Silica (Si)" Grid.Row="14" Grid.Column="0" />
-                        <Label x:Name="SilicaPercentLabel" Text="0.00" Grid.Row="14" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="SilicaPpmLabel" Text="0.00" Grid.Row="14" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding SilicaPercent}" Grid.Row="14" Grid.Column="1" x:Name="SilicaPercentLabel" />
+                        <Label Text="{Binding SilicaPpm}" Grid.Row="14" Grid.Column="2" x:Name="SilicaPpmLabel" />
                         
+                        <!-- Humic Acid -->
                         <Label Text="Humic Acid" Grid.Row="15" Grid.Column="0" />
-                        <Label x:Name="HumicAcidPercentLabel" Text="0.00" Grid.Row="15" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="HumicAcidPpmLabel" Text="0.00" Grid.Row="15" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding HumicAcidPercent}" Grid.Row="15" Grid.Column="1" x:Name="HumicAcidPercentLabel" />
+                        <Label Text="{Binding HumicAcidPpm}" Grid.Row="15" Grid.Column="2" x:Name="HumicAcidPpmLabel" />
                         
+                        <!-- Fulvic Acid -->
                         <Label Text="Fulvic Acid" Grid.Row="16" Grid.Column="0" />
-                        <Label x:Name="FulvicAcidPercentLabel" Text="0.00" Grid.Row="16" Grid.Column="1" HorizontalOptions="Center" />
-                        <Label x:Name="FulvicAcidPpmLabel" Text="0.00" Grid.Row="16" Grid.Column="2" HorizontalOptions="Center" />
+                        <Label Text="{Binding FulvicAcidPercent}" Grid.Row="16" Grid.Column="1" x:Name="FulvicAcidPercentLabel" />
+                        <Label Text="{Binding FulvicAcidPpm}" Grid.Row="16" Grid.Column="2" x:Name="FulvicAcidPpmLabel" />
                     </Grid>
                 </VerticalStackLayout>
             </ScrollView>
@@ -131,28 +155,20 @@
         
         <VerticalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Spacing="10">
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Button Text="Save Mix" Clicked="OnSaveMixClicked" />
                 <Button Text="Load Mix" Clicked="OnLoadMixClicked" />
-                <Button Text="Clear Mix" Clicked="OnClearMixClicked" />
-            </HorizontalStackLayout>
-            
-            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Picker x:Name="MixPicker" WidthRequest="200" Title="Select Mix" Margin="0,5,0,0" />
                 <Button Text="Compare Mixes" Clicked="OnCompareMixesClicked" />
                 <Button Text="Import" Clicked="OnImportClicked" />
                 <Button Text="Export" Clicked="OnExportClicked" />
             </HorizontalStackLayout>
             
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Label Text="Metric Units (per liter)" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
-                <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" />
+                <Picker x:Name="MixPicker" WidthRequest="200" Title="Select Mix" />
             </HorizontalStackLayout>
             
-            <Label Text="Tap a fertilizer name to add it to your mix. Double-tap items in the mix to remove them." 
-                  HorizontalOptions="Center" 
-                  FontSize="Caption" 
-                  TextColor="Gray"
-                  Margin="0,5,0,0" />
+            <Label Text="Tap 'Add Fertilizer to Mix' to manage your fertilizers and add them to your mix." 
+                   HorizontalOptions="Center" 
+                   FontSize="Caption" 
+                   Margin="0,10,0,0" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
