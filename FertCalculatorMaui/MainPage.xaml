@@ -12,36 +12,73 @@
         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5" x:Name="CurrentMixSection">
             <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
                 <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
-                <Button Text="▼" 
-                        Clicked="OnToggleMixVisibilityClicked" 
+                <Button Clicked="OnToggleMixVisibilityClicked" 
                         x:Name="ToggleMixVisibilityButton"
-                        WidthRequest="40"
-                        HeightRequest="35"
-                        FontSize="Small" />
+                        Margin="0,5,0,10"
+                        ToolTipProperties.Text="Add Fertilizer">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xe5cf;"
+                                         Color="White" />
+                    </Button.ImageSource>
+                </Button>
             </HorizontalStackLayout>
             
-            <HorizontalStackLayout Spacing="2" x:Name="MixButtonsLayout">
-                <Button Text="Add Fertilizer" 
-                        Clicked="OnManageFertilizersClicked" 
+            <HorizontalStackLayout Spacing="12" x:Name="MixButtonsLayout" Margin="15,0,0,0" VerticalOptions="Center">
+                <Button Clicked="OnManageFertilizersClicked" 
                         HorizontalOptions="Center"
-                        Margin="0,5,0,10" />
-                <Button Text="Save Mix" 
-                        Clicked="OnSaveMixClicked" 
+                        Margin="0,5,0,10"
+                        ToolTipProperties.Text="Add Fertilizer">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xe800;"
+                                         Color="White" />
+                    </Button.ImageSource>
+                </Button>
+                <Button Clicked="OnLoadMixFromPopupClicked" 
                         HorizontalOptions="Start" 
-                        Margin="0,5,0,10"/>
-                <Button Text="Load Mix" 
-                        Clicked="OnLoadMixFromPopupClicked" 
+                        Margin="0,5,0,10"
+                        ToolTipProperties.Text="Load Mix">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xe2c6;"
+                                         Color="White" />
+                    </Button.ImageSource>
+                </Button>
+                <Button Clicked="OnSaveMixClicked" 
                         HorizontalOptions="Start" 
-                        Margin="0,5,0,10"/>
-                <Button Text="Clear Mix" 
-                        Clicked="OnClearMixClicked" 
+                        Margin="0,5,0,10"
+                        ToolTipProperties.Text="Save Mix">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xe161;"
+                                         Color="White" />
+                    </Button.ImageSource>
+                </Button>
+                <Button Clicked="OnClearMixClicked" 
                         HorizontalOptions="Start" 
-                        Margin="0,5,0,10"/>
+                        Margin="0,5,0,10"
+                        ToolTipProperties.Text="Clear Mix">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xe5c9;"
+                                         Color="White" />
+                    </Button.ImageSource>
+                </Button>
+                <Button Clicked="OnCompareMixClicked" 
+                        HorizontalOptions="Start" 
+                        Margin="0,5,0,10"
+                        ToolTipProperties.Text="Compare Mix">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons"
+                                         Glyph="&#xe3b9;"
+                                         Color="White" />
+                    </Button.ImageSource>
+                </Button>
             </HorizontalStackLayout>
 
             <CollectionView x:Name="MixListView" 
-                            SelectionMode="Single"
-                            HeightRequest="200">
+                            SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid ColumnDefinitions="*,*,Auto" Padding="5">

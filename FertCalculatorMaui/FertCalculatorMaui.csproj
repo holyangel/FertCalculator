@@ -61,8 +61,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MaterialIcons" Version="1.0.3" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+		<PackageReference Include="UraniumUI.Icons.MaterialIcons" Version="2.11.0" />
 	</ItemGroup>
 
 </Project>

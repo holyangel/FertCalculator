@@ -687,4 +687,13 @@ public partial class MainPage : ContentPage
     {
         await LoadMixFromPopupAsync();
     }
+
+    private async void OnCompareMixClicked(object sender, EventArgs e)
+    {
+        // Create a list of fertilizer quantities from the current mix
+        var currentMixList = currentMix.ToList();
+        
+        // Navigate to the CompareMixPage, passing the current mix and available fertilizers
+        await Navigation.PushAsync(new CompareMixPage(fileService, currentMixList, UseImperialUnits));
+    }
 }
