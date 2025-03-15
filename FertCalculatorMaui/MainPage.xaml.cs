@@ -121,10 +121,6 @@ public partial class MainPage : ContentPage
                 {
                     savedMixes.Add(mix);
                 }
-                
-                // Update the picker
-                MixPicker.ItemsSource = savedMixes.Select(m => m.Name).ToList();
-                MixPicker.IsEnabled = savedMixes.Count > 0;
             }
         }
         catch (Exception ex)
@@ -390,71 +386,7 @@ public partial class MainPage : ContentPage
 
     private async void OnLoadMixClicked(object sender, EventArgs e)
     {
-        if (MixPicker.SelectedItem == null)
-        {
-            await DisplayAlert("Error", "Please select a mix to load", "OK");
-            return;
-        }
-        
-        // Convert the selected item to a string safely
-        var selectedItem = MixPicker.SelectedItem;
-        string selectedMixName = selectedItem?.ToString() ?? string.Empty;
-        
-        if (string.IsNullOrEmpty(selectedMixName))
-        {
-            await DisplayAlert("Error", "Invalid mix selection", "OK");
-            return;
-        }
-        
-        var mix = savedMixes.FirstOrDefault(m => m.Name == selectedMixName);
-        
-        if (mix != null)
-        {
-            // Ask if user wants to replace or add to current mix
-            bool replaceCurrentMix = await DisplayAlert("Load Mix", 
-                "Do you want to replace the current mix?", 
-                "Replace", "Add to Current");
-            
-            if (replaceCurrentMix)
-            {
-                currentMix.Clear();
-            }
-            
-            // Add each ingredient from the saved mix
-            foreach (var ingredient in mix.Ingredients)
-            {
-                // Check if fertilizer exists
-                if (availableFertilizers.Any(f => f.Name == ingredient.FertilizerName))
-                {
-                    // Check if it's already in the current mix when adding
-                    var existingItem = currentMix.FirstOrDefault(i => i.FertilizerName == ingredient.FertilizerName);
-                    
-                    if (existingItem != null && !replaceCurrentMix)
-                    {
-                        // Add to existing quantity
-                        existingItem.Quantity += ingredient.Quantity;
-                    }
-                    else
-                    {
-                        // Add as new ingredient
-                        currentMix.Add(new FertilizerQuantity
-                        {
-                            FertilizerName = ingredient.FertilizerName,
-                            Quantity = ingredient.Quantity
-                        });
-                    }
-                }
-                else
-                {
-                    await DisplayAlert("Warning", 
-                        $"Fertilizer '{ingredient.FertilizerName}' not found in available fertilizers. It will be skipped.", 
-                        "OK");
-                }
-            }
-            
-            // Update nutrient totals
-            UpdateNutrientTotals();
-        }
+        await LoadMixFromPopupAsync();
     }
 
     private async void OnClearMixClicked(object sender, EventArgs e)
@@ -613,5 +545,134 @@ public partial class MainPage : ContentPage
             existingItem.Quantity += 1.0;
             UpdateNutrientTotals();
         }
+    }
+
+    private async void OnMenuClicked(object sender, EventArgs e)
+    {
+        string action = await DisplayActionSheet("Menu", "Cancel", null, 
+            "Manage Fertilizers", 
+            "Collapse Mix Window", 
+            "Save Mix", 
+            "Clear Mix", 
+            "Load Mix", 
+            "Compare Mixes", 
+            "Import", 
+            "Export");
+
+        switch (action)
+        {
+            case "Manage Fertilizers":
+                OnManageFertilizersClicked(sender, e);
+                break;
+            case "Collapse Mix Window":
+                OnToggleMixVisibilityClicked(sender, e);
+                break;
+            case "Save Mix":
+                OnSaveMixClicked(sender, e);
+                break;
+            case "Clear Mix":
+                OnClearMixClicked(sender, e);
+                break;
+            case "Load Mix":
+                OnLoadMixFromPopupClicked(sender, e);
+                break;
+            case "Compare Mixes":
+                OnCompareMixesClicked(sender, e);
+                break;
+            case "Import":
+                OnImportClicked(sender, e);
+                break;
+            case "Export":
+                OnExportClicked(sender, e);
+                break;
+        }
+    }
+
+    private async Task LoadMixFromPopupAsync()
+    {
+        var mixes = savedMixes;
+        if (mixes.Count == 0)
+        {
+            await DisplayAlert("No Mixes", "No saved mixes found.", "OK");
+            return;
+        }
+
+        var mixNames = mixes.Select(m => m.Name).ToArray();
+        string selectedMix = await DisplayActionSheet("Select Mix", "Cancel", null, mixNames);
+        
+        if (selectedMix != "Cancel" && !string.IsNullOrEmpty(selectedMix))
+        {
+            var mix = mixes.FirstOrDefault(m => m.Name == selectedMix);
+            if (mix != null)
+            {
+                await LoadMix(mix);
+            }
+        }
+    }
+
+    private ObservableCollection<FertilizerMix> LoadMixes()
+    {
+        try
+        {
+            return fileService.LoadMixesAsync().GetAwaiter().GetResult();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error loading mixes: {ex.Message}");
+            return new ObservableCollection<FertilizerMix>();
+        }
+    }
+
+    private async Task LoadMix(FertilizerMix mix)
+    {
+        // Ask if user wants to replace or add to current mix
+        bool replaceCurrentMix = await DisplayAlert("Load Mix", 
+            "Do you want to replace the current mix?", 
+            "Replace", "Add to Current");
+        
+        if (replaceCurrentMix)
+        {
+            currentMix.Clear();
+        }
+        
+        // Add each ingredient from the saved mix
+        foreach (var ingredient in mix.Ingredients)
+        {
+            // Check if fertilizer exists
+            if (availableFertilizers.Any(f => f.Name == ingredient.FertilizerName))
+            {
+                // Check if it's already in the current mix when adding
+                var existingItem = currentMix.FirstOrDefault(i => i.FertilizerName == ingredient.FertilizerName);
+                
+                if (existingItem != null && !replaceCurrentMix)
+                {
+                    // Add to existing quantity
+                    existingItem.Quantity += ingredient.Quantity;
+                }
+                else
+                {
+                    // Add as new ingredient
+                    currentMix.Add(new FertilizerQuantity
+                    {
+                        FertilizerName = ingredient.FertilizerName,
+                        Quantity = ingredient.Quantity
+                    });
+                }
+            }
+            else
+            {
+                await DisplayAlert("Warning", 
+                    $"Fertilizer '{ingredient.FertilizerName}' not found in available fertilizers. It will be skipped.", 
+                    "OK");
+            }
+        }
+        
+        // Update nutrient totals
+        UpdateNutrientTotals();
+    }
+
+    private async void OnLoadMixFromPopupClicked(object sender, EventArgs e)
+    {
+        await LoadMixFromPopupAsync();
     }
 }
