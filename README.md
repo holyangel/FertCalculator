@@ -1,14 +1,17 @@
 # FertCalculator
 
 ## Overview
+
 FertCalculator is a comprehensive tool for managing and calculating nutrient concentrations in hydroponic fertilizer mixes. This application allows users to create, save, and compare different fertilizer mixes while providing real-time nutrient concentration calculations.
 
 ## Version
+
 Current Version: 2.0
 
 ## Features
 
 ### Fertilizer Management
+
 - Create and maintain a library of fertilizers with their nutrient compositions
 - Edit existing fertilizers to update nutrient percentages
 - Alphabetical sorting of fertilizers for easy navigation
@@ -19,6 +22,7 @@ Current Version: 2.0
   - Additional: Chlorine (Cl), Silica (Si), Humic Acid, Fulvic Acid
 
 ### Mix Creation and Management
+
 - Create custom fertilizer mixes by combining multiple fertilizers
 - Specify quantities for each fertilizer in the mix
 - Save mixes for future reference
@@ -27,18 +31,21 @@ Current Version: 2.0
 - Double-click on a fertilizer name in the mix to remove it
 
 ### Nutrient Calculations
+
 - Real-time calculation of nutrient concentrations in PPM
 - Toggle between metric (PPM per liter) and imperial (PPM per gallon) units
 - Automatic conversion between unit systems
 - Total PPM calculation for overall nutrient concentration
 
 ### Mix Comparison
+
 - Compare two different saved mixes side by side
 - View nutrient profiles of both mixes simultaneously
 - Compare ingredient lists between mixes
 - Toggle between metric and imperial units in the comparison view
 
 ### Data Import/Export
+
 - Export your fertilizers and mixes to share with others
 - Import fertilizers and mixes from other users
 - Selective import options (fertilizers only, mixes only, or both)
@@ -63,5 +70,6 @@ Current Version: 2.0
 - You can export your data to share with other users or as a backup.
 
 ## System Requirements
+
 - Windows operating system
 - .NET Framework 4.7.2 or higher
