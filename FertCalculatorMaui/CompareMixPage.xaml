@@ -29,7 +29,7 @@
         
         <!-- Comparison Table -->
         <ScrollView Grid.Row="1">
-            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                 <!-- Headers -->
                 <Label Grid.Row="0" Grid.Column="0" Text="Nutrient" FontAttributes="Bold" Margin="0,0,0,5"/>
                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding Mix1Name}" FontAttributes="Bold" Margin="0,0,0,5"/>
@@ -114,6 +114,11 @@
                 <Label Grid.Row="16" Grid.Column="0" Text="Fulvic Acid" Margin="0,2"/>
                 <Label Grid.Row="16" Grid.Column="1" Text="{Binding Mix1FulvicAcidPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
                 <Label Grid.Row="16" Grid.Column="2" Text="{Binding Mix2FulvicAcidPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                
+                <!-- Total Nutrients -->
+                <Label Grid.Row="17" Grid.Column="0" Text="Total Nutrients" FontAttributes="Bold" Margin="0,2"/>
+                <Label Grid.Row="17" Grid.Column="1" Text="{Binding Mix1TotalNutrientPpm, StringFormat='{0:F3}'}" FontAttributes="Bold" Margin="0,2"/>
+                <Label Grid.Row="17" Grid.Column="2" Text="{Binding Mix2TotalNutrientPpm, StringFormat='{0:F3}'}" FontAttributes="Bold" Margin="0,2"/>
             </Grid>
         </ScrollView>
         

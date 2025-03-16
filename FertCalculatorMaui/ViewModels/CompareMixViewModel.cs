@@ -97,6 +97,9 @@ namespace FertCalculatorMaui
         [ObservableProperty]
         private double mix1FulvicAcidPpm;
 
+        [ObservableProperty]
+        private double mix1TotalNutrientPpm;
+
         // Mix 2 (Right side) nutrients
         [ObservableProperty]
         private double mix2NitrogenPpm;
@@ -145,6 +148,9 @@ namespace FertCalculatorMaui
 
         [ObservableProperty]
         private double mix2FulvicAcidPpm;
+
+        [ObservableProperty]
+        private double mix2TotalNutrientPpm;
 
         // Command for toggling between metric and imperial units
         [RelayCommand]
@@ -212,14 +218,34 @@ namespace FertCalculatorMaui
 
         private void CalculateMix1Nutrients()
         {
-            // This would be implemented to calculate nutrient values for Mix1
-            // based on the selected mix and unit settings
+            if (SelectedMix1 == null || SelectedMix1.Ingredients == null)
+                return;
+
+            // Calculate nutrients based on mix ingredients
+            // ...
+
+            // Calculate total PPM for Mix1
+            Mix1TotalNutrientPpm = Mix1NitrogenPpm + Mix1PhosphorusPpm + Mix1PotassiumPpm +
+                                  Mix1CalciumPpm + Mix1MagnesiumPpm + Mix1SulfurPpm +
+                                  Mix1BoronPpm + Mix1CopperPpm + Mix1IronPpm +
+                                  Mix1ManganesePpm + Mix1MolybdenumPpm + Mix1ZincPpm +
+                                  Mix1ChlorinePpm + Mix1SilicaPpm + Mix1HumicAcidPpm + Mix1FulvicAcidPpm;
         }
 
         private void CalculateMix2Nutrients()
         {
-            // This would be implemented to calculate nutrient values for Mix2
-            // based on the selected mix and unit settings
+            if (SelectedMix2 == null || SelectedMix2.Ingredients == null)
+                return;
+
+            // Calculate nutrients based on mix ingredients
+            // ...
+
+            // Calculate total PPM for Mix2
+            Mix2TotalNutrientPpm = Mix2NitrogenPpm + Mix2PhosphorusPpm + Mix2PotassiumPpm +
+                                  Mix2CalciumPpm + Mix2MagnesiumPpm + Mix2SulfurPpm +
+                                  Mix2BoronPpm + Mix2CopperPpm + Mix2IronPpm +
+                                  Mix2ManganesePpm + Mix2MolybdenumPpm + Mix2ZincPpm +
+                                  Mix2ChlorinePpm + Mix2SilicaPpm + Mix2HumicAcidPpm + Mix2FulvicAcidPpm;
         }
 
         private void ClearMix1Nutrients()
@@ -240,6 +266,7 @@ namespace FertCalculatorMaui
             Mix1SilicaPpm = 0;
             Mix1HumicAcidPpm = 0;
             Mix1FulvicAcidPpm = 0;
+            Mix1TotalNutrientPpm = 0;
         }
 
         private void ClearMix2Nutrients()
@@ -260,6 +287,7 @@ namespace FertCalculatorMaui
             Mix2SilicaPpm = 0;
             Mix2HumicAcidPpm = 0;
             Mix2FulvicAcidPpm = 0;
+            Mix2TotalNutrientPpm = 0;
         }
 
         // Close command implementation

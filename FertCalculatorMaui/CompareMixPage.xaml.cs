@@ -261,6 +261,16 @@ public partial class CompareMixPage : ContentPage
             
             if (nutrients.TryGetValue("Fulvic Acid", out double fulvicAcid))
                 ViewModel.Mix1FulvicAcidPpm = fulvicAcid;
+            
+            // Calculate the total nutrients PPM for Mix1
+            ViewModel.Mix1TotalNutrientPpm = ViewModel.Mix1NitrogenPpm + ViewModel.Mix1PhosphorusPpm + 
+                                           ViewModel.Mix1PotassiumPpm + ViewModel.Mix1CalciumPpm + 
+                                           ViewModel.Mix1MagnesiumPpm + ViewModel.Mix1SulfurPpm + 
+                                           ViewModel.Mix1BoronPpm + ViewModel.Mix1CopperPpm + 
+                                           ViewModel.Mix1IronPpm + ViewModel.Mix1ManganesePpm + 
+                                           ViewModel.Mix1MolybdenumPpm + ViewModel.Mix1ZincPpm + 
+                                           ViewModel.Mix1ChlorinePpm + ViewModel.Mix1SilicaPpm + 
+                                           ViewModel.Mix1HumicAcidPpm + ViewModel.Mix1FulvicAcidPpm;
         }
         else
         {
@@ -312,6 +322,16 @@ public partial class CompareMixPage : ContentPage
             
             if (nutrients.TryGetValue("Fulvic Acid", out double fulvicAcid))
                 ViewModel.Mix2FulvicAcidPpm = fulvicAcid;
+            
+            // Calculate the total nutrients PPM for Mix2
+            ViewModel.Mix2TotalNutrientPpm = ViewModel.Mix2NitrogenPpm + ViewModel.Mix2PhosphorusPpm + 
+                                           ViewModel.Mix2PotassiumPpm + ViewModel.Mix2CalciumPpm + 
+                                           ViewModel.Mix2MagnesiumPpm + ViewModel.Mix2SulfurPpm + 
+                                           ViewModel.Mix2BoronPpm + ViewModel.Mix2CopperPpm + 
+                                           ViewModel.Mix2IronPpm + ViewModel.Mix2ManganesePpm + 
+                                           ViewModel.Mix2MolybdenumPpm + ViewModel.Mix2ZincPpm + 
+                                           ViewModel.Mix2ChlorinePpm + ViewModel.Mix2SilicaPpm + 
+                                           ViewModel.Mix2HumicAcidPpm + ViewModel.Mix2FulvicAcidPpm;
         }
     }
 }
