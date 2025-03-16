@@ -20,6 +20,7 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- Display name -->
 		<ApplicationTitle>Fertilizer Calculator</ApplicationTitle>
@@ -36,7 +37,7 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">29.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
@@ -48,8 +49,8 @@
 		<AndroidUseAapt2>True</AndroidUseAapt2>
 		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
 		<!-- Define Android API level constants for conditional compilation -->
-		<AndroidApiLevel>21</AndroidApiLevel>
-		<DefineConstants Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' and '$(AndroidApiLevel)' &gt;= '29'">$(DefineConstants);__ANDROID_29__</DefineConstants>
+		<AndroidApiLevel>29</AndroidApiLevel>
+		<DefineConstants Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(DefineConstants);__ANDROID_29__</DefineConstants>
 		<Title>FertCalc3</Title>
 		<Authors>HolyAngel</Authors>
 		<PackageProjectUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</PackageProjectUrl>
@@ -59,6 +60,8 @@
 		<Platforms>AnyCPU;ARM64</Platforms>
 		<!-- Fix for runtimeconfig.json issue -->
 		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+		<!-- Enable XAML compiled bindings with source -->
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -88,7 +91,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-		<PackageReference Include="Xamarin.AndroidX.Media" Version="1.6.0.3" />
 	</ItemGroup>
 
 </Project>
