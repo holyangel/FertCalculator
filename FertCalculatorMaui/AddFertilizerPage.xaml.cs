@@ -1,6 +1,9 @@
 using System.Text.RegularExpressions;
 using FertCalculatorMaui.Services;
 using Microsoft.Maui.Controls;
+using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging;
+using FertCalculatorMaui.Messages;
 
 namespace FertCalculatorMaui;
 
@@ -159,7 +162,7 @@ public partial class AddFertilizerPage : ContentPage
         await SaveFertilizersAsync();
 
         // Notify other pages that fertilizers have been updated
-        MessagingCenter.Send(this, "FertilizersUpdated", fertilizer);
+        WeakReferenceMessenger.Default.Send(new FertilizersUpdatedMessage(fertilizer));
 
         // Return to previous page
         await Navigation.PopAsync();

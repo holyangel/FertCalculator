@@ -167,10 +167,8 @@ public class FileService
             // Use Task.Run to perform file operations on a background thread
             return await Task.Run(async () => 
             {
-                using (FileStream stream = File.OpenRead(filePath))
-                {
-                    return await LoadFromXmlAsync<T>(stream);
-                }
+                using FileStream stream = File.OpenRead(filePath);
+                return await LoadFromXmlAsync<T>(stream);
             });
         }
         catch (Exception ex)
@@ -187,11 +185,9 @@ public class FileService
             return await Task.Run(() => 
             {
                 var serializer = new XmlSerializer(typeof(T));
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    var result = serializer.Deserialize(reader) as T;
-                    return result;
-                }
+                using StreamReader reader = new(stream);
+                var result = serializer.Deserialize(reader) as T;
+                return result;
             });
         }
         catch (Exception ex)

@@ -1,6 +1,8 @@
 using FertCalculatorMaui.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CommunityToolkit.Mvvm.Messaging;
+using FertCalculatorMaui.Messages;
 
 namespace FertCalculatorMaui;
 
@@ -19,7 +21,7 @@ public partial class ManageFertilizersPage : ContentPage
         FertilizerListView.ItemsSource = availableFertilizers;
         
         // Subscribe to the FertilizersUpdated message from any instance of AddFertilizerPage
-        MessagingCenter.Subscribe<object, Fertilizer>(this, "FertilizersUpdated", async (sender, fertilizer) => 
+        WeakReferenceMessenger.Default.Register<FertilizersUpdatedMessage>(this, async (r, message) => 
         {
             // Reload fertilizers from file
             await ReloadFertilizersAsync();
@@ -94,7 +96,7 @@ public partial class ManageFertilizersPage : ContentPage
             if (fertilizer != null)
             {
                 // Send a message back to the MainPage to add this fertilizer to the mix
-                MessagingCenter.Send(this, "AddFertilizerToMix", fertilizer);
+                WeakReferenceMessenger.Default.Send(new AddFertilizerToMixMessage(fertilizer));
                 
                 // Go back to the MainPage
                 await Navigation.PopAsync();
@@ -124,7 +126,7 @@ public partial class ManageFertilizersPage : ContentPage
     {
         base.OnDisappearing();
         
-        // Unsubscribe from MessagingCenter to prevent memory leaks
-        MessagingCenter.Unsubscribe<object, Fertilizer>(this, "FertilizersUpdated");
+        // Unsubscribe from WeakReferenceMessenger to prevent memory leaks
+        WeakReferenceMessenger.Default.Unregister<FertilizersUpdatedMessage>(this);
     }
 }

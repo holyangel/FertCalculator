@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.Text;
 using System.Xml.Serialization;
 using FertCalculatorMaui.Services;
+using CommunityToolkit.Mvvm.Messaging;
+using FertCalculatorMaui.Messages;
 
 namespace FertCalculatorMaui;
 
@@ -69,8 +73,8 @@ public partial class MainPage : ContentPage
             Debug.WriteLine("MainPage constructor completed");
             
             // Subscribe to messages from ManageFertilizersPage
-            MessagingCenter.Subscribe<ManageFertilizersPage, Fertilizer>(this, "AddFertilizerToMix", (sender, fertilizer) => {
-                AddFertilizerToMix(fertilizer);
+            WeakReferenceMessenger.Default.Register<AddFertilizerToMixMessage>(this, (r, message) => {
+                AddFertilizerToMix(message.Value);
             });
         }
         catch (Exception ex)
