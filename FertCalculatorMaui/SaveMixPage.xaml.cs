@@ -30,7 +30,14 @@ public partial class SaveMixPage : ContentPage
             }
         };
         
+        _viewModel.DisplayAlertAsync = DisplayAlertAsync;
+        
         BindingContext = _viewModel;
+    }
+    
+    private async Task<bool> DisplayAlertAsync(string title, string message, string accept, string cancel)
+    {
+        return await DisplayAlert(title, message, accept, cancel);
     }
     
     private void OnSaveClicked(object sender, EventArgs e)
@@ -68,13 +75,16 @@ public partial class SaveMixPage : ContentPage
     }
 }
 
-public class SaveMixViewModel : INotifyPropertyChanged
+public partial class SaveMixViewModel : INotifyPropertyChanged
 {
     private readonly FileService _fileService;
     private readonly List<FertilizerQuantity> _ingredients;
     private string _mixName = string.Empty;
     private string _errorMessage = string.Empty;
     private bool _isSaving;
+    
+    public delegate Task<bool> DisplayAlertDelegate(string title, string message, string accept, string cancel);
+    public DisplayAlertDelegate DisplayAlertAsync { get; set; }
     
     public SaveMixViewModel(FileService fileService, List<FertilizerQuantity> ingredients)
     {
@@ -177,10 +187,10 @@ public class SaveMixViewModel : INotifyPropertyChanged
             if (existingMix != null)
             {
                 // Ask user if they want to replace the existing mix
-                bool replace = await (Application.Current?.Windows[0]?.Page?.DisplayAlert(
+                bool replace = await DisplayAlertAsync(
                     "Mix Already Exists", 
                     $"A mix named '{mix.Name}' already exists. Do you want to replace it?", 
-                    "Replace", "Cancel") ?? Task.FromResult(false));
+                    "Replace", "Cancel");
                 
                 if (!replace)
                 {
