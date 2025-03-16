@@ -270,7 +270,7 @@ public partial class MainPage : ContentPage
         }
         
         // Navigate to save mix page
-        var saveMixPage = new SaveMixPage(fileService, viewModel.CurrentMix.ToList());
+        var saveMixPage = new SaveMixPage(fileService, viewModel.CurrentMix.ToList(), viewModel.SavedMixes);
         
         // Subscribe to the SaveCompletedEvent to refresh the mixes list after saving
         saveMixPage.ViewModel.SaveCompletedEvent += async (s, args) =>
@@ -474,7 +474,7 @@ public partial class MainPage : ContentPage
         }
         
         // Navigate to save mix page
-        var saveMixPage = new SaveMixPage(fileService, viewModel.CurrentMix.ToList());
+        var saveMixPage = new SaveMixPage(fileService, viewModel.CurrentMix.ToList(), viewModel.SavedMixes);
         
         // Subscribe to the SaveCompletedEvent to refresh the mixes list after saving
         saveMixPage.ViewModel.SaveCompletedEvent += async (s, args) =>
