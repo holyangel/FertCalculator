@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.Messaging;
 using FertCalculatorMaui.Messages;
+using System.Diagnostics;
 
 namespace FertCalculatorMaui;
 
