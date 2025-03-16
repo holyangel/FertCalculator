@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using FertCalculatorMaui.Services;
 using Microsoft.Maui.Controls;
-using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Messaging;
 using FertCalculatorMaui.Messages;
 
@@ -168,7 +172,7 @@ public partial class AddFertilizerPage : ContentPage
         await Navigation.PopAsync();
     }
 
-    private void TryParseEntry(Entry entry, Action<double> setter)
+    private static void TryParseEntry(Entry entry, Action<double> setter)
     {
         if (!string.IsNullOrWhiteSpace(entry.Text) && double.TryParse(entry.Text, out double value))
         {
@@ -176,7 +180,7 @@ public partial class AddFertilizerPage : ContentPage
         }
     }
 
-    private bool TryParseEntry(Entry entry, out double value)
+    private static bool TryParseEntry(Entry entry, out double value)
     {
         if (!string.IsNullOrWhiteSpace(entry.Text) && double.TryParse(entry.Text, out value))
         {
