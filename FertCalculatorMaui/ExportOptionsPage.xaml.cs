@@ -7,7 +7,7 @@ namespace FertCalculatorMaui;
 
 public partial class ExportOptionsPage : ContentPage
 {
-    private ExportOptionsViewModel? _viewModel;
+    private readonly ExportOptionsViewModel? _viewModel;
 
     public ExportOptionsPage(FileService fileService, List<Fertilizer> fertilizers, ObservableCollection<FertilizerMix> mixes)
     {
@@ -36,7 +36,7 @@ public partial class ExportOptionsPage : ContentPage
     }
 }
 
-public class ExportOptionsViewModel : INotifyPropertyChanged
+public partial class ExportOptionsViewModel : INotifyPropertyChanged
 {
     private readonly FileService _fileService;
     private readonly List<Fertilizer> _fertilizers;
