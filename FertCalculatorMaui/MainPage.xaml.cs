@@ -409,11 +409,6 @@ public partial class MainPage : ContentPage
         UpdateNutrientTotals();
     }
 
-    private async void SaveFertilizers()
-    {
-        await fileService.SaveFertilizersAsync(availableFertilizers.ToList());
-    }
-
     private async void OnSaveMixClicked(object sender, EventArgs e)
     {
         if (currentMix.Count == 0)
@@ -661,19 +656,6 @@ public partial class MainPage : ContentPage
             {
                 await LoadMix(mix);
             }
-        }
-    }
-
-    private ObservableCollection<FertilizerMix> LoadMixes()
-    {
-        try
-        {
-            return fileService.LoadMixesAsync().GetAwaiter().GetResult();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error loading mixes: {ex.Message}");
-            return new ObservableCollection<FertilizerMix>();
         }
     }
 
