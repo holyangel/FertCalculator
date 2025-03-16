@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:FertCalculatorMaui"
              xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.MainPage"
+             x:DataType="local:MainPage"
              Title="Fertilizer Calculator">
 
     <ContentPage.Resources>

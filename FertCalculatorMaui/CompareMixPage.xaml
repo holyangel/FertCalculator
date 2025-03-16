@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:FertCalculatorMaui"
              x:Class="FertCalculatorMaui.CompareMixPage"
+             x:DataType="local:CompareMixViewModel"
              Title="Compare Mixes">
     <Grid RowDefinitions="Auto,*,Auto" Padding="10">
         <Grid Grid.Row="0" ColumnDefinitions="*,*" Margin="0,0,0,10">
