@@ -142,12 +142,71 @@ namespace FertCalculatorMaui
         {
             var updatedFertilizers = await _fileService.LoadFertilizersAsync();
             
-            var sortedFertilizers = updatedFertilizers.OrderBy(f => f.Name).ToList();
+            // Use a custom sorting logic that handles numerical values in fertilizer names
+            var sortedFertilizers = updatedFertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
             
             AvailableFertilizers.Clear();
             foreach (var fertilizer in sortedFertilizers)
             {
                 AvailableFertilizers.Add(fertilizer);
+            }
+        }
+        
+        /// <summary>
+        /// Custom comparer for fertilizer names that handles numerical values within the names.
+        /// Ensures that names like "Jacks 5-15-26" come before "Jacks 10-30-20".
+        /// </summary>
+        private class FertilizerNameComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                if (x == null) return y == null ? 0 : -1;
+                if (y == null) return 1;
+                
+                // Split the names into segments by whitespace, punctuation, and other delimiters
+                string[] segmentsX = SplitIntoSegments(x);
+                string[] segmentsY = SplitIntoSegments(y);
+                
+                // Compare each segment
+                int minSegments = Math.Min(segmentsX.Length, segmentsY.Length);
+                for (int i = 0; i < minSegments; i++)
+                {
+                    string segX = segmentsX[i];
+                    string segY = segmentsY[i];
+                    
+                    // Try to parse segments as numbers
+                    bool isNumX = double.TryParse(segX, out double numX);
+                    bool isNumY = double.TryParse(segY, out double numY);
+                    
+                    // If both are numbers, compare numerically
+                    if (isNumX && isNumY)
+                    {
+                        int numCompare = numX.CompareTo(numY);
+                        if (numCompare != 0) return numCompare;
+                    }
+                    // If only one is a number, numbers come before text
+                    else if (isNumX) return -1;
+                    else if (isNumY) return 1;
+                    // If both are text, compare alphabetically
+                    else
+                    {
+                        int textCompare = string.Compare(segX, segY, StringComparison.OrdinalIgnoreCase);
+                        if (textCompare != 0) return textCompare;
+                    }
+                }
+                
+                // If all compared segments are equal, the one with more segments comes later
+                return segmentsX.Length.CompareTo(segmentsY.Length);
+            }
+            
+            private string[] SplitIntoSegments(string input)
+            {
+                // Use regex to split the string into segments of numbers and non-numbers
+                // This will handle patterns like "Jacks 5-15-26" appropriately
+                return System.Text.RegularExpressions.Regex.Split(input, 
+                    @"(?<=\D)(?=\d)|(?<=\d)(?=\D)|[^a-zA-Z0-9]")
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .ToArray();
             }
         }
     }
