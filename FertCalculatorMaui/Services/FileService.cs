@@ -47,40 +47,38 @@ public class FileService
                 }
                 
                 // Get the embedded Fertilizers.xml resource
-                using (Stream resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml"))
+                Stream? resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml");
+                if (resourceStream != null)
                 {
-                    if (resourceStream != null)
+                    // Import the data using the existing import functionality
+                    var importResult = await ImportDataAsync(resourceStream);
+                    
+                    if (importResult.Success && importResult.ImportedData != null)
                     {
-                        // Import the data using the existing import functionality
-                        var importResult = await ImportDataAsync(resourceStream);
+                        System.Console.WriteLine($"Successfully imported default fertilizers from embedded resource");
                         
-                        if (importResult.Success && importResult.ImportedData != null)
+                        // Save the imported fertilizers
+                        if (importResult.ImportedData.Fertilizers != null && importResult.ImportedData.Fertilizers.Count > 0)
                         {
-                            System.Console.WriteLine($"Successfully imported default fertilizers from embedded resource");
-                            
-                            // Save the imported fertilizers
-                            if (importResult.ImportedData.Fertilizers != null && importResult.ImportedData.Fertilizers.Count > 0)
-                            {
-                                await SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
-                                System.Console.WriteLine($"Saved {importResult.ImportedData.Fertilizers.Count} default fertilizers");
-                            }
-                            
-                            // Save any imported mixes if they exist
-                            if (importResult.ImportedData.Mixes != null && importResult.ImportedData.Mixes.Count > 0)
-                            {
-                                await SaveMixesAsync(new ObservableCollection<FertilizerMix>(importResult.ImportedData.Mixes));
-                                System.Console.WriteLine($"Saved {importResult.ImportedData.Mixes.Count} default mixes");
-                            }
+                            await SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
+                            System.Console.WriteLine($"Saved {importResult.ImportedData.Fertilizers.Count} default fertilizers");
                         }
-                        else
+                        
+                        // Save any imported mixes if they exist
+                        if (importResult.ImportedData.Mixes != null && importResult.ImportedData.Mixes.Count > 0)
                         {
-                            System.Console.WriteLine($"Failed to import default fertilizers from embedded resource");
+                            await SaveMixesAsync(new ObservableCollection<FertilizerMix>(importResult.ImportedData.Mixes));
+                            System.Console.WriteLine($"Saved {importResult.ImportedData.Mixes.Count} default mixes");
                         }
                     }
                     else
                     {
-                        System.Console.WriteLine($"Embedded resource FertCalculatorMaui.Fertilizers.xml not found. Make sure it's properly configured in the project file.");
+                        System.Console.WriteLine($"Failed to import default fertilizers from embedded resource");
                     }
+                }
+                else
+                {
+                    System.Console.WriteLine($"Embedded resource FertCalculatorMaui.Fertilizers.xml not found. Make sure it's properly configured in the project file.");
                 }
             }
             else
@@ -210,7 +208,11 @@ public class FileService
             string filePath = Path.Combine(GetAppDataDirectory(), fileName);
             
             // Ensure the directory exists
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            string? directoryName = Path.GetDirectoryName(filePath);
+            if (!string.IsNullOrEmpty(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
             
             // Use Task.Run to perform the serialization on a background thread
             return await Task.Run(() =>

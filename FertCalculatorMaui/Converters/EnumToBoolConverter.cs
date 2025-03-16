@@ -4,7 +4,7 @@ namespace FertCalculatorMaui
 {
     public class EnumToBoolConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value == null || parameter == null)
                 return false;
@@ -13,7 +13,7 @@ namespace FertCalculatorMaui
             return value.ToString().Equals(parameter.ToString());
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value == null || parameter == null)
                 return null;
