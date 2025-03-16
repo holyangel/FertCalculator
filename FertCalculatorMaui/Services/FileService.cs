@@ -7,6 +7,7 @@ using Android.Content;
 using Android.Provider;
 using Android.OS;
 using AndroidX.Core.Content;
+using AndroidX.Media;
 using JavaFile = Java.IO.File;
 using JavaConsole = Java.IO.Console;
 #endif
@@ -219,23 +220,23 @@ public class FileService
                 {
                     // Create a temporary file path
                     string tempFilePath = Path.Combine(GetAppDataDirectory(), $"temp_{Guid.NewGuid()}.xml");
-                    
+
                     // Serialize to the temporary file first
                     using (var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
                         var serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
                         serializer.Serialize(fileStream, data);
                     }
-                    
+
                     // If the target file exists, delete it
                     if (File.Exists(filePath))
                     {
                         File.Delete(filePath);
                     }
-                    
+
                     // Move the temporary file to the target file
                     File.Move(tempFilePath, filePath);
-                    
+
                     return true;
                 }
                 catch (Exception ex)
@@ -348,7 +349,7 @@ public class FileService
             return false;
         }
     }
-    
+
     private async Task<bool> SaveFileToAndroidDocumentsAsync(string sourceFilePath, string fileName)
     {
 #if ANDROID
@@ -360,26 +361,28 @@ public class FileService
             {
                 return false;
             }
-            
+
             // Get the Android context
             var context = Android.App.Application.Context;
-            
+
             // Create content values for the new file
             var contentValues = new Android.Content.ContentValues();
             contentValues.Put(Android.Provider.MediaStore.IMediaColumns.DisplayName, fileName);
             contentValues.Put(Android.Provider.MediaStore.IMediaColumns.MimeType, "application/xml");
-            
+
             // For Android 10 (API 29) and above, use MediaStore
             if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Q)
             {
+                // Use #if directive to ensure this code only compiles for API 29+
+#if __ANDROID_29__
                 contentValues.Put(Android.Provider.MediaStore.IMediaColumns.RelativePath, Android.OS.Environment.DirectoryDownloads);
-                
+
                 // Get the content resolver
                 var contentResolver = context.ContentResolver;
-                
+
                 // Insert the new file
                 var uri = contentResolver.Insert(Android.Provider.MediaStore.Downloads.ExternalContentUri, contentValues);
-                
+
                 if (uri != null)
                 {
                     // Open output stream to the new file
@@ -389,47 +392,28 @@ public class FileService
                         if (outputStream != null)
                         {
                             await inputStream.CopyToAsync(outputStream);
-                            
+
                             // Show a toast notification
                             Android.Widget.Toast.MakeText(
-                                context, 
-                                $"File saved to Downloads/{fileName}", 
+                                context,
+                                $"File saved to Downloads/{fileName}",
                                 Android.Widget.ToastLength.Long).Show();
-                                
+
                             return true;
                         }
                     }
                 }
+                return false;
+#else
+                // Fallback for when targeting API 29+ but compiling with lower API level
+                return await SaveFileUsingLegacyMethodAsync(context, sourceFilePath, fileName);
+#endif
             }
             else
             {
                 // For older Android versions, use the traditional approach
-                var downloadsDir = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads);
-                var destinationFile = new Java.IO.File(downloadsDir, fileName);
-                
-                // Copy the source file to the destination
-                using (var sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
-                using (var destinationStream = new FileStream(destinationFile.AbsolutePath, FileMode.Create, FileAccess.Write))
-                {
-                    await sourceStream.CopyToAsync(destinationStream);
-                }
-                
-                // Notify the media scanner about the new file
-                var mediaScanIntent = new Android.Content.Intent(Android.Content.Intent.ActionMediaScannerScanFile);
-                var fileUri = Android.Net.Uri.FromFile(destinationFile);
-                mediaScanIntent.SetData(fileUri);
-                context.SendBroadcast(mediaScanIntent);
-                
-                // Show a toast notification
-                Android.Widget.Toast.MakeText(
-                    context, 
-                    $"File saved to Downloads/{fileName}", 
-                    Android.Widget.ToastLength.Long).Show();
-                    
-                return true;
+                return await SaveFileUsingLegacyMethodAsync(context, sourceFilePath, fileName);
             }
-            
-            return false;
         }
         catch (Exception ex)
         {
@@ -437,10 +421,60 @@ public class FileService
             return false;
         }
 #else
-        // For non-Android platforms, just return false and let the caller handle it
-        return false;
+    // For non-Android platforms, just return false and let the caller handle it
+    return false;
 #endif
     }
+
+#if ANDROID
+    private async Task<bool> SaveFileUsingLegacyMethodAsync(Android.Content.Context context, string sourceFilePath, string fileName)
+    {
+        try
+        {
+            var downloadsDir = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads);
+            var destinationFile = new Java.IO.File(downloadsDir, fileName);
+
+            // Copy the source file to the destination
+            using (var sourceStream = new FileStream(sourceFilePath, FileMode.Open, FileAccess.Read))
+            using (var destinationStream = new FileStream(destinationFile.AbsolutePath, FileMode.Create, FileAccess.Write))
+            {
+                await sourceStream.CopyToAsync(destinationStream);
+            }
+
+            // For Android 10 (API 29) and above, ActionMediaScannerScanFile is deprecated
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Q)
+            {
+                // Use MediaScannerConnection for Android 10+
+                AndroidX.Media.MediaScannerConnection.ScanFile(
+                    context,
+                    new string[] { destinationFile.AbsolutePath },
+                    new string[] { "application/xml" },
+                    null);
+            }
+            else
+            {
+                // Use the legacy method for older versions
+                var mediaScanIntent = new Android.Content.Intent(Android.Content.Intent.ActionMediaScannerScanFile);
+                var fileUri = Android.Net.Uri.FromFile(destinationFile);
+                mediaScanIntent.SetData(fileUri);
+                context.SendBroadcast(mediaScanIntent);
+            }
+
+            // Show a toast notification
+            Android.Widget.Toast.MakeText(
+                context,
+                $"File saved to Downloads/{fileName}",
+                Android.Widget.ToastLength.Long).Show();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Error saving file using legacy method: {ex.Message}");
+            return false;
+        }
+    }
+#endif
 
     private async Task<bool> SaveFileToWindowsDocumentsAsync(string sourceFilePath, string fileName)
     {

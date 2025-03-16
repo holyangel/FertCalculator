@@ -47,6 +47,9 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidUseAapt2>True</AndroidUseAapt2>
 		<AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+		<!-- Define Android API level constants for conditional compilation -->
+		<AndroidApiLevel>21</AndroidApiLevel>
+		<DefineConstants Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' and '$(AndroidApiLevel)' &gt;= '29'">$(DefineConstants);__ANDROID_29__</DefineConstants>
 		<Title>FertCalc3</Title>
 		<Authors>HolyAngel</Authors>
 		<PackageProjectUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</PackageProjectUrl>
@@ -85,6 +88,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+		<PackageReference Include="Xamarin.AndroidX.Media" Version="1.6.0.3" />
 	</ItemGroup>
 
 </Project>
