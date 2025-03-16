@@ -1,7 +1,7 @@
-﻿using Android.App;
+using Android.App;
 using Android.Runtime;
 
-namespace FertCalculatorMaui;
+namespace FertCalculatorMaui.Platforms.Android;
 
 [Application]
 public class MainApplication : MauiApplication
