@@ -177,10 +177,10 @@ public class SaveMixViewModel : INotifyPropertyChanged
             if (existingMix != null)
             {
                 // Ask user if they want to replace the existing mix
-                bool replace = await Application.Current.MainPage.DisplayAlert(
+                bool replace = await (Application.Current?.Windows[0]?.Page?.DisplayAlert(
                     "Mix Already Exists", 
                     $"A mix named '{mix.Name}' already exists. Do you want to replace it?", 
-                    "Replace", "Cancel");
+                    "Replace", "Cancel") ?? Task.FromResult(false));
                 
                 if (!replace)
                 {
