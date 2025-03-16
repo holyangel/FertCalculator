@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:FertCalculatorMaui"
+             xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.MainPage"
              Title="Fertilizer Calculator">
+
+    <ContentPage.Resources>
+        <converters:UnitLabelConverter x:Key="UnitConverter"/>
+    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Menu" Clicked="OnMenuClicked" />
@@ -88,7 +94,7 @@
 
                             <HorizontalStackLayout Grid.Column="1">
                                 <Label Text="{Binding Quantity}" HorizontalOptions="Start" />
-                                <Label Text=" g/L" x:Name="UnitLabel" />
+                                <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:MainPage}}, Path=UseImperialUnits, Converter={StaticResource UnitConverter}}" x:Name="UnitLabel" />
                             </HorizontalStackLayout>
                             
                             <Button Text="Remove" 
@@ -104,7 +110,7 @@
             </CollectionView>
 
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Label Text="Metric (per liter)" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
+                <Label Text="{Binding UseImperialUnits, Converter={StaticResource UnitConverter}, ConverterParameter='label'}" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
                 <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" />
             </HorizontalStackLayout>
         </VerticalStackLayout>

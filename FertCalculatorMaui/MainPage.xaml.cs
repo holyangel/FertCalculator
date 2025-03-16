@@ -381,34 +381,23 @@ public partial class MainPage : ContentPage
         TotalNutrientPpmLabel.Text = (nitrogenTotal + phosphorusTotal + potassiumTotal + calciumTotal + magnesiumTotal + sulfurTotal + boronTotal + copperTotal + ironTotal + manganeseTotal + molybdenumTotal + zincTotal + chlorineTotal + silicaTotal + humicAcidTotal + fulvicAcidTotal).ToString("F2");
     }
 
-    private async void UpdateUnitDisplay()
+    private void UpdateUnitDisplay()
     {
-        // Update the units type label
-        UnitsTypeLabel.Text = useImperialUnits ? "Imperial (per gallon)" : "Metric (per liter)";
+        // No need to update the UnitsTypeLabel.Text directly anymore as it's bound to UseImperialUnits
         
         // Update PPM header label
         PpmHeaderLabel.Text = useImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
         
-        // Since UnitLabel is in a DataTemplate, we need to refresh the CollectionView
-        // to update all instances
-        MixListView.ItemsSource = null;
-        MixListView.ItemsSource = currentMix;
-        
-        // Save the setting
-        appSettings.UseImperialUnits = useImperialUnits;
-        bool success = await fileService.SaveToXmlAsync(appSettings, "AppSettings.xml");
-        if (!success)
-        {
-            await DisplayAlert("Error", "Failed to save settings", "OK");
-        }
-        
-        // Force the collection view to refresh
+        // Force the collection view to refresh to update all unit labels
         var temp = MixListView.ItemsSource;
         MixListView.ItemsSource = null;
         MixListView.ItemsSource = temp;
+        
+        // The appSettings.UseImperialUnits property now automatically saves to Preferences
+        appSettings.UseImperialUnits = useImperialUnits;
     }
 
-    private void OnUnitsToggled(object sender, ToggledEventArgs e)
+    private async void OnUnitsToggled(object sender, ToggledEventArgs e)
     {
         useImperialUnits = e.Value;
         UpdateUnitDisplay();
@@ -610,17 +599,20 @@ public partial class MainPage : ContentPage
     private async void OnMenuClicked(object sender, EventArgs e)
     {
         string action = await DisplayActionSheet("Menu", "Cancel", null, 
+            "Manage Fertilizers",
             "Load Mix", 
             "Save Mix", 
             "Clear Mix", 
             "Compare Mixes", 
             "Collapse Mix Window", 
-            "Manage Fertilizers",  
             "Import Fertilizers/Mixes", 
             "Export Fertilizers/Mixes");
 
         switch (action)
         {
+            case "Manage Fertilizers":
+                OnManageFertilizersClicked(sender, e);
+                break;
             case "Load Mix":
                 OnLoadMixFromPopupClicked(sender, e);
                 break;
@@ -635,9 +627,6 @@ public partial class MainPage : ContentPage
                 break;
             case "Collapse Mix Window":
                 OnToggleMixVisibilityClicked(sender, e);
-                break;
-            case "Manage Fertilizers":
-                OnManageFertilizersClicked(sender, e);
                 break;
             case "Import Fertilizers/Mixes":
                 OnImportClicked(sender, e);
