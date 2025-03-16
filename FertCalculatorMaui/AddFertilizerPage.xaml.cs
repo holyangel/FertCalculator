@@ -200,9 +200,12 @@ public partial class AddFertilizerPage : ContentPage
             ChlorineEntry, SilicaEntry, HumicAcidEntry, FulvicAcidEntry
         };
         
-        var regex = new Regex(@"^$|^\d*\.?\d*$"); // Empty or valid decimal number
-        return entries.All(e => regex.IsMatch(e.Text ?? string.Empty));
+        // Use a static regex instance with compiled option to address SYSLIB1045
+        return entries.All(e => _decimalRegex.IsMatch(e.Text ?? string.Empty));
     }
+
+    // Static regex instance with RegexOptions.Compiled for better performance
+    private static readonly Regex _decimalRegex = new Regex(@"^$|^\d*\.?\d*$", RegexOptions.Compiled);
 
     private async Task SaveFertilizersAsync()
     {
