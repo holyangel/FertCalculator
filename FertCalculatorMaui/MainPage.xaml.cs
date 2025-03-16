@@ -13,9 +13,10 @@ namespace FertCalculatorMaui;
 public partial class MainPage : ContentPage
 {
     private readonly FileService fileService;
+    private readonly IDialogService dialogService;
     private MainPageViewModel viewModel;
 
-    public MainPage(FileService fileService)
+    public MainPage(FileService fileService, IDialogService dialogService)
     {
         try
         {
@@ -23,14 +24,20 @@ public partial class MainPage : ContentPage
             InitializeComponent();
             Debug.WriteLine("MainPage InitializeComponent completed");
             
-            // Initialize service
+            // Initialize services
             if (fileService == null)
             {
                 Debug.WriteLine("WARNING: fileService is null in MainPage constructor");
                 fileService = new FileService();
             }
             this.fileService = fileService;
-            Debug.WriteLine("FileService initialized");
+            
+            if (dialogService == null)
+            {
+                Debug.WriteLine("WARNING: dialogService is null in MainPage constructor");
+                dialogService = new DialogService();
+            }
+            this.dialogService = dialogService;
             
             // Initialize ViewModel
             viewModel = new MainPageViewModel(fileService);
@@ -55,6 +62,9 @@ public partial class MainPage : ContentPage
         // Refresh fertilizer list when page becomes visible
         _ = LoadFertilizersAsync();
         _ = LoadMixesAsync();
+        
+        // Update unit labels when the page appears
+        UpdateUnitLabelsInCollectionView();
         
         // Make sure we're registered for messages
         if (!WeakReferenceMessenger.Default.IsRegistered<AddFertilizerToMixMessage>(this))
@@ -220,9 +230,35 @@ public partial class MainPage : ContentPage
 
     private async void OnUnitsToggled(object sender, ToggledEventArgs e)
     {
+#if IOS || MACCATALYST
         viewModel.UseImperialUnits = e.Value;
+#else
+        // For other platforms, access the Switch control directly
+        if (sender is Microsoft.Maui.Controls.Switch switchControl)
+        {
+            viewModel.UseImperialUnits = switchControl.IsToggled;
+        }
+#endif
         viewModel.UpdateUnitDisplay();
         viewModel.UpdateNutrientTotals();
+        
+        // Update all unit labels in the collection view
+        UpdateUnitLabelsInCollectionView();
+    }
+
+    private void UpdateUnitLabelsInCollectionView()
+    {
+        // This method will be called when the units are toggled or when the collection view is populated
+        if (MixListView != null)
+        {
+            foreach (var item in MixListView.GetVisualTreeDescendants())
+            {
+                if (item is Label label && label.StyleId == "UnitLabel")
+                {
+                    label.Text = viewModel.UnitsTypeLabel;
+                }
+            }
+        }
     }
 
     private async void OnSaveMixClicked(object sender, EventArgs e)
@@ -290,7 +326,7 @@ public partial class MainPage : ContentPage
 
     private async void OnManageFertilizersClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new ManageFertilizersPage(fileService, viewModel.AvailableFertilizers));
+        await Navigation.PushAsync(new ManageFertilizersPage(fileService, dialogService, viewModel.AvailableFertilizers));
     }
     
     private void OnIncrementSmallClicked(object sender, EventArgs e)
@@ -369,19 +405,35 @@ public partial class MainPage : ContentPage
 
     private async void OnFertilizerTapped(object sender, TappedEventArgs e)
     {
-        if (e.Parameter is string fertilizerName)
+#if IOS || MACCATALYST
+        string fertilizerName = e.Parameter as string;
+#else
+        // For other platforms, try to get the parameter from the binding context or tag
+        string fertilizerName = null;
+        if (sender is Grid grid && grid.BindingContext is FertilizerQuantity fertQuantity)
         {
-            var mixItem = viewModel.CurrentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
+            fertilizerName = fertQuantity.FertilizerName;
+        }
+#endif
+
+        if (!string.IsNullOrEmpty(fertilizerName))
+        {
+            // Navigate to edit quantity page
+            var fertilizer = viewModel.AvailableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
+            var existingQuantity = viewModel.CurrentMix.FirstOrDefault(fq => fq.FertilizerName == fertilizerName);
             
-            if (mixItem != null)
+            if (fertilizer != null && existingQuantity != null)
             {
-                var editPage = new EditQuantityPage(fertilizerName, mixItem.Quantity, viewModel.UseImperialUnits);
+                var editPage = new EditQuantityPage(
+                    fertilizerName,
+                    existingQuantity.Quantity,
+                    viewModel.UnitsTypeLabel,
+                    viewModel.UseImperialUnits);
                 
-                // Subscribe to the QuantityChanged event
                 editPage.QuantityChanged += (s, args) =>
                 {
-                    // Update the quantity in the current mix
-                    mixItem.Quantity = args.NewQuantity;
+                    // Update the quantity in the mix
+                    existingQuantity.Quantity = args.NewQuantity;
                     viewModel.UpdateNutrientTotals();
                 };
                 
@@ -405,7 +457,7 @@ public partial class MainPage : ContentPage
     // Public methods for AppShell menu integration
     public async Task NavigateToManageFertilizers()
     {
-        await Navigation.PushAsync(new ManageFertilizersPage(fileService, viewModel.AvailableFertilizers));
+        await Navigation.PushAsync(new ManageFertilizersPage(fileService, dialogService, viewModel.AvailableFertilizers));
     }
     
     public async Task LoadMixFromMenu()

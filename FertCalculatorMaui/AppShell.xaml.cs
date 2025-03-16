@@ -1,19 +1,26 @@
 using System.Diagnostics;
 using FertCalculatorMaui.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FertCalculatorMaui;
 
 public partial class AppShell : Shell
 {
-    private MainPage mainPage;
+    private readonly MainPage mainPage;
+    private readonly IServiceProvider serviceProvider;
     
-    public AppShell()
+    public AppShell(IServiceProvider serviceProvider)
     {
         try
         {
             Debug.WriteLine("AppShell constructor starting");
             InitializeComponent();
             Debug.WriteLine("AppShell InitializeComponent completed");
+            
+            this.serviceProvider = serviceProvider;
+            
+            // Get the MainPage from the service provider
+            mainPage = serviceProvider.GetRequiredService<MainPage>();
             
             // Register routes for navigation
             Routing.RegisterRoute(nameof(AddFertilizerPage), typeof(AddFertilizerPage));
@@ -33,19 +40,17 @@ public partial class AppShell : Shell
     protected override void OnNavigated(ShellNavigatedEventArgs args)
     {
         base.OnNavigated(args);
-        
-        // Get reference to the MainPage when it's loaded
-        if (CurrentPage is MainPage page)
-        {
-            mainPage = page;
-        }
     }
     
     private async void OnManageFertilizersClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.NavigateToManageFertilizers();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnManageFertilizersClicked: {ex.Message}\n{ex.StackTrace}");
         }
         // Close the flyout after selection
         FlyoutIsPresented = false;
@@ -53,36 +58,52 @@ public partial class AppShell : Shell
     
     private async void OnLoadMixClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.LoadMixFromMenu();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnLoadMixClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }
     
     private async void OnSaveMixClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.SaveMixFromMenu();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnSaveMixClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }
     
     private async void OnClearMixClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.ClearMixFromMenu();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnClearMixClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }
     
     private async void OnCompareMixesClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.CompareMixesFromMenu();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnCompareMixesClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }
@@ -95,18 +116,26 @@ public partial class AppShell : Shell
     
     private async void OnImportClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.ImportFromMenu();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnImportClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }
     
     private async void OnExportClicked(object sender, EventArgs e)
     {
-        if (mainPage != null)
+        try
         {
             await mainPage.ExportFromMenu();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnExportClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }

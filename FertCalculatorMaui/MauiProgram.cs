@@ -19,6 +19,7 @@ public static class MauiProgram
 
         // Register services
         builder.Services.AddSingleton<FileService>();
+        builder.Services.AddSingleton<IDialogService, DialogService>();
         
         // Register pages
         builder.Services.AddSingleton<MainPage>();

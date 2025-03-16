@@ -5,6 +5,7 @@
              xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.MainPage"
              x:DataType="local:MainPageViewModel"
+             x:Name="MixPage"
              Title="Fertilizer Calculator">
 
     <ContentPage.Resources>
@@ -96,7 +97,7 @@
 
                             <HorizontalStackLayout Grid.Column="1">
                                 <Label Text="{Binding Quantity}" HorizontalOptions="Start" />
-                                <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:MainPage}}, Path=BindingContext.UnitsTypeLabel}" x:Name="UnitLabel" />
+                                <Label x:Name="UnitLabel" StyleId="UnitLabel" />
                             </HorizontalStackLayout>
                             
                             <Button Text="Remove" 

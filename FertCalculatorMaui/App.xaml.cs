@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Microsoft.Extensions.DependencyInjection;
 #if ANDROID
 using Android.Runtime;
 #endif
@@ -11,13 +12,17 @@ namespace FertCalculatorMaui;
 
 public partial class App : Application
 {
-    public App()
+    private readonly IServiceProvider serviceProvider;
+    
+    public App(IServiceProvider serviceProvider)
     {
         try
         {
             Debug.WriteLine("App constructor starting");
             InitializeComponent();
             Debug.WriteLine("InitializeComponent completed");
+            
+            this.serviceProvider = serviceProvider;
 
             // Set up unhandled exception handlers
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
@@ -67,7 +72,7 @@ public partial class App : Application
 #endif
             }
             
-            var window = new Window(new AppShell());
+            var window = new Window(new AppShell(serviceProvider));
             Debug.WriteLine("Window created with AppShell");
             return window;
         }

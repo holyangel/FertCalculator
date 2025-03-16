@@ -262,11 +262,80 @@ public class FileService
             if (!File.Exists(filePath))
                 return false;
 
+#if IOS || MACCATALYST
+            // Use Share API on iOS/macCatalyst which supports these features
             await Share.RequestAsync(new ShareFileRequest
             {
                 Title = title,
                 File = new ShareFile(filePath)
             });
+#else
+            // For Android, Windows, and other platforms
+            // Use a platform-agnostic approach or platform-specific implementations
+#if ANDROID
+            // Android-specific sharing implementation
+            var context = Android.App.Application.Context;
+            var file = new JavaFile(filePath);
+            var uri = AndroidX.Core.Content.FileProvider.GetUriForFile(
+                context,
+                context.PackageName + ".fileprovider",
+                file);
+                
+            var intent = new Intent(Intent.ActionSend);
+            intent.SetType("application/xml");
+            intent.PutExtra(Intent.ExtraStream, uri);
+            intent.PutExtra(Intent.ExtraText, title);
+            intent.PutExtra(Intent.ExtraTitle, title);
+            intent.AddFlags(ActivityFlags.NewTask);
+            intent.AddFlags(ActivityFlags.GrantReadUriPermission);
+            
+            var chooserIntent = Intent.CreateChooser(intent, title);
+            chooserIntent.AddFlags(ActivityFlags.NewTask);
+            context.StartActivity(chooserIntent);
+#elif WINDOWS
+            // Windows-specific implementation
+            var fileSavePicker = new Windows.Storage.Pickers.FileSavePicker
+            {
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary,
+                SuggestedFileName = Path.GetFileName(filePath)
+            };
+            
+            fileSavePicker.FileTypeChoices.Add("XML Document", new List<string>() { ".xml" });
+            
+            // Get the current window handle
+            var window = Microsoft.Maui.Controls.Application.Current?.Windows[0];
+            if (window != null)
+            {
+                // Associate the picker with the window
+                var hwnd = WindowNative.GetWindowHandle(window);
+                InitializeWithWindow.Initialize(fileSavePicker, hwnd);
+                
+                var file = await fileSavePicker.PickSaveFileAsync();
+                if (file != null)
+                {
+                    // Copy the file to the selected location
+                    await Windows.Storage.StorageFile.GetFileFromPathAsync(filePath)
+                        .AsTask()
+                        .ContinueWith(async (t) => 
+                        {
+                            var sourceFile = await t;
+                            await sourceFile.CopyAndReplaceAsync(file);
+                        });
+                }
+            }
+#else
+            // Fallback for other platforms - just copy the file to a known location
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string destinationPath = Path.Combine(documentsPath, Path.GetFileName(filePath));
+            File.Copy(filePath, destinationPath, true);
+            
+            // Show a message to the user about where the file was saved
+            await Application.Current.MainPage.DisplayAlert(
+                "File Saved", 
+                $"The file has been saved to: {destinationPath}", 
+                "OK");
+#endif
+#endif
             
             return true;
         }
@@ -295,18 +364,12 @@ public class FileService
                 serializer.Serialize(stream, data);
             }
             
-            // Now use the Share API to let the user save it where they want
-            await Share.RequestAsync(new ShareFileRequest
-            {
-                Title = "Save Fertilizer Calculator Data",
-                File = new ShareFile(tempFilePath)
-            });
-            
-            return true;
+            // Now use the platform-specific approach to let the user save it
+            return await ShareFileAsync(tempFilePath, "Save Fertilizer Calculator Data");
         }
         catch (Exception ex)
         {
-            System.Console.WriteLine($"Error saving file: {ex.Message}");
+            System.Console.WriteLine($"Error saving to user selected directory: {ex.Message}");
             return false;
         }
     }

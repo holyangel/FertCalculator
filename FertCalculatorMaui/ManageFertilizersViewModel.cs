@@ -1,17 +1,20 @@
+using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FertCalculatorMaui.Messages;
 using FertCalculatorMaui.Services;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 
 namespace FertCalculatorMaui
 {
     public partial class ManageFertilizersViewModel : ObservableObject
     {
         private readonly FileService _fileService;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private ObservableCollection<Fertilizer> availableFertilizers;
@@ -19,22 +22,30 @@ namespace FertCalculatorMaui
         [ObservableProperty]
         private Fertilizer selectedFertilizer;
 
-        public ManageFertilizersViewModel(FileService fileService, ObservableCollection<Fertilizer> fertilizers)
+        public ManageFertilizersViewModel(FileService fileService, IDialogService dialogService, ObservableCollection<Fertilizer> fertilizers)
         {
             _fileService = fileService;
+            _dialogService = dialogService;
             AvailableFertilizers = fertilizers;
+            
+            _ = ReloadFertilizersAsync();
         }
 
         [RelayCommand]
         private async Task AddFertilizer()
         {
             // This will be handled by the page's navigation
+            // The page will handle navigation to AddFertilizerPage
         }
 
         [RelayCommand]
         private async Task EditFertilizer()
         {
-            // This will be handled by the page's navigation
+            if (SelectedFertilizer != null)
+            {
+                // This will be handled by the page's navigation
+                // The page will handle navigation to AddFertilizerPage with the selected fertilizer
+            }
         }
 
         [RelayCommand]
@@ -43,7 +54,7 @@ namespace FertCalculatorMaui
             if (fertilizer == null)
                 return;
 
-            bool confirmed = await Application.Current.MainPage.DisplayAlert(
+            bool confirmed = await _dialogService.DisplayConfirmationAsync(
                 "Confirm Delete",
                 $"Are you sure you want to delete {fertilizer.Name}?",
                 "Yes", "No");
@@ -58,16 +69,81 @@ namespace FertCalculatorMaui
                 WeakReferenceMessenger.Default.Send(new FertilizersUpdatedMessage(fertilizer));
             }
         }
+        
+        [RelayCommand]
+        private async Task RemoveFertilizer()
+        {
+            if (SelectedFertilizer == null)
+                return;
+                
+            await DeleteFertilizer(SelectedFertilizer);
+        }
+        
+        [RelayCommand]
+        private async Task BackToMix()
+        {
+            // Navigate back to the previous page
+            var navigation = GetCurrentNavigation();
+            if (navigation != null)
+            {
+                await navigation.PopAsync();
+            }
+        }
+        
+        public async Task DeleteFertilizerAsync(Fertilizer fertilizer)
+        {
+            // This method is called from the code-behind event handler
+            await DeleteFertilizer(fertilizer);
+        }
+        
+        private INavigation GetCurrentNavigation()
+        {
+            // For all platforms, use the recommended approach for .NET MAUI
+            if (Application.Current?.Windows != null && Application.Current.Windows.Count > 0)
+            {
+                // Get the first window (most apps only have one window)
+                var window = Application.Current.Windows[0];
+                
+                if (window?.Page != null)
+                {
+                    return GetVisiblePageNavigation(window.Page);
+                }
+            }
+            
+            throw new InvalidOperationException("Could not determine current navigation for page navigation");
+        }
+        
+        private INavigation GetVisiblePageNavigation(Page page)
+        {
+            if (page is Shell shell)
+            {
+                return shell.CurrentPage?.Navigation ?? shell.Navigation;
+            }
+            
+            if (page is NavigationPage navPage)
+            {
+                return navPage.CurrentPage?.Navigation ?? navPage.Navigation;
+            }
+            
+            if (page is TabbedPage tabbedPage)
+            {
+                return tabbedPage.CurrentPage?.Navigation ?? tabbedPage.Navigation;
+            }
+            
+            if (page is FlyoutPage flyoutPage)
+            {
+                return flyoutPage.Detail?.Navigation ?? flyoutPage.Navigation;
+            }
+            
+            return page.Navigation;
+        }
 
         public async Task ReloadFertilizersAsync()
         {
-            // Load the latest fertilizers from the file
             var updatedFertilizers = await _fileService.LoadFertilizersAsync();
             
-            // Sort fertilizers alphabetically by name
             var sortedFertilizers = updatedFertilizers.OrderBy(f => f.Name).ToList();
             
-            // Clear and repopulate the collection
             AvailableFertilizers.Clear();
             foreach (var fertilizer in sortedFertilizers)
             {

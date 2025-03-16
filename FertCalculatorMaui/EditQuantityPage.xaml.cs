@@ -10,11 +10,11 @@ namespace FertCalculatorMaui
         
         public event EventHandler<QuantityChangedEventArgs> QuantityChanged;
 
-        public EditQuantityPage(string fertilizerName, double quantity, bool useImperialUnits)
+        public EditQuantityPage(string fertilizerName, double quantity, string unitLabel, bool useImperialUnits)
         {
             InitializeComponent();
             
-            viewModel = new EditQuantityViewModel(fertilizerName, quantity, useImperialUnits);
+            viewModel = new EditQuantityViewModel(fertilizerName, quantity, unitLabel, useImperialUnits);
             BindingContext = viewModel;
         }
 

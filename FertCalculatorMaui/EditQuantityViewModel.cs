@@ -19,12 +19,12 @@ namespace FertCalculatorMaui
         [ObservableProperty]
         private bool useImperialUnits;
 
-        public EditQuantityViewModel(string fertilizerName, double quantity, bool useImperialUnits)
+        public EditQuantityViewModel(string fertilizerName, double quantity, string unitLabel, bool useImperialUnits)
         {
             FertilizerName = fertilizerName;
             Quantity = quantity;
+            UnitLabel = unitLabel;
             UseImperialUnits = useImperialUnits;
-            UnitLabel = useImperialUnits ? "g/gal" : "g/L";
         }
     }
 }
