@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:FertCalculatorMaui"
              xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.MainPage"
-             x:DataType="local:MainPage"
+             x:DataType="local:MainPageViewModel"
              Title="Fertilizer Calculator">
 
     <ContentPage.Resources>
@@ -12,7 +12,7 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Menu" Clicked="OnMenuClicked" />
+        <!-- Menu moved to AppShell.xaml -->
     </ContentPage.ToolbarItems>
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" Padding="10">
@@ -81,6 +81,7 @@
             </HorizontalStackLayout>
 
             <CollectionView x:Name="MixListView" 
+                            ItemsSource="{Binding CurrentMix}"
                             SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="local:FertilizerQuantity">
@@ -95,7 +96,7 @@
 
                             <HorizontalStackLayout Grid.Column="1">
                                 <Label Text="{Binding Quantity}" HorizontalOptions="Start" />
-                                <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:MainPage}}, Path=UseImperialUnits, Converter={StaticResource UnitConverter}}" x:Name="UnitLabel" />
+                                <Label Text="{Binding Source={RelativeSource AncestorType={x:Type local:MainPage}}, Path=BindingContext.UnitsTypeLabel}" x:Name="UnitLabel" />
                             </HorizontalStackLayout>
                             
                             <Button Text="Remove" 
@@ -111,8 +112,8 @@
             </CollectionView>
 
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Label Text="Metric (per liter)" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
-                <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" />
+                <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" VerticalOptions="Center" />
+                <Label Text="{Binding UnitsTypeLabel}" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
         
@@ -124,92 +125,92 @@
                         <!-- Headers -->
                         <Label Text="Nutrient" FontAttributes="Bold" Grid.Row="0" Grid.Column="0" />
                         <Label Text="%" FontAttributes="Bold" Grid.Row="0" Grid.Column="1" />
-                        <Label Text="PPM (per liter)" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" x:Name="PpmHeaderLabel" />
+                        <Label Text="{Binding PpmHeaderLabel}" FontAttributes="Bold" Grid.Row="0" Grid.Column="2" x:Name="PpmHeaderLabel" />
                         
                         <!-- Nitrogen -->
                         <Label Text="Nitrogen (N)" Grid.Row="1" Grid.Column="0" />
-                        <Label Text="{Binding NitrogenPercent}" Grid.Row="1" Grid.Column="1" x:Name="NitrogenPercentLabel" />
-                        <Label Text="{Binding NitrogenPpm}" Grid.Row="1" Grid.Column="2" x:Name="NitrogenPpmLabel" />
+                        <Label Text="{Binding NitrogenPercent, StringFormat='{0:F2}'}" Grid.Row="1" Grid.Column="1" x:Name="NitrogenPercentLabel" />
+                        <Label Text="{Binding NitrogenPpm, StringFormat='{0:F3}'}" Grid.Row="1" Grid.Column="2" x:Name="NitrogenPpmLabel" />
                         
                         <!-- Phosphorus -->
                         <Label Text="Phosphorus (P)" Grid.Row="2" Grid.Column="0" />
-                        <Label Text="{Binding PhosphorusPercent}" Grid.Row="2" Grid.Column="1" x:Name="PhosphorusPercentLabel" />
-                        <Label Text="{Binding PhosphorusPpm}" Grid.Row="2" Grid.Column="2" x:Name="PhosphorusPpmLabel" />
+                        <Label Text="{Binding PhosphorusPercent, StringFormat='{0:F2}'}" Grid.Row="2" Grid.Column="1" x:Name="PhosphorusPercentLabel" />
+                        <Label Text="{Binding PhosphorusPpm, StringFormat='{0:F3}'}" Grid.Row="2" Grid.Column="2" x:Name="PhosphorusPpmLabel" />
                         
                         <!-- Potassium -->
                         <Label Text="Potassium (K)" Grid.Row="3" Grid.Column="0" />
-                        <Label Text="{Binding PotassiumPercent}" Grid.Row="3" Grid.Column="1" x:Name="PotassiumPercentLabel" />
-                        <Label Text="{Binding PotassiumPpm}" Grid.Row="3" Grid.Column="2" x:Name="PotassiumPpmLabel" />
+                        <Label Text="{Binding PotassiumPercent, StringFormat='{0:F2}'}" Grid.Row="3" Grid.Column="1" x:Name="PotassiumPercentLabel" />
+                        <Label Text="{Binding PotassiumPpm, StringFormat='{0:F3}'}" Grid.Row="3" Grid.Column="2" x:Name="PotassiumPpmLabel" />
                         
                         <!-- Calcium -->
                         <Label Text="Calcium (Ca)" Grid.Row="4" Grid.Column="0" />
-                        <Label Text="{Binding CalciumPercent}" Grid.Row="4" Grid.Column="1" x:Name="CalciumPercentLabel" />
-                        <Label Text="{Binding CalciumPpm}" Grid.Row="4" Grid.Column="2" x:Name="CalciumPpmLabel" />
+                        <Label Text="{Binding CalciumPercent, StringFormat='{0:F2}'}" Grid.Row="4" Grid.Column="1" x:Name="CalciumPercentLabel" />
+                        <Label Text="{Binding CalciumPpm, StringFormat='{0:F3}'}" Grid.Row="4" Grid.Column="2" x:Name="CalciumPpmLabel" />
                         
                         <!-- Magnesium -->
                         <Label Text="Magnesium (Mg)" Grid.Row="5" Grid.Column="0" />
-                        <Label Text="{Binding MagnesiumPercent}" Grid.Row="5" Grid.Column="1" x:Name="MagnesiumPercentLabel" />
-                        <Label Text="{Binding MagnesiumPpm}" Grid.Row="5" Grid.Column="2" x:Name="MagnesiumPpmLabel" />
+                        <Label Text="{Binding MagnesiumPercent, StringFormat='{0:F2}'}" Grid.Row="5" Grid.Column="1" x:Name="MagnesiumPercentLabel" />
+                        <Label Text="{Binding MagnesiumPpm, StringFormat='{0:F3}'}" Grid.Row="5" Grid.Column="2" x:Name="MagnesiumPpmLabel" />
                         
                         <!-- Sulfur -->
                         <Label Text="Sulfur (S)" Grid.Row="6" Grid.Column="0" />
-                        <Label Text="{Binding SulfurPercent}" Grid.Row="6" Grid.Column="1" x:Name="SulfurPercentLabel" />
-                        <Label Text="{Binding SulfurPpm}" Grid.Row="6" Grid.Column="2" x:Name="SulfurPpmLabel" />
+                        <Label Text="{Binding SulfurPercent, StringFormat='{0:F2}'}" Grid.Row="6" Grid.Column="1" x:Name="SulfurPercentLabel" />
+                        <Label Text="{Binding SulfurPpm, StringFormat='{0:F3}'}" Grid.Row="6" Grid.Column="2" x:Name="SulfurPpmLabel" />
                         
                         <!-- Boron -->
                         <Label Text="Boron (B)" Grid.Row="7" Grid.Column="0" />
-                        <Label Text="{Binding BoronPercent}" Grid.Row="7" Grid.Column="1" x:Name="BoronPercentLabel" />
-                        <Label Text="{Binding BoronPpm}" Grid.Row="7" Grid.Column="2" x:Name="BoronPpmLabel" />
+                        <Label Text="{Binding BoronPercent, StringFormat='{0:F2}'}" Grid.Row="7" Grid.Column="1" x:Name="BoronPercentLabel" />
+                        <Label Text="{Binding BoronPpm, StringFormat='{0:F3}'}" Grid.Row="7" Grid.Column="2" x:Name="BoronPpmLabel" />
                         
                         <!-- Copper -->
                         <Label Text="Copper (Cu)" Grid.Row="8" Grid.Column="0" />
-                        <Label Text="{Binding CopperPercent}" Grid.Row="8" Grid.Column="1" x:Name="CopperPercentLabel" />
-                        <Label Text="{Binding CopperPpm}" Grid.Row="8" Grid.Column="2" x:Name="CopperPpmLabel" />
+                        <Label Text="{Binding CopperPercent, StringFormat='{0:F2}'}" Grid.Row="8" Grid.Column="1" x:Name="CopperPercentLabel" />
+                        <Label Text="{Binding CopperPpm, StringFormat='{0:F3}'}" Grid.Row="8" Grid.Column="2" x:Name="CopperPpmLabel" />
                         
                         <!-- Iron -->
                         <Label Text="Iron (Fe)" Grid.Row="9" Grid.Column="0" />
-                        <Label Text="{Binding IronPercent}" Grid.Row="9" Grid.Column="1" x:Name="IronPercentLabel" />
-                        <Label Text="{Binding IronPpm}" Grid.Row="9" Grid.Column="2" x:Name="IronPpmLabel" />
+                        <Label Text="{Binding IronPercent, StringFormat='{0:F2}'}" Grid.Row="9" Grid.Column="1" x:Name="IronPercentLabel" />
+                        <Label Text="{Binding IronPpm, StringFormat='{0:F3}'}" Grid.Row="9" Grid.Column="2" x:Name="IronPpmLabel" />
                         
                         <!-- Manganese -->
                         <Label Text="Manganese (Mn)" Grid.Row="10" Grid.Column="0" />
-                        <Label Text="{Binding ManganesePercent}" Grid.Row="10" Grid.Column="1" x:Name="ManganesePercentLabel" />
-                        <Label Text="{Binding ManganesePpm}" Grid.Row="10" Grid.Column="2" x:Name="ManganesePpmLabel" />
+                        <Label Text="{Binding ManganesePercent, StringFormat='{0:F2}'}" Grid.Row="10" Grid.Column="1" x:Name="ManganesePercentLabel" />
+                        <Label Text="{Binding ManganesePpm, StringFormat='{0:F3}'}" Grid.Row="10" Grid.Column="2" x:Name="ManganesePpmLabel" />
                         
                         <!-- Molybdenum -->
                         <Label Text="Molybdenum (Mo)" Grid.Row="11" Grid.Column="0" />
-                        <Label Text="{Binding MolybdenumPercent}" Grid.Row="11" Grid.Column="1" x:Name="MolybdenumPercentLabel" />
-                        <Label Text="{Binding MolybdenumPpm}" Grid.Row="11" Grid.Column="2" x:Name="MolybdenumPpmLabel" />
+                        <Label Text="{Binding MolybdenumPercent, StringFormat='{0:F2}'}" Grid.Row="11" Grid.Column="1" x:Name="MolybdenumPercentLabel" />
+                        <Label Text="{Binding MolybdenumPpm, StringFormat='{0:F3}'}" Grid.Row="11" Grid.Column="2" x:Name="MolybdenumPpmLabel" />
                         
                         <!-- Zinc -->
                         <Label Text="Zinc (Zn)" Grid.Row="12" Grid.Column="0" />
-                        <Label Text="{Binding ZincPercent}" Grid.Row="12" Grid.Column="1" x:Name="ZincPercentLabel" />
-                        <Label Text="{Binding ZincPpm}" Grid.Row="12" Grid.Column="2" x:Name="ZincPpmLabel" />
+                        <Label Text="{Binding ZincPercent, StringFormat='{0:F2}'}" Grid.Row="12" Grid.Column="1" x:Name="ZincPercentLabel" />
+                        <Label Text="{Binding ZincPpm, StringFormat='{0:F3}'}" Grid.Row="12" Grid.Column="2" x:Name="ZincPpmLabel" />
                         
                         <!-- Chlorine -->
                         <Label Text="Chlorine (Cl)" Grid.Row="13" Grid.Column="0" />
-                        <Label Text="{Binding ChlorinePercent}" Grid.Row="13" Grid.Column="1" x:Name="ChlorinePercentLabel" />
-                        <Label Text="{Binding ChlorinePpm}" Grid.Row="13" Grid.Column="2" x:Name="ChlorinePpmLabel" />
+                        <Label Text="{Binding ChlorinePercent, StringFormat='{0:F2}'}" Grid.Row="13" Grid.Column="1" x:Name="ChlorinePercentLabel" />
+                        <Label Text="{Binding ChlorinePpm, StringFormat='{0:F3}'}" Grid.Row="13" Grid.Column="2" x:Name="ChlorinePpmLabel" />
                         
                         <!-- Silica -->
                         <Label Text="Silica (Si)" Grid.Row="14" Grid.Column="0" />
-                        <Label Text="{Binding SilicaPercent}" Grid.Row="14" Grid.Column="1" x:Name="SilicaPercentLabel" />
-                        <Label Text="{Binding SilicaPpm}" Grid.Row="14" Grid.Column="2" x:Name="SilicaPpmLabel" />
+                        <Label Text="{Binding SilicaPercent, StringFormat='{0:F2}'}" Grid.Row="14" Grid.Column="1" x:Name="SilicaPercentLabel" />
+                        <Label Text="{Binding SilicaPpm, StringFormat='{0:F3}'}" Grid.Row="14" Grid.Column="2" x:Name="SilicaPpmLabel" />
                         
                         <!-- Humic Acid -->
                         <Label Text="Humic Acid" Grid.Row="15" Grid.Column="0" />
-                        <Label Text="{Binding HumicAcidPercent}" Grid.Row="15" Grid.Column="1" x:Name="HumicAcidPercentLabel" />
-                        <Label Text="{Binding HumicAcidPpm}" Grid.Row="15" Grid.Column="2" x:Name="HumicAcidPpmLabel" />
+                        <Label Text="{Binding HumicAcidPercent, StringFormat='{0:F2}'}" Grid.Row="15" Grid.Column="1" x:Name="HumicAcidPercentLabel" />
+                        <Label Text="{Binding HumicAcidPpm, StringFormat='{0:F3}'}" Grid.Row="15" Grid.Column="2" x:Name="HumicAcidPpmLabel" />
                         
                         <!-- Fulvic Acid -->
                         <Label Text="Fulvic Acid" Grid.Row="16" Grid.Column="0" />
-                        <Label Text="{Binding FulvicAcidPercent}" Grid.Row="16" Grid.Column="1" x:Name="FulvicAcidPercentLabel" />
-                        <Label Text="{Binding FulvicAcidPpm}" Grid.Row="16" Grid.Column="2" x:Name="FulvicAcidPpmLabel" />
+                        <Label Text="{Binding FulvicAcidPercent, StringFormat='{0:F2}'}" Grid.Row="16" Grid.Column="1" x:Name="FulvicAcidPercentLabel" />
+                        <Label Text="{Binding FulvicAcidPpm, StringFormat='{0:F3}'}" Grid.Row="16" Grid.Column="2" x:Name="FulvicAcidPpmLabel" />
 
                         <!-- Total Nutrient -->
                         <Label Text="Total Nutrient" Grid.Row="17" Grid.Column="0" />
-                        <Label Text="{Binding TotalNutrientPercent}" Grid.Row="17" Grid.Column="1" x:Name="TotalNutrientPercentLabel" />
-                        <Label Text="{Binding TotalNutrientPpm}" Grid.Row="17" Grid.Column="2" x:Name="TotalNutrientPpmLabel" />
+                        <Label Text="{Binding TotalNutrientPercent, StringFormat='{0:F2}'}" Grid.Row="17" Grid.Column="1" x:Name="TotalNutrientPercentLabel" />
+                        <Label Text="{Binding TotalNutrientPpm, StringFormat='{0:F3}'}" Grid.Row="17" Grid.Column="2" x:Name="TotalNutrientPpmLabel" />
                     </Grid>
                 </VerticalStackLayout>
             </ScrollView>

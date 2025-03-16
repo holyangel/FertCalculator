@@ -56,29 +56,40 @@ public partial class ManageFertilizersPage : ContentPage
     
     private async void OnEditFertilizerClicked(object sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is string fertilizerName)
+        if (sender is Button button)
         {
-            var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
-            if (fertilizer != null)
+            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
+            if (!string.IsNullOrEmpty(fertilizerName))
             {
-                await Navigation.PushAsync(new AddFertilizerPage(fileService, fertilizer));
+                var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
+                if (fertilizer != null)
+                {
+                    await Navigation.PushAsync(new AddFertilizerPage(fileService, fertilizer));
+                }
             }
         }
     }
     
-    private void OnRemoveFertilizerClicked(object sender, EventArgs e)
+    private async void OnDeleteFertilizerClicked(object sender, EventArgs e)
     {
-        if (FertilizerListView.SelectedItem is Fertilizer selectedFertilizer)
+        if (sender is Button button)
         {
-            availableFertilizers.Remove(selectedFertilizer);
-            SaveFertilizers();
-            
-            // Resort the collection to maintain alphabetical order
-            var sortedFertilizers = availableFertilizers.OrderBy(f => f.Name).ToList();
-            availableFertilizers.Clear();
-            foreach (var fertilizer in sortedFertilizers)
+            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
+            if (!string.IsNullOrEmpty(fertilizerName))
             {
-                availableFertilizers.Add(fertilizer);
+                bool confirm = await DisplayAlert("Confirm Delete", 
+                    $"Are you sure you want to delete {fertilizerName}?", 
+                    "Yes", "No");
+                
+                if (confirm)
+                {
+                    var fertilizerToRemove = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
+                    if (fertilizerToRemove != null)
+                    {
+                        availableFertilizers.Remove(fertilizerToRemove);
+                        await fileService.SaveFertilizersAsync(availableFertilizers.ToList());
+                    }
+                }
             }
         }
     }
@@ -91,23 +102,27 @@ public partial class ManageFertilizersPage : ContentPage
     
     private async void OnAddToMixClicked(object sender, EventArgs e)
     {
-        if (sender is Button button && button.CommandParameter is string fertilizerName)
+        if (sender is Button button)
         {
-            var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
-            if (fertilizer != null)
+            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
+            if (!string.IsNullOrEmpty(fertilizerName))
             {
-                try
+                var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
+                if (fertilizer != null)
                 {
-                    // Send a message back to the MainPage to add this fertilizer to the mix
-                    WeakReferenceMessenger.Default.Send(new AddFertilizerToMixMessage(fertilizer));
-                    
-                    // Go back to the MainPage
-                    await Navigation.PopAsync();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error sending message: {ex.Message}");
-                    await DisplayAlert("Error", "Could not add fertilizer to mix", "OK");
+                    try
+                    {
+                        // Send a message back to the MainPage to add this fertilizer to the mix
+                        WeakReferenceMessenger.Default.Send(new AddFertilizerToMixMessage(fertilizer));
+                        
+                        // Go back to the MainPage
+                        await Navigation.PopAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error sending message: {ex.Message}");
+                        await DisplayAlert("Error", "Could not add fertilizer to mix", "OK");
+                    }
                 }
             }
         }

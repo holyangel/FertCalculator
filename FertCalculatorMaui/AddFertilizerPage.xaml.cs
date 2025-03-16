@@ -32,45 +32,45 @@ public partial class AddFertilizerPage : ContentPage
         _ = LoadFertilizersAsync();
         
         // Populate fields with existing fertilizer data
-        NameEntry.Text = existingFertilizer.Name;
-        NitrogenEntry.Text = existingFertilizer.NitrogenPercent.ToString();
+        NameEntry.SetValue(Entry.TextProperty, existingFertilizer.Name);
+        NitrogenEntry.SetValue(Entry.TextProperty, existingFertilizer.NitrogenPercent.ToString());
         
         // For phosphorus and potassium, use the original values and set checkboxes
         if (existingFertilizer.IsPhosphorusInOxideForm)
         {
-            PhosphorusEntry.Text = existingFertilizer.OriginalPhosphorusValue.ToString();
+            PhosphorusEntry.SetValue(Entry.TextProperty, existingFertilizer.OriginalPhosphorusValue.ToString());
             PhosphorusOxideCheckbox.IsChecked = true;
         }
         else
         {
-            PhosphorusEntry.Text = existingFertilizer.PhosphorusPercent.ToString();
+            PhosphorusEntry.SetValue(Entry.TextProperty, existingFertilizer.PhosphorusPercent.ToString());
             PhosphorusOxideCheckbox.IsChecked = false;
         }
         
         if (existingFertilizer.IsPotassiumInOxideForm)
         {
-            PotassiumEntry.Text = existingFertilizer.OriginalPotassiumValue.ToString();
+            PotassiumEntry.SetValue(Entry.TextProperty, existingFertilizer.OriginalPotassiumValue.ToString());
             PotassiumOxideCheckbox.IsChecked = true;
         }
         else
         {
-            PotassiumEntry.Text = existingFertilizer.PotassiumPercent.ToString();
+            PotassiumEntry.SetValue(Entry.TextProperty, existingFertilizer.PotassiumPercent.ToString());
             PotassiumOxideCheckbox.IsChecked = false;
         }
         
-        CalciumEntry.Text = existingFertilizer.CalciumPercent.ToString();
-        MagnesiumEntry.Text = existingFertilizer.MagnesiumPercent.ToString();
-        SulfurEntry.Text = existingFertilizer.SulfurPercent.ToString();
-        BoronEntry.Text = existingFertilizer.BoronPercent.ToString();
-        CopperEntry.Text = existingFertilizer.CopperPercent.ToString();
-        IronEntry.Text = existingFertilizer.IronPercent.ToString();
-        ManganeseEntry.Text = existingFertilizer.ManganesePercent.ToString();
-        MolybdenumEntry.Text = existingFertilizer.MolybdenumPercent.ToString();
-        ZincEntry.Text = existingFertilizer.ZincPercent.ToString();
-        ChlorineEntry.Text = existingFertilizer.ChlorinePercent.ToString();
-        SilicaEntry.Text = existingFertilizer.SilicaPercent.ToString();
-        HumicAcidEntry.Text = existingFertilizer.HumicAcidPercent.ToString();
-        FulvicAcidEntry.Text = existingFertilizer.FulvicAcidPercent.ToString();
+        CalciumEntry.SetValue(Entry.TextProperty, existingFertilizer.CalciumPercent.ToString());
+        MagnesiumEntry.SetValue(Entry.TextProperty, existingFertilizer.MagnesiumPercent.ToString());
+        SulfurEntry.SetValue(Entry.TextProperty, existingFertilizer.SulfurPercent.ToString());
+        BoronEntry.SetValue(Entry.TextProperty, existingFertilizer.BoronPercent.ToString());
+        CopperEntry.SetValue(Entry.TextProperty, existingFertilizer.CopperPercent.ToString());
+        IronEntry.SetValue(Entry.TextProperty, existingFertilizer.IronPercent.ToString());
+        ManganeseEntry.SetValue(Entry.TextProperty, existingFertilizer.ManganesePercent.ToString());
+        MolybdenumEntry.SetValue(Entry.TextProperty, existingFertilizer.MolybdenumPercent.ToString());
+        ZincEntry.SetValue(Entry.TextProperty, existingFertilizer.ZincPercent.ToString());
+        ChlorineEntry.SetValue(Entry.TextProperty, existingFertilizer.ChlorinePercent.ToString());
+        SilicaEntry.SetValue(Entry.TextProperty, existingFertilizer.SilicaPercent.ToString());
+        HumicAcidEntry.SetValue(Entry.TextProperty, existingFertilizer.HumicAcidPercent.ToString());
+        FulvicAcidEntry.SetValue(Entry.TextProperty, existingFertilizer.FulvicAcidPercent.ToString());
     }
 
     private async Task LoadFertilizersAsync()
@@ -80,14 +80,15 @@ public partial class AddFertilizerPage : ContentPage
 
     private async void OnSaveClicked(object sender, EventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(NameEntry.Text))
+        var nameText = NameEntry.GetValue(Entry.TextProperty) as string;
+        if (string.IsNullOrWhiteSpace(nameText))
         {
             await DisplayAlert("Error", "Please enter a fertilizer name", "OK");
             return;
         }
 
         // Check if fertilizer name already exists
-        if (availableFertilizers.Any(f => f.Name.Equals(NameEntry.Text, StringComparison.OrdinalIgnoreCase)))
+        if (availableFertilizers.Any(f => f.Name.Equals(nameText, StringComparison.OrdinalIgnoreCase)))
         {
             bool overwrite = await DisplayAlert("Warning", "A fertilizer with this name already exists. Do you want to overwrite it?", "Yes", "No");
             if (!overwrite)
@@ -102,8 +103,8 @@ public partial class AddFertilizerPage : ContentPage
         }
 
         // Create new fertilizer or update existing one
-        var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name.Equals(NameEntry.Text, StringComparison.OrdinalIgnoreCase)) 
-                         ?? new Fertilizer { Name = NameEntry.Text };
+        var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name.Equals(nameText, StringComparison.OrdinalIgnoreCase)) 
+                         ?? new Fertilizer { Name = nameText };
 
         // Parse nutrient values
         TryParseEntry(NitrogenEntry, value => fertilizer.NitrogenPercent = value);
@@ -174,7 +175,7 @@ public partial class AddFertilizerPage : ContentPage
 
     private static void TryParseEntry(Entry entry, Action<double> setter)
     {
-        if (!string.IsNullOrWhiteSpace(entry.Text) && double.TryParse(entry.Text, out double value))
+        if (!string.IsNullOrWhiteSpace(entry.GetValue(Entry.TextProperty) as string) && double.TryParse(entry.GetValue(Entry.TextProperty) as string, out double value))
         {
             setter(value);
         }
@@ -182,7 +183,7 @@ public partial class AddFertilizerPage : ContentPage
 
     private static bool TryParseEntry(Entry entry, out double value)
     {
-        if (!string.IsNullOrWhiteSpace(entry.Text) && double.TryParse(entry.Text, out value))
+        if (!string.IsNullOrWhiteSpace(entry.GetValue(Entry.TextProperty) as string) && double.TryParse(entry.GetValue(Entry.TextProperty) as string, out value))
         {
             return true;
         }
@@ -201,7 +202,7 @@ public partial class AddFertilizerPage : ContentPage
         };
         
         // Use a static regex instance with compiled option to address SYSLIB1045
-        return entries.All(e => _decimalRegex.IsMatch(e.Text ?? string.Empty));
+        return entries.All(e => _decimalRegex.IsMatch(e.GetValue(Entry.TextProperty) as string ?? string.Empty));
     }
 
     // Static regex instance with RegexOptions.Compiled for better performance

@@ -160,6 +160,8 @@ public partial class ExportOptionsViewModel : INotifyPropertyChanged
 
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
+    public bool CanExport => ExportFertilizers || ExportMixes;
+
     public ICommand ExportCommand { get; }
     public ICommand? CancelCommand { get; set; }
 

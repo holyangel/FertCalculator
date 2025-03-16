@@ -20,56 +20,61 @@ namespace FertCalculatorMaui
 
         private void OnIncrementGramClicked(object sender, EventArgs e)
         {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
+            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value += 1.0;
                 viewModel.Quantity = value;
-                QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
             }
         }
 
         private void OnIncrementSmallClicked(object sender, EventArgs e)
         {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
+            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value += 0.1;
                 viewModel.Quantity = value;
-                QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
             }
         }
 
         private void OnDecrementSmallClicked(object sender, EventArgs e)
         {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
+            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value -= 0.1;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
             }
         }
 
         private void OnDecrementGramClicked(object sender, EventArgs e)
         {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
+            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value -= 1.0;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
             }
         }
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double newQuantity))
+            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
+            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double newQuantity))
             {
                 QuantityChanged?.Invoke(this, new QuantityChangedEventArgs(viewModel.FertilizerName, newQuantity));
                 await Navigation.PopAsync();
             }
             else
             {
-                await DisplayAlert("Invalid Input", "Please enter a valid number for quantity.", "OK");
+                await DisplayAlert("Invalid Input", "Please enter a valid number", "OK");
             }
         }
 

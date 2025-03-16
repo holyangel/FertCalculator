@@ -4,12 +4,34 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FertCalculatorMaui"
-    Shell.FlyoutBehavior="Disabled"
+    Shell.FlyoutBehavior="Flyout"
     Title="Fertilizer Calculator">
 
-    <ShellContent
-        Title="Fertilizer Calculator"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="120" BackgroundColor="{StaticResource Primary}">
+            <Label Text="Fertilizer Calculator" 
+                   TextColor="White" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Home" Icon="home.png">
+        <ShellContent
+            Title="Fertilizer Calculator"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
+    </FlyoutItem>
+
+    <MenuItem Text="Manage Fertilizers" Clicked="OnManageFertilizersClicked" />
+    <MenuItem Text="Load Mix" Clicked="OnLoadMixClicked" />
+    <MenuItem Text="Save Mix" Clicked="OnSaveMixClicked" />
+    <MenuItem Text="Clear Mix" Clicked="OnClearMixClicked" />
+    <MenuItem Text="Compare Mixes" Clicked="OnCompareMixesClicked" />
+    <MenuItem Text="Toggle Mix Window" Clicked="OnToggleMixVisibilityClicked" />
+    <MenuItem Text="Import Fertilizers/Mixes" Clicked="OnImportClicked" />
+    <MenuItem Text="Export Fertilizers/Mixes" Clicked="OnExportClicked" />
 
 </Shell>
