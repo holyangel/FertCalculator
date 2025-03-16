@@ -95,11 +95,19 @@ public partial class ManageFertilizersPage : ContentPage
             var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
             if (fertilizer != null)
             {
-                // Send a message back to the MainPage to add this fertilizer to the mix
-                WeakReferenceMessenger.Default.Send(new AddFertilizerToMixMessage(fertilizer));
-                
-                // Go back to the MainPage
-                await Navigation.PopAsync();
+                try
+                {
+                    // Send a message back to the MainPage to add this fertilizer to the mix
+                    WeakReferenceMessenger.Default.Send(new AddFertilizerToMixMessage(fertilizer));
+                    
+                    // Go back to the MainPage
+                    await Navigation.PopAsync();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error sending message: {ex.Message}");
+                    await DisplayAlert("Error", "Could not add fertilizer to mix", "OK");
+                }
             }
         }
     }
@@ -120,6 +128,10 @@ public partial class ManageFertilizersPage : ContentPage
         
         // Reload fertilizers from file when the page appears
         await ReloadFertilizersAsync();
+        
+        // Force refresh of the CollectionView
+        FertilizerListView.ItemsSource = null;
+        FertilizerListView.ItemsSource = availableFertilizers;
     }
     
     protected override void OnDisappearing()

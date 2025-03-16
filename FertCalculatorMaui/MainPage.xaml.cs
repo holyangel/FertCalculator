@@ -90,6 +90,14 @@ public partial class MainPage : ContentPage
         // Refresh fertilizer list when page becomes visible
         _ = LoadFertilizersAsync();
         _ = LoadMixesAsync();
+        
+        // Make sure we're registered for messages
+        if (!WeakReferenceMessenger.Default.IsRegistered<AddFertilizerToMixMessage>(this))
+        {
+            WeakReferenceMessenger.Default.Register<AddFertilizerToMixMessage>(this, (r, message) => {
+                AddFertilizerToMix(message.Value);
+            });
+        }
     }
 
     private async Task LoadFertilizersAsync()

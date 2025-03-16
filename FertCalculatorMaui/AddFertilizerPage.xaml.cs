@@ -75,7 +75,7 @@ public partial class AddFertilizerPage : ContentPage
 
     private async Task LoadFertilizersAsync()
     {
-        availableFertilizers = await fileService.LoadFromXmlAsync<List<Fertilizer>>(fertilizerDbPath) ?? new List<Fertilizer>();
+        availableFertilizers = await fileService.LoadFertilizersAsync();
     }
 
     private async void OnSaveClicked(object sender, EventArgs e)
@@ -208,7 +208,7 @@ public partial class AddFertilizerPage : ContentPage
     {
         try
         {
-            await fileService.SaveToXmlAsync(availableFertilizers, fertilizerDbPath);
+            await fileService.SaveFertilizersAsync(availableFertilizers);
         }
         catch (Exception ex)
         {
