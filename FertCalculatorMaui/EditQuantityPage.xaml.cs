@@ -6,23 +6,16 @@ namespace FertCalculatorMaui
 {
     public partial class EditQuantityPage : ContentPage
     {
-        private string fertilizerName;
-        private double currentQuantity;
-        private bool useImperialUnits;
-
+        private EditQuantityViewModel viewModel;
+        
         public event EventHandler<QuantityChangedEventArgs> QuantityChanged;
 
         public EditQuantityPage(string fertilizerName, double quantity, bool useImperialUnits)
         {
             InitializeComponent();
             
-            this.fertilizerName = fertilizerName;
-            this.currentQuantity = quantity;
-            this.useImperialUnits = useImperialUnits;
-            
-            FertilizerNameLabel.Text = fertilizerName;
-            QuantityEntry.Text = quantity.ToString("F1", CultureInfo.InvariantCulture);
-            UnitLabel.Text = useImperialUnits ? "g/gal" : "g/L";
+            viewModel = new EditQuantityViewModel(fertilizerName, quantity, useImperialUnits);
+            BindingContext = viewModel;
         }
 
         private void OnIncrementGramClicked(object sender, EventArgs e)
@@ -30,35 +23,39 @@ namespace FertCalculatorMaui
             if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value += 1.0;
+                viewModel.Quantity = value;
                 QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
             }
         }
-        
-        private void OnDecrementGramClicked(object sender, EventArgs e)
-        {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value) && value >= 1.0)
-            {
-                value -= 1.0;
-                QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
-            }
-        }
-        
+
         private void OnIncrementSmallClicked(object sender, EventArgs e)
         {
             if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value += 0.1;
-                value = Math.Round(value, 1);
+                viewModel.Quantity = value;
                 QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
             }
         }
-        
+
         private void OnDecrementSmallClicked(object sender, EventArgs e)
         {
-            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value) && value >= 0.1)
+            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
             {
                 value -= 0.1;
-                value = Math.Round(value, 1);
+                if (value < 0) value = 0;
+                viewModel.Quantity = value;
+                QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
+            }
+        }
+
+        private void OnDecrementGramClicked(object sender, EventArgs e)
+        {
+            if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            {
+                value -= 1.0;
+                if (value < 0) value = 0;
+                viewModel.Quantity = value;
                 QuantityEntry.Text = value.ToString("F1", CultureInfo.InvariantCulture);
             }
         }
@@ -67,15 +64,7 @@ namespace FertCalculatorMaui
         {
             if (double.TryParse(QuantityEntry.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out double newQuantity))
             {
-                // Ensure quantity is not negative
-                if (newQuantity < 0)
-                {
-                    newQuantity = 0;
-                }
-                
-                // Raise event to notify the main page
-                QuantityChanged?.Invoke(this, new QuantityChangedEventArgs(fertilizerName, newQuantity));
-                
+                QuantityChanged?.Invoke(this, new QuantityChangedEventArgs(viewModel.FertilizerName, newQuantity));
                 await Navigation.PopAsync();
             }
             else
@@ -93,12 +82,12 @@ namespace FertCalculatorMaui
     public class QuantityChangedEventArgs : EventArgs
     {
         public string FertilizerName { get; }
-        public double Quantity { get; }
+        public double NewQuantity { get; }
 
-        public QuantityChangedEventArgs(string fertilizerName, double quantity)
+        public QuantityChangedEventArgs(string fertilizerName, double newQuantity)
         {
             FertilizerName = fertilizerName;
-            Quantity = quantity;
+            NewQuantity = newQuantity;
         }
     }
 }

@@ -557,7 +557,7 @@ public partial class MainPage : ContentPage
                 editPage.QuantityChanged += (s, args) =>
                 {
                     // Update the quantity in the current mix
-                    mixItem.Quantity = args.Quantity;
+                    mixItem.Quantity = args.NewQuantity;
                     UpdateNutrientTotals();
                 };
                 

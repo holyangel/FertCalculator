@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:FertCalculatorMaui"
              x:Class="FertCalculatorMaui.EditQuantityPage"
+             x:DataType="local:EditQuantityViewModel"
              Title="Edit Quantity">
     <VerticalStackLayout Spacing="20" Padding="20" VerticalOptions="Center">
         <Label Text="Edit Quantity" FontSize="Title" HorizontalOptions="Center" />
         
-        <Label x:Name="FertilizerNameLabel" FontSize="Medium" FontAttributes="Bold" HorizontalOptions="Center" />
+        <Label Text="{Binding FertilizerName}" FontSize="Medium" FontAttributes="Bold" HorizontalOptions="Center" />
         
         <Frame BorderColor="Gray" Padding="10" CornerRadius="5">
             <VerticalStackLayout Spacing="10">
                 <Entry x:Name="QuantityEntry" 
+                       Text="{Binding Quantity, StringFormat='{0:F1}'}"
                        Placeholder="Enter quantity in grams"
                        Keyboard="Numeric"
                        HorizontalTextAlignment="Center" />
                 
-                <Label x:Name="UnitLabel" 
-                       Text="g/L"
+                <Label Text="{Binding UnitLabel}" 
                        HorizontalOptions="Center" />
             </VerticalStackLayout>
         </Frame>
