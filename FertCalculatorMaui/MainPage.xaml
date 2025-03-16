@@ -91,13 +91,12 @@
                                 <TapGestureRecognizer Tapped="OnFertilizerTapped" CommandParameter="{Binding FertilizerName}" />
                             </Grid.GestureRecognizers>
                             
-                            <VerticalStackLayout Grid.Column="0">
+                            <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
                                 <Label Text="{Binding FertilizerName}" FontAttributes="Bold" />
                             </VerticalStackLayout>
 
-                            <HorizontalStackLayout Grid.Column="1">
+                            <HorizontalStackLayout Grid.Column="1" HorizontalOptions="Center">
                                 <Label Text="{Binding Quantity}" HorizontalOptions="Start" />
-                                <Label x:Name="UnitLabel" StyleId="UnitLabel" />
                             </HorizontalStackLayout>
                             
                             <Button Text="Remove" 

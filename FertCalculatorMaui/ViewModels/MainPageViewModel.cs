@@ -160,7 +160,7 @@ namespace FertCalculatorMaui
         public void UpdateUnitDisplay()
         {
             // Update the units type label
-            UnitsTypeLabel = UseImperialUnits ? "Imperial (per gallon)" : "Metric (per liter)";
+            UnitsTypeLabel = UseImperialUnits ? "g or ml (per gallon)" : "g or ml (per liter)";
             
             // Update PPM header label
             PpmHeaderLabel = UseImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
