@@ -568,6 +568,7 @@ public partial class MainPage : ContentPage
 
     private void OnToggleMixVisibilityClicked(object sender, EventArgs e)
     {
+#if WINDOWS
         // Toggle visibility of mix content
         bool isVisible = MixButtonsLayout.IsVisible;
         
@@ -577,30 +578,56 @@ public partial class MainPage : ContentPage
         
         // Update button text
         ToggleMixVisibilityButton.Text = isVisible ? "▲" : "▼";
+#else
+        // Toggle visibility of mix content using cross-platform opacity approach
+        bool isVisible = MixButtonsLayout.Opacity > 0;
+        
+        // Toggle visibility by setting opacity and disabling interaction
+        MixButtonsLayout.Opacity = isVisible ? 0 : 1;
+        MixButtonsLayout.InputTransparent = isVisible;
+        MixListView.Opacity = isVisible ? 0 : 1;
+        MixListView.InputTransparent = isVisible;
+        
+        // Update button text
+        ToggleMixVisibilityButton.Text = isVisible ? "▲" : "▼";
+#endif
     }
 
     private void AddFertilizerToMix(Fertilizer fertilizer)
     {
-        // Check if the fertilizer is already in the mix
-        var existingItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizer.Name);
-        
-        if (existingItem == null)
+        try
         {
-            // Add new fertilizer to the mix with default quantity of 1.0
-            currentMix.Add(new FertilizerQuantity
-            {
-                FertilizerName = fertilizer.Name,
-                Quantity = 1.0
-            });
+            Debug.WriteLine($"Adding fertilizer to mix: {fertilizer.Name}");
             
-            // Update nutrient totals
-            UpdateNutrientTotals();
+            // Check if the fertilizer is already in the mix
+            var existingItem = currentMix.FirstOrDefault(item => item.FertilizerName == fertilizer.Name);
+            
+            if (existingItem == null)
+            {
+                // Add new fertilizer to the mix with default quantity of 1.0
+                currentMix.Add(new FertilizerQuantity
+                {
+                    FertilizerName = fertilizer.Name,
+                    Quantity = 1.0
+                });
+                
+                // Update nutrient totals
+                UpdateNutrientTotals();
+            }
+            else
+            {
+                // Increment the quantity if it already exists
+                existingItem.Quantity += 1.0;
+                UpdateNutrientTotals();
+            }
+            
+            // Force refresh the UI
+            MixListView.ItemsSource = null;
+            MixListView.ItemsSource = currentMix;
         }
-        else
+        catch (Exception ex)
         {
-            // Increment the quantity if it already exists
-            existingItem.Quantity += 1.0;
-            UpdateNutrientTotals();
+            Debug.WriteLine($"Error adding fertilizer to mix: {ex.Message}");
         }
     }
 

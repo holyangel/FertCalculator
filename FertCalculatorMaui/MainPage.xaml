@@ -83,7 +83,7 @@
             <CollectionView x:Name="MixListView" 
                             SelectionMode="Single">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="local:FertilizerQuantity">
                         <Grid ColumnDefinitions="*,*,Auto" Padding="5">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnFertilizerTapped" CommandParameter="{Binding FertilizerName}" />
