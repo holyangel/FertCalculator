@@ -21,10 +21,10 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>FertCalculatorMaui</ApplicationTitle>
+		<ApplicationTitle>Fertilizer Calculator</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.fertcalculatormaui</ApplicationId>
+		<ApplicationId>com.growlabz.fertcalculator</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -39,6 +39,14 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<SignAssembly>False</SignAssembly>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>FertCalc3</Title>
+		<Authors>HolyAngel</Authors>
+		<PackageProjectUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Android Fertilizer Calculator</Description>
 		<Platforms>AnyCPU;ARM64</Platforms>
 	</PropertyGroup>
 
