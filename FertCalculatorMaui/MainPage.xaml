@@ -110,7 +110,7 @@
             </CollectionView>
 
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Label Text="{Binding UseImperialUnits, Converter={StaticResource UnitConverter}, ConverterParameter='label'}" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
+                <Label Text="Metric (per liter)" VerticalOptions="Center" x:Name="UnitsTypeLabel" />
                 <Switch IsToggled="{Binding UseImperialUnits}" Toggled="OnUnitsToggled" />
             </HorizontalStackLayout>
         </VerticalStackLayout>

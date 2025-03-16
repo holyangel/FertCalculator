@@ -383,7 +383,8 @@ public partial class MainPage : ContentPage
 
     private void UpdateUnitDisplay()
     {
-        // No need to update the UnitsTypeLabel.Text directly anymore as it's bound to UseImperialUnits
+        // Update the units type label directly
+        UnitsTypeLabel.Text = useImperialUnits ? "Imperial (per gallon)" : "Metric (per liter)";
         
         // Update PPM header label
         PpmHeaderLabel.Text = useImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
