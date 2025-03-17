@@ -18,11 +18,8 @@
         </Grid>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Home" Icon="home.png">
-        <ShellContent
-            Title="Fertilizer Calculator"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage" />
+    <FlyoutItem Title="Home" Icon="home.png" Route="MainPage">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
 
     <MenuItem Text="Manage Fertilizers" Clicked="OnManageFertilizersClicked" />

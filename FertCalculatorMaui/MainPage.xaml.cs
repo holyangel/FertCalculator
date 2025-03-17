@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using FertCalculatorMaui.Services;
 using CommunityToolkit.Mvvm.Messaging;
 using FertCalculatorMaui.Messages;
+using FertCalculatorMaui.ViewModels;
 
 namespace FertCalculatorMaui;
 
@@ -14,7 +15,7 @@ public partial class MainPage : ContentPage
 {
     private readonly FileService fileService;
     private readonly IDialogService dialogService;
-    private MainPageViewModel viewModel;
+    private readonly MainViewModel viewModel;
 
     public MainPage(FileService fileService, IDialogService dialogService)
     {
@@ -24,56 +25,61 @@ public partial class MainPage : ContentPage
             InitializeComponent();
             Debug.WriteLine("MainPage InitializeComponent completed");
             
-            // Initialize services
-            if (fileService == null)
-            {
-                Debug.WriteLine("WARNING: fileService is null in MainPage constructor");
-                fileService = new FileService();
-            }
-            this.fileService = fileService;
+            // Initialize services using dependency injection
+            this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+            this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             
-            if (dialogService == null)
-            {
-                Debug.WriteLine("WARNING: dialogService is null in MainPage constructor");
-                dialogService = new DialogService();
-            }
-            this.dialogService = dialogService;
-            
-            // Initialize ViewModel
-            viewModel = new MainPageViewModel(fileService);
+            // Initialize ViewModel using dependency injection
+            viewModel = new MainViewModel(this.fileService, this.dialogService);
             BindingContext = viewModel;
             Debug.WriteLine("ViewModel initialized and set as BindingContext");
             
-            // Load saved data
-            _ = LoadFertilizersAsync();
-            _ = LoadMixesAsync();
+            // Load saved data asynchronously
+            _ = InitializeDataAsync();
             Debug.WriteLine("MainPage constructor completed");
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Exception in MainPage constructor: {ex.Message}\n{ex.StackTrace}");
+            throw; // Rethrow to let the DI container handle it
         }
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        
-        // Refresh fertilizer list when page becomes visible
-        _ = LoadFertilizersAsync();
-        _ = LoadMixesAsync();
-        
-        // Update unit labels when the page appears
-        UpdateUnitLabelsInCollectionView();
-        
-        // Make sure we're registered for messages
-        if (!WeakReferenceMessenger.Default.IsRegistered<AddFertilizerToMixMessage>(this))
+        _ = RefreshDataAsync();
+    }
+
+    private async Task InitializeDataAsync()
+    {
+        try
         {
-            WeakReferenceMessenger.Default.Register<AddFertilizerToMixMessage>(this, (r, message) => {
-                // Let the ViewModel handle adding the fertilizer to the mix
-                // and then refresh the UI
-                RefreshMixListView();
-            });
+            await Task.WhenAll(
+                LoadFertilizersAsync(),
+                LoadMixesAsync()
+            );
+        }
+        catch (Exception ex)
+        {
+            await dialogService.DisplayAlertAsync("Error", 
+                "Failed to initialize data. Please restart the application. Error: " + ex.Message, "OK");
+        }
+    }
+
+    private async Task RefreshDataAsync()
+    {
+        try
+        {
+            await Task.WhenAll(
+                LoadFertilizersAsync(),
+                LoadMixesAsync()
+            );
+        }
+        catch (Exception ex)
+        {
+            await dialogService.DisplayAlertAsync("Error", 
+                "Failed to refresh data: " + ex.Message, "OK");
         }
     }
 
@@ -87,47 +93,7 @@ public partial class MainPage : ContentPage
             if (fertilizers == null || fertilizers.Count == 0)
             {
                 Debug.WriteLine("No fertilizers found. Attempting to import default fertilizers.");
-                
-                // List all embedded resources to help diagnose issues
-                var resourceNames = GetType().Assembly.GetManifestResourceNames();
-                Debug.WriteLine($"Available embedded resources ({resourceNames.Length}):");
-                foreach (var resourceName in resourceNames)
-                {
-                    Debug.WriteLine($"  - {resourceName}");
-                }
-                
-                // Get the embedded Fertilizers.xml resource
-                using (Stream resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml"))
-                {
-                    if (resourceStream != null)
-                    {
-                        Debug.WriteLine("Found embedded Fertilizers.xml resource. Importing...");
-                        
-                        // Import the data using the existing import functionality
-                        var importResult = await fileService.ImportDataAsync(resourceStream);
-                        
-                        if (importResult.Success && importResult.ImportedData != null && 
-                            importResult.ImportedData.Fertilizers != null && 
-                            importResult.ImportedData.Fertilizers.Count > 0)
-                        {
-                            Debug.WriteLine($"Successfully imported {importResult.ImportedData.Fertilizers.Count} default fertilizers");
-                            
-                            // Save the imported fertilizers
-                            await fileService.SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
-                            
-                            // Update our fertilizers list with the imported data
-                            fertilizers = importResult.ImportedData.Fertilizers;
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Failed to import default fertilizers from embedded resource");
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Embedded Fertilizers.xml resource not found");
-                    }
-                }
+                fertilizers = await ImportDefaultFertilizersAsync();
             }
             
             if (fertilizers != null)
@@ -142,8 +108,57 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to load fertilizers: {ex.Message}", "OK");
+            Debug.WriteLine($"Error loading fertilizers: {ex.Message}\n{ex.StackTrace}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to load fertilizers: {ex.Message}", "OK");
         }
+    }
+
+    private async Task<List<Fertilizer>> ImportDefaultFertilizersAsync()
+    {
+        try
+        {
+            // List all embedded resources to help diagnose issues
+            var resourceNames = GetType().Assembly.GetManifestResourceNames();
+            Debug.WriteLine($"Available embedded resources ({resourceNames.Length}):");
+            foreach (var resourceName in resourceNames)
+            {
+                Debug.WriteLine($"  - {resourceName}");
+            }
+            
+            // Get the embedded Fertilizers.xml resource
+            using (Stream resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml"))
+            {
+                if (resourceStream != null)
+                {
+                    Debug.WriteLine("Found embedded Fertilizers.xml resource. Importing...");
+                    
+                    var importResult = await fileService.ImportDataAsync(resourceStream);
+                    
+                    if (importResult.Success && importResult.ImportedData?.Fertilizers?.Count > 0)
+                    {
+                        Debug.WriteLine($"Successfully imported {importResult.ImportedData.Fertilizers.Count} default fertilizers");
+                        
+                        // Save the imported fertilizers
+                        await fileService.SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
+                        return importResult.ImportedData.Fertilizers;
+                    }
+                    
+                    Debug.WriteLine("Failed to import default fertilizers from embedded resource");
+                }
+                else
+                {
+                    Debug.WriteLine("Embedded Fertilizers.xml resource not found");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error importing default fertilizers: {ex.Message}\n{ex.StackTrace}");
+            await dialogService.DisplayAlertAsync("Error", 
+                "Failed to import default fertilizers. The application may have limited functionality.", "OK");
+        }
+        
+        return new List<Fertilizer>();
     }
 
     private async Task LoadMixesAsync()
@@ -162,463 +177,121 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error", $"Failed to load mixes: {ex.Message}", "OK");
+            Debug.WriteLine($"Error loading mixes: {ex.Message}\n{ex.StackTrace}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to load mixes: {ex.Message}", "OK");
         }
     }
 
-    private void OnQuantityTextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (sender is Entry entry && entry.BindingContext is FertilizerQuantity item)
-        {
-            // Get the text value using GetValue
-            var textValue = entry.GetValue(Entry.TextProperty) as string;
-            
-            // Ensure the quantity is a valid number
-            if (double.TryParse(textValue, out double quantity))
-            {
-                // Update the quantity in the model
-                item.Quantity = quantity;
-                
-                // Update nutrient calculations
-                viewModel.UpdateNutrientTotals();
-            }
-            else
-            {
-                // If not a valid number, revert to previous value
-                entry.SetValue(Entry.TextProperty, item.Quantity.ToString());
-            }
-        }
-    }
-
-    private async void OnAddFertilizerClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new AddFertilizerPage(fileService));
-    }
-    
-    private async void OnEditFertilizerClicked(object sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
-            if (!string.IsNullOrEmpty(fertilizerName))
-            {
-                var fertilizer = viewModel.AvailableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
-                if (fertilizer != null)
-                {
-                    await Navigation.PushAsync(new AddFertilizerPage(fileService, fertilizer));
-                }
-            }
-        }
-    }
-    
-    private void OnRemoveFromMixClicked(object sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
-            if (!string.IsNullOrEmpty(fertilizerName))
-            {
-                var itemToRemove = viewModel.CurrentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
-                if (itemToRemove != null)
-                {
-                    viewModel.CurrentMix.Remove(itemToRemove);
-                    viewModel.UpdateNutrientTotals();
-                }
-            }
-        }
-    }
-
-    private async void OnUnitsToggled(object sender, ToggledEventArgs e)
-    {
-#if IOS || MACCATALYST
-        viewModel.UseImperialUnits = e.Value;
-#else
-        // For other platforms, access the Switch control directly
-        if (sender is Microsoft.Maui.Controls.Switch switchControl)
-        {
-            viewModel.UseImperialUnits = switchControl.IsToggled;
-        }
-#endif
-        viewModel.UpdateUnitDisplay();
-        viewModel.UpdateNutrientTotals();
-        
-        // Update all unit labels in the collection view
-        UpdateUnitLabelsInCollectionView();
-    }
-
-    private void UpdateUnitLabelsInCollectionView()
-    {
-        // This method will be called when the units are toggled or when the collection view is populated
-        if (MixListView != null)
-        {
-            foreach (var item in MixListView.GetVisualTreeDescendants())
-            {
-                if (item is Label label && label.StyleId == "UnitLabel")
-                {
-                    label.Text = viewModel.UnitsTypeLabel;
-                }
-            }
-        }
-    }
-
-    private async void OnSaveMixClicked(object sender, EventArgs e)
-    {
-        if (viewModel.CurrentMix.Count == 0)
-        {
-            await DisplayAlert("Error", "Cannot save an empty mix", "OK");
-            return;
-        }
-        
-        // Navigate to save mix page
-        var saveMixPage = new SaveMixPage(fileService, viewModel.CurrentMix.ToList(), viewModel.SavedMixes);
-        
-        // Subscribe to the SaveCompletedEvent to refresh the mixes list after saving
-        saveMixPage.ViewModel.SaveCompletedEvent += async (s, args) =>
-        {
-            if (args.Success)
-            {
-                // Reload the mixes after saving
-                await LoadMixesAsync();
-            }
-        };
-        
-        await Navigation.PushAsync(saveMixPage);
-    }
-
-    private async void OnLoadMixClicked(object sender, EventArgs e)
-    {
-        await LoadMixFromPopupAsync();
-    }
-
-    private async void OnClearMixClicked(object sender, EventArgs e)
-    {
-        bool confirm = await DisplayAlert("Confirm", 
-            "Are you sure you want to clear the current mix?", 
-            "Yes", "No");
-        
-        if (confirm)
-        {
-            viewModel.CurrentMix.Clear();
-            viewModel.UpdateNutrientTotals();
-        }
-    }
-
-    private async void OnCompareMixesClicked(object sender, EventArgs e)
-    {
-        if (viewModel.CurrentMix.Count == 0)
-        {
-            await DisplayAlert("Error", "Current mix is empty. Add some fertilizers before comparing.", "OK");
-            return;
-        }
-        
-        await Navigation.PushAsync(new CompareMixPage(fileService, viewModel.CurrentMix.ToList(), viewModel.UseImperialUnits));
-    }
-
-    private async void OnImportClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new ImportOptionsPage(fileService, viewModel.AvailableFertilizers, viewModel.SavedMixes));
-    }
-
-    private async void OnExportClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new ExportOptionsPage(fileService, viewModel.AvailableFertilizers.ToList(), viewModel.SavedMixes));
-    }
-
-    private async void OnManageFertilizersClicked(object sender, EventArgs e)
-    {
-        await Navigation.PushAsync(new ManageFertilizersPage(fileService, dialogService, viewModel.AvailableFertilizers));
-    }
-    
-    private void OnIncrementSmallClicked(object sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
-            if (!string.IsNullOrEmpty(fertilizerName))
-            {
-                var mixItem = viewModel.CurrentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
-                
-                if (mixItem != null)
-                {
-                    mixItem.Quantity += 0.1; // Increment by 0.1 gram
-                    mixItem.Quantity = Math.Round(mixItem.Quantity, 1); // Round to 1 decimal place for precision
-                    viewModel.UpdateNutrientTotals();
-                }
-            }
-        }
-    }
-    
-    private void OnDecrementSmallClicked(object sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
-            if (!string.IsNullOrEmpty(fertilizerName))
-            {
-                var mixItem = viewModel.CurrentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
-                
-                if (mixItem != null && mixItem.Quantity > 0.1)
-                {
-                    mixItem.Quantity -= 0.1; // Decrement by 0.1 gram
-                    mixItem.Quantity = Math.Round(mixItem.Quantity, 1); // Round to 1 decimal place for precision
-                    viewModel.UpdateNutrientTotals();
-                }
-            }
-        }
-    }
-    
-    private void OnIncrementGramClicked(object sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
-            if (!string.IsNullOrEmpty(fertilizerName))
-            {
-                var mixItem = viewModel.CurrentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
-                
-                if (mixItem != null)
-                {
-                    mixItem.Quantity += 1.0; // Increment by 1 gram
-                    viewModel.UpdateNutrientTotals();
-                }
-            }
-        }
-    }
-    
-    private void OnDecrementGramClicked(object sender, EventArgs e)
-    {
-        if (sender is Button button)
-        {
-            var fertilizerName = button.GetValue(Button.CommandParameterProperty) as string;
-            if (!string.IsNullOrEmpty(fertilizerName))
-            {
-                var mixItem = viewModel.CurrentMix.FirstOrDefault(item => item.FertilizerName == fertilizerName);
-                
-                if (mixItem != null && mixItem.Quantity >= 1.0)
-                {
-                    mixItem.Quantity -= 1.0; // Decrement by 1 gram
-                    viewModel.UpdateNutrientTotals();
-                }
-            }
-        }
-    }
-
-    private async void OnFertilizerTapped(object sender, TappedEventArgs e)
-    {
-#if IOS || MACCATALYST
-        string fertilizerName = e.Parameter as string;
-#else
-        // For other platforms, try to get the parameter from the binding context or tag
-        string fertilizerName = null;
-        if (sender is Grid grid && grid.BindingContext is FertilizerQuantity fertQuantity)
-        {
-            fertilizerName = fertQuantity.FertilizerName;
-        }
-#endif
-
-        if (!string.IsNullOrEmpty(fertilizerName))
-        {
-            // Navigate to edit quantity page
-            var fertilizer = viewModel.AvailableFertilizers.FirstOrDefault(f => f.Name == fertilizerName);
-            var existingQuantity = viewModel.CurrentMix.FirstOrDefault(fq => fq.FertilizerName == fertilizerName);
-            
-            if (fertilizer != null && existingQuantity != null)
-            {
-                var editPage = new EditQuantityPage(
-                    fertilizerName,
-                    existingQuantity.Quantity,
-                    viewModel.UnitsTypeLabel,
-                    viewModel.UseImperialUnits);
-                
-                editPage.QuantityChanged += (s, args) =>
-                {
-                    // Update the quantity in the mix
-                    existingQuantity.Quantity = args.NewQuantity;
-                    viewModel.UpdateNutrientTotals();
-                };
-                
-                await Navigation.PushAsync(editPage);
-            }
-        }
-    }
-
-    private void OnToggleMixVisibilityClicked(object sender, EventArgs e)
-    {
-        bool isVisible = MixButtonsLayout.IsVisible;
-        
-        // Toggle visibility by setting IsVisible to actually collapse the space
-        MixButtonsLayout.IsVisible = !isVisible;
-        MixListView.IsVisible = !isVisible;
-        
-        // Update button text
-        ToggleMixVisibilityButton.SetValue(Button.TextProperty, isVisible ? "▲" : "▼");
-    }
-
-    // Public methods for AppShell menu integration
+    // Menu command methods for AppShell
     public async Task NavigateToManageFertilizers()
     {
-        await Navigation.PushAsync(new ManageFertilizersPage(fileService, dialogService, viewModel.AvailableFertilizers));
+        try
+        {
+            Debug.WriteLine("NavigateToManageFertilizers called");
+            await viewModel.ManageFertilizersCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in NavigateToManageFertilizers: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to navigate to manage fertilizers: {ex.Message}", "OK");
+        }
     }
-    
+
     public async Task LoadMixFromMenu()
     {
-        await LoadMixFromPopupAsync();
+        try
+        {
+            Debug.WriteLine("LoadMixFromMenu called");
+            await viewModel.LoadMixCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in LoadMixFromMenu: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to load mix: {ex.Message}", "OK");
+        }
     }
-    
+
     public async Task SaveMixFromMenu()
     {
-        if (viewModel.CurrentMix.Count == 0)
+        try
         {
-            await DisplayAlert("Error", "Cannot save an empty mix", "OK");
-            return;
+            Debug.WriteLine("SaveMixFromMenu called");
+            await viewModel.SaveMixCommand.ExecuteAsync(null);
         }
-        
-        // Navigate to save mix page
-        var saveMixPage = new SaveMixPage(fileService, viewModel.CurrentMix.ToList(), viewModel.SavedMixes);
-        
-        // Subscribe to the SaveCompletedEvent to refresh the mixes list after saving
-        saveMixPage.ViewModel.SaveCompletedEvent += async (s, args) =>
+        catch (Exception ex)
         {
-            if (args.Success)
-            {
-                // Reload the mixes after saving
-                await LoadMixesAsync();
-            }
-        };
-        
-        await Navigation.PushAsync(saveMixPage);
+            Debug.WriteLine($"Error in SaveMixFromMenu: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to save mix: {ex.Message}", "OK");
+        }
     }
-    
+
     public async Task ClearMixFromMenu()
     {
-        bool confirm = await DisplayAlert("Confirm", 
-            "Are you sure you want to clear the current mix?", 
-            "Yes", "No");
-        
-        if (confirm)
+        try
         {
-            viewModel.CurrentMix.Clear();
-            viewModel.UpdateNutrientTotals();
+            Debug.WriteLine("ClearMixFromMenu called");
+            await viewModel.ClearMixCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in ClearMixFromMenu: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to clear mix: {ex.Message}", "OK");
         }
     }
-    
+
     public async Task CompareMixesFromMenu()
     {
-        if (viewModel.CurrentMix.Count == 0)
+        try
         {
-            await DisplayAlert("Error", "Current mix is empty. Add some fertilizers before comparing.", "OK");
-            return;
+            Debug.WriteLine("CompareMixesFromMenu called");
+            await viewModel.CompareMixCommand.ExecuteAsync(null);
         }
-        
-        await Navigation.PushAsync(new CompareMixPage(fileService, viewModel.CurrentMix.ToList(), viewModel.UseImperialUnits));
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in CompareMixesFromMenu: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to compare mixes: {ex.Message}", "OK");
+        }
     }
-    
+
     public void ToggleMixVisibilityFromMenu()
     {
-        OnToggleMixVisibilityClicked(null, EventArgs.Empty);
+        try
+        {
+            Debug.WriteLine("ToggleMixVisibilityFromMenu called");
+            viewModel.ToggleMixVisibilityCommand.Execute(null);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in ToggleMixVisibilityFromMenu: {ex.Message}");
+            dialogService.DisplayAlert("Error", $"Failed to toggle mix visibility: {ex.Message}", "OK");
+        }
     }
-    
+
     public async Task ImportFromMenu()
     {
-        await Navigation.PushAsync(new ImportOptionsPage(fileService, viewModel.AvailableFertilizers, viewModel.SavedMixes));
+        try
+        {
+            Debug.WriteLine("ImportFromMenu called");
+            await viewModel.ImportCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in ImportFromMenu: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to import data: {ex.Message}", "OK");
+        }
     }
-    
+
     public async Task ExportFromMenu()
     {
-        await Navigation.PushAsync(new ExportOptionsPage(fileService, viewModel.AvailableFertilizers.ToList(), viewModel.SavedMixes));
-    }
-
-    private async Task LoadMixFromPopupAsync()
-    {
-        var mixes = viewModel.SavedMixes;
-        if (mixes.Count == 0)
+        try
         {
-            await DisplayAlert("No Mixes", "No saved mixes found.", "OK");
-            return;
+            Debug.WriteLine("ExportFromMenu called");
+            await viewModel.ExportCommand.ExecuteAsync(null);
         }
-
-        var mixNames = mixes.Select(m => m.Name).ToArray();
-        string selectedMix = await DisplayActionSheet("Select Mix", "Cancel", null, mixNames);
-        
-        if (selectedMix != "Cancel" && !string.IsNullOrEmpty(selectedMix))
+        catch (Exception ex)
         {
-            var mix = mixes.FirstOrDefault(m => m.Name == selectedMix);
-            if (mix != null)
-            {
-                await LoadMix(mix);
-            }
+            Debug.WriteLine($"Error in ExportFromMenu: {ex.Message}");
+            await dialogService.DisplayAlertAsync("Error", $"Failed to export data: {ex.Message}", "OK");
         }
-    }
-
-    private async Task LoadMix(FertilizerMix mix)
-    {
-        // Ask if user wants to replace or add to current mix
-        bool replaceCurrentMix = await DisplayAlert("Load Mix", 
-            "Do you want to replace the current mix?", 
-            "Replace", "Add to Current");
-        
-        if (replaceCurrentMix)
-        {
-            viewModel.CurrentMix.Clear();
-        }
-        
-        // Add each ingredient from the saved mix
-        foreach (var ingredient in mix.Ingredients)
-        {
-            // Check if fertilizer exists
-            if (viewModel.AvailableFertilizers.Any(f => f.Name == ingredient.FertilizerName))
-            {
-                // Check if it's already in the current mix when adding
-                var existingItem = viewModel.CurrentMix.FirstOrDefault(i => i.FertilizerName == ingredient.FertilizerName);
-                
-                if (existingItem != null && !replaceCurrentMix)
-                {
-                    // Add to existing quantity
-                    existingItem.Quantity += ingredient.Quantity;
-                }
-                else
-                {
-                    // Add as new ingredient
-                    viewModel.CurrentMix.Add(new FertilizerQuantity
-                    {
-                        FertilizerName = ingredient.FertilizerName,
-                        Quantity = ingredient.Quantity
-                    });
-                }
-            }
-            else
-            {
-                await DisplayAlert("Warning", 
-                    $"Fertilizer '{ingredient.FertilizerName}' not found in available fertilizers. It will be skipped.", 
-                    "OK");
-            }
-        }
-        
-        // Update nutrient totals
-        viewModel.UpdateNutrientTotals();
-        
-        // Force refresh the UI
-        RefreshMixListView();
-    }
-
-    private async void OnLoadMixFromPopupClicked(object sender, EventArgs e)
-    {
-        await LoadMixFromPopupAsync();
-    }
-
-    private async void OnCompareMixClicked(object sender, EventArgs e)
-    {
-        // Create a list of fertilizer quantities from the current mix
-        var currentMixList = viewModel.CurrentMix.ToList();
-        
-        // Navigate to the CompareMixPage, passing the current mix and available fertilizers
-        await Navigation.PushAsync(new CompareMixPage(fileService, currentMixList, viewModel.UseImperialUnits));
-    }
-
-    private void RefreshMixListView()
-    {
-        // Force refresh the UI by temporarily clearing and resetting the ItemsSource
-        MixListView.ItemsSource = null;
-        MixListView.ItemsSource = viewModel.CurrentMix;
     }
 }

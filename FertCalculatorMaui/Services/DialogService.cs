@@ -21,6 +21,11 @@ namespace FertCalculatorMaui.Services
             await GetCurrentPage().DisplayAlert(title, message, cancelText);
         }
         
+        public async Task<string> DisplayActionSheetAsync(string title, string cancel, string destruction, params string[] buttons)
+        {
+            return await GetCurrentPage().DisplayActionSheet(title, cancel, destruction, buttons);
+        }
+        
         private Page GetCurrentPage()
         {
             // For all platforms, use the recommended approach for .NET MAUI

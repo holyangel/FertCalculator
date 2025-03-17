@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using Microsoft.Maui.Controls;
+using FertCalculatorMaui.ViewModels;
 
 namespace FertCalculatorMaui
 {

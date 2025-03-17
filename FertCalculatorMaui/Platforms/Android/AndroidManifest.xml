@@ -8,6 +8,7 @@
         android:roundIcon="@mipmap/appicon_round" 
         android:supportsRtl="true"
         android:label="Fertilizer Calculator"
+        android:enableOnBackInvokedCallback="true"
         android:requestLegacyExternalStorage="true">
         <provider
             android:name="androidx.core.content.FileProvider"

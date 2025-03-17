@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -9,12 +10,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
-namespace FertCalculatorMaui
+namespace FertCalculatorMaui.ViewModels
 {
     public partial class ManageFertilizersViewModel : ObservableObject
     {
-        private readonly FileService _fileService;
-        private readonly IDialogService _dialogService;
+        private readonly FileService fileService;
+        private readonly IDialogService dialogService;
 
         [ObservableProperty]
         private ObservableCollection<Fertilizer> availableFertilizers;
@@ -24,9 +25,9 @@ namespace FertCalculatorMaui
 
         public ManageFertilizersViewModel(FileService fileService, IDialogService dialogService, ObservableCollection<Fertilizer> fertilizers)
         {
-            _fileService = fileService;
-            _dialogService = dialogService;
-            AvailableFertilizers = fertilizers;
+            this.fileService = fileService;
+            this.dialogService = dialogService;
+            AvailableFertilizers = new ObservableCollection<Fertilizer>(fertilizers);
             
             _ = ReloadFertilizersAsync();
         }
@@ -34,8 +35,15 @@ namespace FertCalculatorMaui
         [RelayCommand]
         private async Task AddFertilizer()
         {
-            // This will be handled by the page's navigation
-            // The page will handle navigation to AddFertilizerPage
+            try
+            {
+                await Shell.Current.Navigation.PushAsync(new AddFertilizerPage(fileService, dialogService));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error navigating to AddFertilizerPage: {ex.Message}");
+                await dialogService.DisplayAlertAsync("Error", "Could not open Add Fertilizer page", "OK");
+            }
         }
 
         [RelayCommand]
@@ -43,8 +51,15 @@ namespace FertCalculatorMaui
         {
             if (SelectedFertilizer != null)
             {
-                // This will be handled by the page's navigation
-                // The page will handle navigation to AddFertilizerPage with the selected fertilizer
+                try
+                {
+                    await Shell.Current.Navigation.PushAsync(new AddFertilizerPage(fileService, dialogService, SelectedFertilizer));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error navigating to AddFertilizerPage: {ex.Message}");
+                    await dialogService.DisplayAlertAsync("Error", "Could not open Edit Fertilizer page", "OK");
+                }
             }
         }
 
@@ -54,19 +69,26 @@ namespace FertCalculatorMaui
             if (fertilizer == null)
                 return;
 
-            bool confirmed = await _dialogService.DisplayConfirmationAsync(
-                "Confirm Delete",
-                $"Are you sure you want to delete {fertilizer.Name}?",
-                "Yes", "No");
-
-            if (confirmed)
+            try
             {
+                bool confirm = await dialogService.DisplayConfirmationAsync("Confirm Delete", 
+                    $"Are you sure you want to delete {fertilizer.Name}?", "Yes", "No");
+
+                if (!confirm) return;
+
+                var fertilizers = await fileService.LoadFertilizersAsync();
+                fertilizers.Remove(fertilizer);
+                await fileService.SaveFertilizersAsync(fertilizers);
+
                 AvailableFertilizers.Remove(fertilizer);
-                await _fileService.SaveFertilizersAsync(AvailableFertilizers.ToList());
-                
+
                 // Notify other pages that fertilizers have been updated
-                // Pass the deleted fertilizer to the message
-                WeakReferenceMessenger.Default.Send(new FertilizersUpdatedMessage(fertilizer));
+                WeakReferenceMessenger.Default.Send(new FertilizersUpdatedMessage(null));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error deleting fertilizer: {ex.Message}");
+                await dialogService.DisplayAlertAsync("Error", "Could not delete fertilizer", "OK");
             }
         }
         
@@ -87,6 +109,27 @@ namespace FertCalculatorMaui
             if (navigation != null)
             {
                 await navigation.PopAsync();
+            }
+        }
+        
+        [RelayCommand]
+        private void AddToMix(Fertilizer fertilizer)
+        {
+            if (fertilizer == null)
+                return;
+                
+            try
+            {
+                // Send a message to add the fertilizer to the mix
+                WeakReferenceMessenger.Default.Send(new AddFertilizerToMixMessage(fertilizer));
+                
+                // Navigate back to the main page
+                _ = BackToMix();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error adding fertilizer to mix: {ex.Message}");
+                _ = dialogService.DisplayAlertAsync("Error", "Could not add fertilizer to mix", "OK");
             }
         }
         
@@ -140,15 +183,23 @@ namespace FertCalculatorMaui
 
         public async Task ReloadFertilizersAsync()
         {
-            var updatedFertilizers = await _fileService.LoadFertilizersAsync();
-            
-            // Use a custom sorting logic that handles numerical values in fertilizer names
-            var sortedFertilizers = updatedFertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
-            
-            AvailableFertilizers.Clear();
-            foreach (var fertilizer in sortedFertilizers)
+            try
             {
-                AvailableFertilizers.Add(fertilizer);
+                var updatedFertilizers = await fileService.LoadFertilizersAsync();
+                
+                // Use a custom sorting logic that handles numerical values in fertilizer names
+                var sortedFertilizers = updatedFertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
+                
+                AvailableFertilizers.Clear();
+                foreach (var fertilizer in sortedFertilizers)
+                {
+                    AvailableFertilizers.Add(fertilizer);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error reloading fertilizers: {ex.Message}");
+                await dialogService.DisplayAlertAsync("Error", "Could not reload fertilizers", "OK");
             }
         }
         

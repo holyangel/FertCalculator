@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
              xmlns:local="clr-namespace:FertCalculatorMaui"
              x:Class="FertCalculatorMaui.ManageFertilizersPage"
-             x:DataType="local:ManageFertilizersViewModel"
-             x:Name="ManagePage"
+             x:DataType="viewmodels:ManageFertilizersViewModel"
              Title="Manage Fertilizers">
-    
-    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
         <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="5">
             <Label Text="Available Fertilizers" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
             <Button Text="Add New Fertilizer" 
-                    Clicked="OnAddFertilizerClicked"
+                    Command="{Binding AddFertilizerCommand}"
                     HorizontalOptions="Center"
                     Margin="0,0,0,10" />
         </VerticalStackLayout>
         
-        <CollectionView x:Name="FertilizerListView" 
-                        Grid.Row="1"
-                        ItemsSource="{Binding AvailableFertilizers}"
-                        SelectedItem="{Binding SelectedFertilizer}"
-                        SelectionMode="Single"
-                        SelectionChanged="OnFertilizerSelectionChanged"
-                        Margin="5">
+        <CollectionView Grid.Row="1" x:Name="FertilizerListView" 
+                       ItemsSource="{Binding AvailableFertilizers}"
+                       SelectedItem="{Binding SelectedFertilizer}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="local:Fertilizer">
                     <Grid ColumnDefinitions="55,*,Auto,Auto" Padding="10">
                         <Button Grid.Column="0" 
-                                CommandParameter="{Binding Name}"
-                                Clicked="OnEditFertilizerClicked"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageFertilizersViewModel}}, Path=EditFertilizerCommand}"
+                                CommandParameter="{Binding .}"
                                 Margin="0,0,5,0"
                                 Scale=".7">
                             <Button.ImageSource>
@@ -43,8 +39,8 @@
                                FontSize="16" />
 
                         <Button Grid.Column="2" 
-                                CommandParameter="{Binding Name}"
-                                Clicked="OnAddToMixClicked"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageFertilizersViewModel}}, Path=AddToMixCommand}"
+                                CommandParameter="{Binding .}"
                                 Margin="5,0,0,0">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="MaterialIcons"
@@ -54,8 +50,8 @@
                         </Button>
                         
                         <Button Grid.Column="3" 
-                                CommandParameter="{Binding}"
-                                Clicked="OnDeleteFertilizerClicked"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageFertilizersViewModel}}, Path=DeleteFertilizerCommand}"
+                                CommandParameter="{Binding .}"
                                 Margin="5,0,0,0"
                                 BackgroundColor="Red">
                             <Button.ImageSource>

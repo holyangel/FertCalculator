@@ -9,9 +9,9 @@ namespace FertCalculatorMaui.Converters
             return value != null;
         }
 
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return (bool)value ? new object() : null;
         }
     }
 }

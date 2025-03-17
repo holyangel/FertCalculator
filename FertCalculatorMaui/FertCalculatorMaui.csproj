@@ -51,6 +51,9 @@
 		<!-- Define Android API level constants for conditional compilation -->
 		<AndroidApiLevel>29</AndroidApiLevel>
 		<DefineConstants Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">$(DefineConstants);__ANDROID_29__</DefineConstants>
+		<!-- Android native library alignment -->
+		<AndroidSoLibNativeLibraryLoadMode>Deep</AndroidSoLibNativeLibraryLoadMode>
+		<AndroidSoLibNativeLibraryDirectories>lib\$(AndroidSoLibNativeLibraryLoadMode)</AndroidSoLibNativeLibraryDirectories>
 		<Title>FertCalc3</Title>
 		<Authors>HolyAngel</Authors>
 		<PackageProjectUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</PackageProjectUrl>
@@ -83,15 +86,42 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="home.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="Fertilizers.xml">
 			<LogicalName>FertCalculatorMaui.Fertilizers.xml</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="LiveChartsCore" Version="2.0.0-beta.710" />
+		<PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-beta.710" />
+		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-beta.710" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.6" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 	</ItemGroup>
+
+	<!-- Android native library configuration -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+		<AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == ''">$(ANDROID_HOME)</AndroidSdkDirectory>
+		<AndroidNdkDirectory Condition="'$(AndroidNdkDirectory)' == ''">$(ANDROID_NDK_HOME)</AndroidNdkDirectory>
+		<AndroidBuildToolsVersion Condition="'$(AndroidBuildToolsVersion)' == ''">33.0.0</AndroidBuildToolsVersion>
+		<AndroidNdkVersion Condition="'$(AndroidNdkVersion)' == ''">25.1.8937393</AndroidNdkVersion>
+		<!-- Enable page size alignment for native libraries -->
+		<AndroidStripNativeLibraries>false</AndroidStripNativeLibraries>
+		<!-- Fix for SkiaSharp.Views.Maui.Controls.Compatibility -->
+		<AndroidLinkMode>None</AndroidLinkMode>
+	</PropertyGroup>
+
+	<!-- Fix for SkiaSharp.Views.Maui.Controls.Compatibility in Release builds -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-android'))">
+		<PublishTrimmed>false</PublishTrimmed>
+		<RunAOTCompilation>false</RunAOTCompilation>
+	</PropertyGroup>
 
 </Project>

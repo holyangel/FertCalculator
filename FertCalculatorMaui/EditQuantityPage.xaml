@@ -2,9 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:FertCalculatorMaui"
+             xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
              x:Class="FertCalculatorMaui.EditQuantityPage"
              x:DataType="local:EditQuantityViewModel"
              Title="Edit Quantity">
+    
     <VerticalStackLayout Spacing="20" Padding="20" VerticalOptions="Center">
         <Label Text="Edit Quantity" FontSize="Title" HorizontalOptions="Center" />
         
