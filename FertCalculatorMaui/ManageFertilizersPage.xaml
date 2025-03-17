@@ -4,26 +4,26 @@
              xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
              xmlns:local="clr-namespace:FertCalculatorMaui"
              x:Class="FertCalculatorMaui.ManageFertilizersPage"
-             x:DataType="viewmodels:ManageFertilizersViewModel"
+             x:Name="ManageFertilizersPageRoot"
              Title="Manage Fertilizers">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="20">
         <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="5">
             <Label Text="Available Fertilizers" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
             <Button Text="Add New Fertilizer" 
-                    Command="{Binding AddFertilizerCommand}"
+                    Command="{Binding BindingContext.AddFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                     HorizontalOptions="Center"
                     Margin="0,0,0,10" />
         </VerticalStackLayout>
-        
+
         <CollectionView Grid.Row="1" x:Name="FertilizerListView" 
-                       ItemsSource="{Binding AvailableFertilizers}"
-                       SelectedItem="{Binding SelectedFertilizer}">
+                       ItemsSource="{Binding BindingContext.AvailableFertilizers, Source={x:Reference ManageFertilizersPageRoot}}"
+                       SelectedItem="{Binding BindingContext.SelectedFertilizer, Source={x:Reference ManageFertilizersPageRoot}}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:Fertilizer">
-                    <Grid ColumnDefinitions="55,*,Auto,Auto" Padding="10">
+                <DataTemplate>
+                    <Grid ColumnDefinitions="55,*,Auto,Auto" Padding="10" Style="{StaticResource CollectionViewItemStyle}">
                         <Button Grid.Column="0" 
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageFertilizersViewModel}}, Path=EditFertilizerCommand}"
+                                Command="{Binding BindingContext.EditFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                                 CommandParameter="{Binding .}"
                                 Margin="0,0,5,0"
                                 Scale=".7">
@@ -39,7 +39,7 @@
                                FontSize="16" />
 
                         <Button Grid.Column="2" 
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageFertilizersViewModel}}, Path=AddToMixCommand}"
+                                Command="{Binding BindingContext.AddToMixCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                                 CommandParameter="{Binding .}"
                                 Margin="5,0,0,0">
                             <Button.ImageSource>
@@ -50,10 +50,9 @@
                         </Button>
                         
                         <Button Grid.Column="3" 
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageFertilizersViewModel}}, Path=DeleteFertilizerCommand}"
+                                Command="{Binding BindingContext.DeleteFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                                 CommandParameter="{Binding .}"
-                                Margin="5,0,0,0"
-                                BackgroundColor="Red">
+                                Margin="5,0,0,0">
                             <Button.ImageSource>
                                 <FontImageSource FontFamily="MaterialIcons"
                                                  Glyph="&#xe872;"
@@ -67,7 +66,7 @@
         
         <Button Grid.Row="2" 
                 Text="Back to Main Page" 
-                Command="{Binding BackToMixCommand}"
+                Command="{Binding BindingContext.BackToMixCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                 HorizontalOptions="Center"
                 Margin="0,10,0,0" />
     </Grid>

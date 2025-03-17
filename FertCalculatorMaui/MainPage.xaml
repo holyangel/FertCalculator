@@ -5,7 +5,7 @@
              xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
              x:Class="FertCalculatorMaui.MainPage"
-             x:DataType="viewmodels:MainViewModel"
+             x:Name="MainPageRoot"
              Title="Fertilizer Calculator">
 
     <ContentPage.Resources>
@@ -60,10 +60,11 @@
             </HorizontalStackLayout>
 
             <CollectionView ItemsSource="{Binding CurrentMix}"
-                          SelectionMode="Single">
+                          SelectionMode="Single"
+                          IsVisible="{Binding IsMixVisible}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="local:FertilizerQuantity">
-                        <Grid ColumnDefinitions="*,*,Auto" Padding="5">
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*,Auto" Padding="5" Style="{StaticResource CollectionViewItemStyle}">
                             <Label Text="{Binding FertilizerName}" 
                                    Grid.Column="0" 
                                    FontAttributes="Bold" 
@@ -73,26 +74,32 @@
                             <Label Text="{Binding Quantity, StringFormat='{0:F2}'}" 
                                    Grid.Column="1" 
                                    HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
+                                   VerticalOptions="Center"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=Blue, Dark=LightBlue}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnEditQuantityTapped" />
+                                </Label.GestureRecognizers>
+                            </Label>
                             
                             <Button Text="Remove" 
                                     Grid.Column="2" 
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=RemoveFertilizerCommand}"
+                                    Command="{Binding BindingContext.RemoveFertilizerCommand, Source={x:Reference MainPageRoot}}"
                                     CommandParameter="{Binding FertilizerName}"
                                     WidthRequest="85"
                                     HeightRequest="35"
-                                    FontSize="Small" />
+                                    FontSize="Small" 
+                                    Style="{StaticResource ButtonStyle}" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-                <Button Text="Toggle Units" 
+                <Button Text="{Binding UnitsTypeLabel}" 
                         Command="{Binding ToggleUnitsCommand}"
-                        VerticalOptions="Center" />
-                <Label Text="{Binding UnitsTypeLabel}" 
-                       VerticalOptions="Center" />
+                        VerticalOptions="Center" 
+                        Style="{StaticResource ButtonStyle}" Padding="10,5"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>
         

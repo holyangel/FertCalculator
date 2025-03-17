@@ -12,6 +12,8 @@ using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
 
 namespace FertCalculatorMaui.ViewModels
 {
@@ -210,6 +212,32 @@ namespace FertCalculatorMaui.ViewModels
             AvailableMixes = new ObservableCollection<FertilizerMix>(mixes);
             Name = "Compare Mixes";
             UpdateUnitLabels();
+
+            // Initialize with default axes that work in both light and dark modes
+            XAxes = new[] 
+            { 
+                new Axis 
+                { 
+                    Labels = Array.Empty<string>(),
+                    LabelsPaint = Application.Current.RequestedTheme == AppTheme.Dark 
+                        ? new SolidColorPaint(SKColors.White) 
+                        : new SolidColorPaint(SKColors.Black)
+                } 
+            };
+            
+            YAxes = new[] 
+            { 
+                new Axis 
+                { 
+                    Name = "PPM",
+                    NamePaint = Application.Current.RequestedTheme == AppTheme.Dark 
+                        ? new SolidColorPaint(SKColors.White) 
+                        : new SolidColorPaint(SKColors.Black),
+                    LabelsPaint = Application.Current.RequestedTheme == AppTheme.Dark 
+                        ? new SolidColorPaint(SKColors.White) 
+                        : new SolidColorPaint(SKColors.Black)
+                } 
+            };
         }
 
         public void UpdateUnitDisplay()
@@ -532,7 +560,10 @@ namespace FertCalculatorMaui.ViewModels
                     TextSize = 12,
                     NameTextSize = 14,
                     MinStep = 1,
-                    ForceStepToMin = true
+                    ForceStepToMin = true,
+                    LabelsPaint = Application.Current.RequestedTheme == AppTheme.Dark 
+                        ? new SolidColorPaint(SKColors.White) 
+                        : new SolidColorPaint(SKColors.Black)
                 }
             };
 
@@ -544,7 +575,13 @@ namespace FertCalculatorMaui.ViewModels
                     TextSize = 12,
                     NameTextSize = 14,
                     MinStep = 1,
-                    Labeler = (value) => value.ToString("0.##")
+                    Labeler = (value) => value.ToString("0.##"),
+                    LabelsPaint = Application.Current.RequestedTheme == AppTheme.Dark 
+                        ? new SolidColorPaint(SKColors.White) 
+                        : new SolidColorPaint(SKColors.Black),
+                    NamePaint = Application.Current.RequestedTheme == AppTheme.Dark 
+                        ? new SolidColorPaint(SKColors.White) 
+                        : new SolidColorPaint(SKColors.Black)
                 }
             };
 

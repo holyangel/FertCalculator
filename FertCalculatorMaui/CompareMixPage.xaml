@@ -6,7 +6,7 @@
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.CompareMixPage"
-             x:DataType="viewmodels:CompareMixViewModel"
+             x:Name="CompareMixPageRoot"
              Title="Compare Mixes">
     
     <ContentPage.Resources>
@@ -20,30 +20,44 @@
             <Grid Grid.Row="0" ColumnDefinitions="*,*">
                 <VerticalStackLayout Grid.Column="0" Margin="0,0,5,0">
                     <Label Text="Mix 1:" FontAttributes="Bold" Margin="0,0,0,5"/>
-                    <Picker ItemsSource="{Binding AvailableMixes}" 
-                            ItemDisplayBinding="{Binding Name}"
-                            SelectedItem="{Binding SelectedMix1, Mode=TwoWay}"
-                            Margin="0,0,0,5"/>
-                    <Label Text="{Binding Mix1IngredientCount, StringFormat='Ingredients: {0}'}" FontSize="Small"/>
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                            StrokeThickness="1"
+                            StrokeShape="Rectangle"
+                            Background="{AppThemeBinding Light=White, Dark={StaticResource Gray700}}"
+                            Margin="0,0,0,5">
+                        <Picker ItemsSource="{Binding BindingContext.AvailableMixes, Source={x:Reference CompareMixPageRoot}}" 
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding BindingContext.SelectedMix1, Mode=TwoWay, Source={x:Reference CompareMixPageRoot}}"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                Margin="5,0"/>
+                    </Border>
+                    <Label Text="{Binding BindingContext.Mix1IngredientCount, StringFormat='Ingredients: {0}', Source={x:Reference CompareMixPageRoot}}" FontSize="Small"/>
                 </VerticalStackLayout>
                 
                 <VerticalStackLayout Grid.Column="1" Margin="5,0,0,0">
                     <Label Text="Mix 2:" FontAttributes="Bold" Margin="0,0,0,5"/>
-                    <Picker ItemsSource="{Binding AvailableMixes}" 
-                            ItemDisplayBinding="{Binding Name}"
-                            SelectedItem="{Binding SelectedMix2, Mode=TwoWay}"
-                            Margin="0,0,0,5"/>
-                    <Label Text="{Binding Mix2IngredientCount, StringFormat='Ingredients: {0}'}" FontSize="Small"/>
+                    <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                            StrokeThickness="1"
+                            StrokeShape="Rectangle"
+                            Background="{AppThemeBinding Light=White, Dark={StaticResource Gray700}}"
+                            Margin="0,0,0,5">
+                        <Picker ItemsSource="{Binding BindingContext.AvailableMixes, Source={x:Reference CompareMixPageRoot}}" 
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding BindingContext.SelectedMix2, Mode=TwoWay, Source={x:Reference CompareMixPageRoot}}"
+                                BackgroundColor="Transparent"
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                Margin="5,0"/>
+                    </Border>
+                    <Label Text="{Binding BindingContext.Mix2IngredientCount, StringFormat='Ingredients: {0}', Source={x:Reference CompareMixPageRoot}}" FontSize="Small"/>
                 </VerticalStackLayout>
             </Grid>
 
             <!-- Units Toggle -->
             <HorizontalStackLayout Grid.Row="1" HorizontalOptions="End" Spacing="10" Margin="0,10,0,0">
-                <Label Text="{Binding UnitsTypeLabel}" VerticalOptions="Center" />
-                <Button Text="Toggle Units" 
-                        Command="{Binding ToggleUnitCommand}"
-                        BackgroundColor="{Binding UnitButtonColor}"
-                        TextColor="White"
+                <Button Text="{Binding BindingContext.UnitsTypeLabel, Source={x:Reference CompareMixPageRoot}}" 
+                        Command="{Binding BindingContext.ToggleUnitCommand, Source={x:Reference CompareMixPageRoot}}"
+                        Style="{StaticResource ButtonStyle}" 
                         Padding="10,5"/>
             </HorizontalStackLayout>
         </Grid>
@@ -52,91 +66,101 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="15">
                 <!-- Chart View -->
-                <Frame BorderColor="Gray" Padding="5" Margin="0,0,0,10" HeightRequest="320">
-                    <Grid RowDefinitions="Auto,*">
+                <Frame BorderColor="black" 
+                       Padding="5" 
+                       Margin="0,0,0,10" 
+                       HeightRequest="320">
+                    <Grid RowDefinitions="Auto,*" BackgroundColor="Black">
                         <Label Text="Nutrient Comparison" 
                                FontSize="16" 
                                FontAttributes="Bold" 
                                HorizontalOptions="Center" 
                                Margin="0,0,0,5"
-                               IsVisible="{Binding HasChartData}"/>
+                               TextColor="Gray"
+                               BackgroundColor="Black"
+                               IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}}"/>
                         <lvc:CartesianChart Grid.Row="1"
-                            Series="{Binding NutrientSeries}"
-                            XAxes="{Binding XAxes}"
-                            YAxes="{Binding YAxes}"
+                            Series="{Binding BindingContext.NutrientSeries, Source={x:Reference CompareMixPageRoot}}"
+                            XAxes="{Binding BindingContext.XAxes, Source={x:Reference CompareMixPageRoot}}"
+                            YAxes="{Binding BindingContext.YAxes, Source={x:Reference CompareMixPageRoot}}"
                             LegendPosition="Bottom"
-                            IsVisible="{Binding HasChartData}"/>
+                                            BackgroundColor="Black"
+                            IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}}"/>
                         <Label Grid.Row="1" 
                                Text="Select both mixes to display chart" 
                                HorizontalOptions="Center" 
                                VerticalOptions="Center"
-                               IsVisible="{Binding HasChartData, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                               TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                               FontSize="16"
+                               IsVisible="{Binding BindingContext.HasChartData, Converter={StaticResource BoolToInverseBoolConverter}, Source={x:Reference CompareMixPageRoot}}"/>
                     </Grid>
                 </Frame>
                 
                 <!-- Comparison Table -->
-                <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                <Grid ColumnDefinitions="*,*,*" 
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      BackgroundColor="{AppThemeBinding Light=Transparent, Dark={StaticResource Gray850}}"
+                      Margin="5">
                     <!-- Headers -->
                     <Label Grid.Row="0" Grid.Column="0" Text="Nutrient" FontAttributes="Bold" Margin="0,0,0,5"/>
-                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Mix1Name}" FontAttributes="Bold" Margin="0,0,0,5"/>
-                    <Label Grid.Row="0" Grid.Column="2" Text="{Binding Mix2Name}" FontAttributes="Bold" Margin="0,0,0,5"/>
-                    <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding PpmHeaderLabel}" FontAttributes="Bold" HorizontalOptions="End" Margin="0,0,0,5"/>
+                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding BindingContext.Mix1Name, Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,0,0,5"/>
+                    <Label Grid.Row="0" Grid.Column="2" Text="{Binding BindingContext.Mix2Name, Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,0,0,5"/>
                     
                     <!-- Nutrients Labels -->
                     <Label Grid.Row="1" Grid.Column="0" Text="Nitrogen (N)" Margin="0,2"/>
-                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Mix1NitrogenPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="1" Grid.Column="2" Text="{Binding Mix2NitrogenPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding BindingContext.Mix1NitrogenPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="1" Grid.Column="2" Text="{Binding BindingContext.Mix2NitrogenPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="2" Grid.Column="0" Text="Phosphorus (P)" Margin="0,2"/>
-                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding Mix1PhosphorusPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="2" Grid.Column="2" Text="{Binding Mix2PhosphorusPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding BindingContext.Mix1PhosphorusPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="2" Grid.Column="2" Text="{Binding BindingContext.Mix2PhosphorusPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="3" Grid.Column="0" Text="Potassium (K)" Margin="0,2"/>
-                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding Mix1PotassiumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="3" Grid.Column="2" Text="{Binding Mix2PotassiumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding BindingContext.Mix1PotassiumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="3" Grid.Column="2" Text="{Binding BindingContext.Mix2PotassiumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="4" Grid.Column="0" Text="Calcium (Ca)" Margin="0,2"/>
-                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding Mix1CalciumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="4" Grid.Column="2" Text="{Binding Mix2CalciumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding BindingContext.Mix1CalciumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="4" Grid.Column="2" Text="{Binding BindingContext.Mix2CalciumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="5" Grid.Column="0" Text="Magnesium (Mg)" Margin="0,2"/>
-                    <Label Grid.Row="5" Grid.Column="1" Text="{Binding Mix1MagnesiumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="5" Grid.Column="2" Text="{Binding Mix2MagnesiumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="5" Grid.Column="1" Text="{Binding BindingContext.Mix1MagnesiumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="5" Grid.Column="2" Text="{Binding BindingContext.Mix2MagnesiumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="6" Grid.Column="0" Text="Sulfur (S)" Margin="0,2"/>
-                    <Label Grid.Row="6" Grid.Column="1" Text="{Binding Mix1SulfurPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="6" Grid.Column="2" Text="{Binding Mix2SulfurPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="6" Grid.Column="1" Text="{Binding BindingContext.Mix1SulfurPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="6" Grid.Column="2" Text="{Binding BindingContext.Mix2SulfurPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="7" Grid.Column="0" Text="Boron (B)" Margin="0,2"/>
-                    <Label Grid.Row="7" Grid.Column="1" Text="{Binding Mix1BoronPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="7" Grid.Column="2" Text="{Binding Mix2BoronPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="7" Grid.Column="1" Text="{Binding BindingContext.Mix1BoronPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="7" Grid.Column="2" Text="{Binding BindingContext.Mix2BoronPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="8" Grid.Column="0" Text="Copper (Cu)" Margin="0,2"/>
-                    <Label Grid.Row="8" Grid.Column="1" Text="{Binding Mix1CopperPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="8" Grid.Column="2" Text="{Binding Mix2CopperPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="8" Grid.Column="1" Text="{Binding BindingContext.Mix1CopperPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="8" Grid.Column="2" Text="{Binding BindingContext.Mix2CopperPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="9" Grid.Column="0" Text="Iron (Fe)" Margin="0,2"/>
-                    <Label Grid.Row="9" Grid.Column="1" Text="{Binding Mix1IronPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="9" Grid.Column="2" Text="{Binding Mix2IronPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="9" Grid.Column="1" Text="{Binding BindingContext.Mix1IronPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="9" Grid.Column="2" Text="{Binding BindingContext.Mix2IronPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="10" Grid.Column="0" Text="Manganese (Mn)" Margin="0,2"/>
-                    <Label Grid.Row="10" Grid.Column="1" Text="{Binding Mix1ManganesePpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="10" Grid.Column="2" Text="{Binding Mix2ManganesePpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="10" Grid.Column="1" Text="{Binding BindingContext.Mix1ManganesePpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="10" Grid.Column="2" Text="{Binding BindingContext.Mix2ManganesePpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="11" Grid.Column="0" Text="Molybdenum (Mo)" Margin="0,2"/>
-                    <Label Grid.Row="11" Grid.Column="1" Text="{Binding Mix1MolybdenumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="11" Grid.Column="2" Text="{Binding Mix2MolybdenumPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="11" Grid.Column="1" Text="{Binding BindingContext.Mix1MolybdenumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="11" Grid.Column="2" Text="{Binding BindingContext.Mix2MolybdenumPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="12" Grid.Column="0" Text="Zinc (Zn)" Margin="0,2"/>
-                    <Label Grid.Row="12" Grid.Column="1" Text="{Binding Mix1ZincPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="12" Grid.Column="2" Text="{Binding Mix2ZincPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="12" Grid.Column="1" Text="{Binding BindingContext.Mix1ZincPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="12" Grid.Column="2" Text="{Binding BindingContext.Mix2ZincPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="13" Grid.Column="0" Text="Chlorine (Cl)" Margin="0,2"/>
-                    <Label Grid.Row="13" Grid.Column="1" Text="{Binding Mix1ChlorinePpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="13" Grid.Column="2" Text="{Binding Mix2ChlorinePpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="13" Grid.Column="1" Text="{Binding BindingContext.Mix1ChlorinePpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="13" Grid.Column="2" Text="{Binding BindingContext.Mix2ChlorinePpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="14" Grid.Column="0" Text="Silica (Si)" Margin="0,2"/>
-                    <Label Grid.Row="14" Grid.Column="1" Text="{Binding Mix1SilicaPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="14" Grid.Column="2" Text="{Binding Mix2SilicaPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="14" Grid.Column="1" Text="{Binding BindingContext.Mix1SilicaPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="14" Grid.Column="2" Text="{Binding BindingContext.Mix2SilicaPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="15" Grid.Column="0" Text="Humic Acid" Margin="0,2"/>
-                    <Label Grid.Row="15" Grid.Column="1" Text="{Binding Mix1HumicAcidPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="15" Grid.Column="2" Text="{Binding Mix2HumicAcidPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="15" Grid.Column="1" Text="{Binding BindingContext.Mix1HumicAcidPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="15" Grid.Column="2" Text="{Binding BindingContext.Mix2HumicAcidPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="16" Grid.Column="0" Text="Fulvic Acid" Margin="0,2"/>
-                    <Label Grid.Row="16" Grid.Column="1" Text="{Binding Mix1FulvicAcidPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
-                    <Label Grid.Row="16" Grid.Column="2" Text="{Binding Mix2FulvicAcidPpm, StringFormat='{0:F3}'}" Margin="0,2"/>
+                    <Label Grid.Row="16" Grid.Column="1" Text="{Binding BindingContext.Mix1FulvicAcidPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="16" Grid.Column="2" Text="{Binding BindingContext.Mix2FulvicAcidPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     
                     <!-- Total Row with Unit Label -->
-                    <BoxView Grid.Row="17" Grid.ColumnSpan="3" HeightRequest="1" BackgroundColor="Gray" Margin="0,5"/>
+                    <BoxView Grid.Row="17" Grid.ColumnSpan="3" HeightRequest="1" BackgroundColor="Gray" Margin="0,5" />
                     <Label Grid.Row="18" Grid.Column="0" Text="Total Nutrients" FontAttributes="Bold" Margin="0,5,0,2"/>
-                    <Label Grid.Row="18" Grid.Column="1" Text="{Binding Mix1TotalNutrientPpm, StringFormat='{0:F3}'}" FontAttributes="Bold" Margin="0,5,0,2"/>
-                    <Label Grid.Row="18" Grid.Column="2" Text="{Binding Mix2TotalNutrientPpm, StringFormat='{0:F3}'}" FontAttributes="Bold" Margin="0,5,0,2"/>
+                    <Label Grid.Row="18" Grid.Column="1" Text="{Binding BindingContext.Mix1TotalNutrientPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,5,0,2"/>
+                    <Label Grid.Row="18" Grid.Column="2" Text="{Binding BindingContext.Mix2TotalNutrientPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,5,0,2"/>
                 </Grid>
             </VerticalStackLayout>
         </ScrollView>

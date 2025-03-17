@@ -4,28 +4,37 @@
              xmlns:local="clr-namespace:FertCalculatorMaui"
              xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
              x:Class="FertCalculatorMaui.SaveMixPage"
-             x:DataType="viewmodels:SaveMixViewModel"
+             x:Name="SaveMixPageRoot"
              Title="Save Mix">
     
     <VerticalStackLayout Spacing="15" Padding="20" VerticalOptions="Center">
         <Label Text="Save Fertilizer Mix" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
         
         <Label Text="Mix Name" />
-        <Entry x:Name="MixNameEntry" Placeholder="Enter a name for this mix" Text="{Binding MixName}" />
+        <Entry x:Name="MixNameEntry" Placeholder="Enter a name for this mix" Text="{Binding BindingContext.MixName, Source={x:Reference SaveMixPageRoot}}" />
         
-        <Label Text="Existing Mixes" IsVisible="{Binding HasExistingMixes}" />
-        <Picker x:Name="ExistingMixesPicker" 
-                ItemsSource="{Binding ExistingMixNames}" 
-                SelectedItem="{Binding SelectedMixName}"
-                IsVisible="{Binding HasExistingMixes}" />
+        <Label Text="Existing Mixes" IsVisible="{Binding BindingContext.HasExistingMixes, Source={x:Reference SaveMixPageRoot}}" />
+        <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                StrokeThickness="1"
+                StrokeShape="Rectangle"
+                Background="{AppThemeBinding Light=White, Dark={StaticResource Gray700}}"
+                IsVisible="{Binding BindingContext.HasExistingMixes, Source={x:Reference SaveMixPageRoot}}"
+                Margin="0,0,0,10">
+            <Picker x:Name="ExistingMixesPicker" 
+                    ItemsSource="{Binding BindingContext.ExistingMixNames, Source={x:Reference SaveMixPageRoot}}" 
+                    SelectedItem="{Binding BindingContext.SelectedMixName, Source={x:Reference SaveMixPageRoot}}"
+                    BackgroundColor="Black"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    Margin="5,0" />
+        </Border>
         
-        <Label Text="Overwrite selected mix?" IsVisible="{Binding IsOverwriteVisible}" />
+        <Label Text="Overwrite selected mix?" IsVisible="{Binding BindingContext.IsOverwriteVisible, Source={x:Reference SaveMixPageRoot}}" Style="{StaticResource CheckBoxLabelStyle}" />
         <CheckBox x:Name="OverwriteCheckbox" 
-                 IsChecked="{Binding OverwriteExisting}"
-                 IsVisible="{Binding IsOverwriteVisible}" />
+                 IsChecked="{Binding BindingContext.OverwriteExisting, Source={x:Reference SaveMixPageRoot}}"
+                 IsVisible="{Binding BindingContext.IsOverwriteVisible, Source={x:Reference SaveMixPageRoot}}" />
         
         <!-- Error message display -->
-        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
+        <Label Text="{Binding BindingContext.ErrorMessage, Source={x:Reference SaveMixPageRoot}}" TextColor="Red" IsVisible="{Binding BindingContext.HasError, Source={x:Reference SaveMixPageRoot}}" />
         
         <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Margin="0,20,0,0">
             <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" />

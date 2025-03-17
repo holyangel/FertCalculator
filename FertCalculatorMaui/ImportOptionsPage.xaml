@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:FertCalculatorMaui"
              x:Class="FertCalculatorMaui.ImportOptionsPage"
-             x:DataType="local:ImportOptionsViewModel"
+             x:Name="ImportOptionsPageRoot"
              Title="Import Options">
     
     <ContentPage.Resources>
@@ -23,13 +23,13 @@
                        FontSize="Subtitle" />
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <CheckBox IsChecked="{Binding ImportFertilizers}" />
+                    <CheckBox IsChecked="{Binding BindingContext.ImportFertilizers, Source={x:Reference ImportOptionsPageRoot}}" />
                     <Label Text="Import Fertilizers" 
                            VerticalOptions="Center" />
                 </HorizontalStackLayout>
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <CheckBox IsChecked="{Binding ImportMixes}" />
+                    <CheckBox IsChecked="{Binding BindingContext.ImportMixes, Source={x:Reference ImportOptionsPageRoot}}" />
                     <Label Text="Import Mixes" 
                            VerticalOptions="Center" />
                 </HorizontalStackLayout>
@@ -40,37 +40,42 @@
                        Margin="0,10,0,0" />
                 
                 <RadioButton Content="Skip (Keep existing items)"
-                             IsChecked="{Binding DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Skip}"
+                             IsChecked="{Binding BindingContext.DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Skip, Source={x:Reference ImportOptionsPageRoot}}"
                              GroupName="DuplicateHandling"
-                             Margin="0,5,0,5" />
+                             Margin="0,5,0,5" 
+                             Style="{StaticResource RadioButtonStyle}"/>
                 
                 <RadioButton Content="Replace (Overwrite existing items)"
-                             IsChecked="{Binding DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Replace}"
+                             IsChecked="{Binding BindingContext.DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Replace, Source={x:Reference ImportOptionsPageRoot}}"
                              GroupName="DuplicateHandling"
-                             Margin="0,5,0,5" />
+                             Margin="0,5,0,5" 
+                             Style="{StaticResource RadioButtonStyle}"/>
                 
                 <RadioButton Content="Rename (Add numbering to imported items)"
-                             IsChecked="{Binding DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Rename}"
+                             IsChecked="{Binding BindingContext.DuplicateHandling, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Rename, Source={x:Reference ImportOptionsPageRoot}}"
                              GroupName="DuplicateHandling"
-                             Margin="0,5,0,5" />
+                             Margin="0,5,0,5" 
+                             Style="{StaticResource RadioButtonStyle}"/>
             </VerticalStackLayout>
         </Border>
         
-        <Label Text="{Binding StatusMessage}"
-               TextColor="{Binding StatusColor}"
+        <Label Text="{Binding BindingContext.StatusMessage, Source={x:Reference ImportOptionsPageRoot}}"
+               TextColor="{Binding BindingContext.StatusColor, Source={x:Reference ImportOptionsPageRoot}}"
                HorizontalOptions="Center"
                Margin="0,15,0,0"
-               IsVisible="{Binding HasStatus}" />
+               IsVisible="{Binding BindingContext.HasStatus, Source={x:Reference ImportOptionsPageRoot}}" />
         
         <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,20,0,0">
             <Button Text="Import" 
-                    Command="{Binding ImportCommand}"
+                    Command="{Binding BindingContext.ImportCommand, Source={x:Reference ImportOptionsPageRoot}}"
                     WidthRequest="120"
-                    IsEnabled="{Binding CanImport}" />
+                    IsEnabled="{Binding BindingContext.CanImport, Source={x:Reference ImportOptionsPageRoot}}" 
+                    Style="{StaticResource ButtonStyle}" Padding="10,5"/>
             
             <Button Text="Cancel" 
-                    Command="{Binding CancelCommand}"
-                    WidthRequest="120" />
+                    Command="{Binding BindingContext.CancelCommand, Source={x:Reference ImportOptionsPageRoot}}"
+                    WidthRequest="120" 
+                    Style="{StaticResource ButtonStyle}" Padding="10,5"/>
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

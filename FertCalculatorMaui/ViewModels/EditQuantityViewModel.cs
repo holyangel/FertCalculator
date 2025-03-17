@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FertCalculatorMaui
+namespace FertCalculatorMaui.ViewModels
 {
     public partial class EditQuantityViewModel : ObservableObject
     {

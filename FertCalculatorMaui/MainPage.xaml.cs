@@ -182,6 +182,27 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private async void OnEditQuantityTapped(object sender, EventArgs e)
+    {
+        if (sender is Label label && label.BindingContext is FertilizerQuantity fertilizer)
+        {
+            var editPage = new EditQuantityPage(fertilizer.FertilizerName, fertilizer.Quantity, 
+                viewModel.UseImperialUnits ? "oz/gal" : "g/L", viewModel.UseImperialUnits);
+            
+            editPage.QuantityChanged += (s, args) =>
+            {
+                var item = viewModel.CurrentMix.FirstOrDefault(f => f.FertilizerName == args.FertilizerName);
+                if (item != null)
+                {
+                    item.Quantity = args.NewQuantity;
+                    viewModel.UpdateNutrientTotals();
+                }
+            };
+            
+            await Navigation.PushAsync(editPage);
+        }
+    }
+
     // Menu command methods for AppShell
     public async Task NavigateToManageFertilizers()
     {
