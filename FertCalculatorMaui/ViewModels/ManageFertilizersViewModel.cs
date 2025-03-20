@@ -133,6 +133,75 @@ namespace FertCalculatorMaui.ViewModels
             }
         }
         
+        [RelayCommand]
+        private async Task ShowFertilizerDetails(Fertilizer fertilizer)
+        {
+            if (fertilizer == null)
+                return;
+
+            try
+            {
+                // Create a formatted string with fertilizer details
+                string details = $"Name: {fertilizer.Name}\n\n";
+                
+                // Add nutrient information
+                var nutrientDetails = new List<(string Name, double Value)>
+                {
+                    ("Nitrogen (N)", fertilizer.NitrogenPercent),
+                    ("Phosphorus (P)", fertilizer.PhosphorusPercent),
+                    ("Potassium (K)", fertilizer.PotassiumPercent),
+                    ("Calcium (Ca)", fertilizer.CalciumPercent),
+                    ("Magnesium (Mg)", fertilizer.MagnesiumPercent),
+                    ("Sulfur (S)", fertilizer.SulfurPercent),
+                    ("Boron (B)", fertilizer.BoronPercent),
+                    ("Copper (Cu)", fertilizer.CopperPercent),
+                    ("Iron (Fe)", fertilizer.IronPercent),
+                    ("Manganese (Mn)", fertilizer.ManganesePercent),
+                    ("Molybdenum (Mo)", fertilizer.MolybdenumPercent),
+                    ("Zinc (Zn)", fertilizer.ZincPercent),
+                    ("Chlorine (Cl)", fertilizer.ChlorinePercent),
+                    ("Silica (Si)", fertilizer.SilicaPercent),
+                    ("Humic Acid", fertilizer.HumicAcidPercent),
+                    ("Fulvic Acid", fertilizer.FulvicAcidPercent)
+                };
+                
+                var nonZeroNutrients = nutrientDetails
+                    .Where(n => n.Value > 0)
+                    .OrderByDescending(n => n.Value);
+                
+                if (nonZeroNutrients.Any())
+                {
+                    details += "Nutrients:\n";
+                    foreach (var nutrient in nonZeroNutrients)
+                    {
+                        details += $"{nutrient.Name}: {nutrient.Value:F2}%\n";
+                    }
+                }
+                else
+                {
+                    details += "No nutrients specified.";
+                }
+                
+                // Add information about P and K form
+                if (fertilizer.IsPhosphorusInOxideForm && fertilizer.PhosphorusPercent > 0)
+                {
+                    details += $"\nPhosphorus is in oxide form (P₂O₅): {fertilizer.OriginalPhosphorusValue:F2}%";
+                }
+                
+                if (fertilizer.IsPotassiumInOxideForm && fertilizer.PotassiumPercent > 0)
+                {
+                    details += $"\nPotassium is in oxide form (K₂O): {fertilizer.OriginalPotassiumValue:F2}%";
+                }
+                
+                await dialogService.DisplayAlertAsync("Fertilizer Details", details, "Close");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error showing fertilizer details: {ex.Message}");
+                await dialogService.DisplayAlertAsync("Error", "Could not display fertilizer details", "OK");
+            }
+        }
+        
         public async Task DeleteFertilizerAsync(Fertilizer fertilizer)
         {
             // This method is called from the code-behind event handler

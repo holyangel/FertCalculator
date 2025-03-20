@@ -36,7 +36,14 @@
 
                         <Label Text="{Binding Name}" Grid.Column="1"
                                VerticalOptions="Center" 
-                               FontSize="16" />
+                               FontSize="16"
+                               TextDecorations="Underline">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding BindingContext.ShowFertilizerDetailsCommand, Source={x:Reference ManageFertilizersPageRoot}}"
+                                    CommandParameter="{Binding .}" />
+                            </Label.GestureRecognizers>
+                        </Label>
 
                         <Button Grid.Column="2" 
                                 Command="{Binding BindingContext.AddToMixCommand, Source={x:Reference ManageFertilizersPageRoot}}"
