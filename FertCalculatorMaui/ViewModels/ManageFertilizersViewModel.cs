@@ -47,13 +47,16 @@ namespace FertCalculatorMaui.ViewModels
         }
 
         [RelayCommand]
-        private async Task EditFertilizer()
+        private async Task EditFertilizer(Fertilizer fertilizer = null)
         {
-            if (SelectedFertilizer != null)
+            // Use the passed fertilizer parameter if provided, otherwise use SelectedFertilizer
+            fertilizer = fertilizer ?? SelectedFertilizer;
+            
+            if (fertilizer != null)
             {
                 try
                 {
-                    await Shell.Current.Navigation.PushAsync(new AddFertilizerPage(fileService, dialogService, SelectedFertilizer));
+                    await Shell.Current.Navigation.PushAsync(new AddFertilizerPage(fileService, dialogService, fertilizer));
                 }
                 catch (Exception ex)
                 {
