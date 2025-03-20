@@ -300,6 +300,16 @@
         </Setter>
     </Style>
 
+    <!-- Style for RadioButton -->
+    <Style x:Key="RadioButtonStyle" TargetType="RadioButton">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=Transparent, Dark=Transparent}"/>
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+        <Setter Property="FontFamily" Value="OpenSansRegular"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="MinimumHeightRequest" Value="44"/>
+        <Setter Property="MinimumWidthRequest" Value="44"/>
+    </Style>
+
     <Style TargetType="RefreshView">
         <Setter Property="RefreshColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />
     </Style>

@@ -16,19 +16,19 @@
                        FontSize="Subtitle" />
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <CheckBox IsChecked="{Binding BindingContext.ExportFertilizers, Source={x:Reference ExportOptionsPageRoot}}" />
+                    <CheckBox IsChecked="{Binding ExportFertilizers}" />
                     <Label Text="Export Fertilizers" 
                            VerticalOptions="Center" />
                 </HorizontalStackLayout>
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <CheckBox IsChecked="{Binding BindingContext.ExportMixes, Source={x:Reference ExportOptionsPageRoot}}" />
+                    <CheckBox IsChecked="{Binding ExportMixes}" />
                     <Label Text="Export Mixes" 
                            VerticalOptions="Center" />
                 </HorizontalStackLayout>
                 
                 <Entry Placeholder="File name (without extension)" 
-                       Text="{Binding BindingContext.FileName, Source={x:Reference ExportOptionsPageRoot}}"
+                       Text="{Binding FileName}"
                        Margin="0,10,0,0" />
                        
                 <Label Text="Export Method" 
@@ -37,7 +37,7 @@
                        Margin="0,20,0,10" />
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <RadioButton IsChecked="{Binding BindingContext.UseShareMethod, Source={x:Reference ExportOptionsPageRoot}}"
+                    <RadioButton IsChecked="{Binding UseShareMethod}"
                                  GroupName="ExportMethod" 
                                  Style="{StaticResource RadioButtonStyle}"/>
                     <Label Text="Share File" 
@@ -46,7 +46,7 @@
                 </HorizontalStackLayout>
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <RadioButton IsChecked="{Binding BindingContext.UseSaveToDirectoryMethod, Source={x:Reference ExportOptionsPageRoot}}"
+                    <RadioButton IsChecked="{Binding UseSaveToDirectoryMethod}"
                                  GroupName="ExportMethod" 
                                  Style="{StaticResource RadioButtonStyle}" />
                     <Label Text="Save to Documents" 
@@ -56,21 +56,21 @@
             </VerticalStackLayout>
         </Border>
         
-        <Label Text="{Binding BindingContext.StatusMessage, Source={x:Reference ExportOptionsPageRoot}}"
-               TextColor="{Binding BindingContext.StatusColor, Source={x:Reference ExportOptionsPageRoot}}"
+        <Label Text="{Binding StatusMessage}"
+               TextColor="{Binding StatusColor}"
                HorizontalOptions="Center"
                Margin="0,15,0,0"
-               IsVisible="{Binding BindingContext.HasStatus, Source={x:Reference ExportOptionsPageRoot}}" />
+               IsVisible="{Binding HasStatus}" />
         
         <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,20,0,0">
             <Button Text="Export" 
-                    Command="{Binding BindingContext.ExportCommand, Source={x:Reference ExportOptionsPageRoot}}"
+                    Command="{Binding ExportCommand}"
                     WidthRequest="120"
-                    IsEnabled="{Binding BindingContext.CanExport, Source={x:Reference ExportOptionsPageRoot}}" 
+                    IsEnabled="{Binding CanExport}" 
                     Style="{StaticResource ButtonStyle}" Padding="10,5"/>
             
             <Button Text="Cancel" 
-                    Command="{Binding BindingContext.CancelCommand, Source={x:Reference ExportOptionsPageRoot}}"
+                    Command="{Binding CancelCommand}"
                     WidthRequest="120" 
                     Style="{StaticResource ButtonStyle}" Padding="10,5"/>
         </HorizontalStackLayout>
