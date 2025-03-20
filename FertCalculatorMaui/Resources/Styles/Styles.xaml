@@ -16,6 +16,16 @@
         <Setter Property="Margin" Value="0,2" />
         <Setter Property="Padding" Value="5" />
     </Style>
+
+    <!-- Style for Grid items in CollectionView -->
+    <Style x:Key="EntryTextStyle" TargetType="Entry">
+        <Setter Property="MinimumHeightRequest" Value="44"/>
+        <Setter Property="MinimumWidthRequest" Value="44"/>
+        <Setter Property="WidthRequest" Value="100" />
+        <Setter Property="Keyboard" Value="Numeric" />
+        <Setter Property="HorizontalOptions" Value="Start"/>
+        <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
+    </Style>
     
     <!-- Style for CheckBox labels -->
     <Style x:Key="CheckBoxLabelStyle" TargetType="Label">
