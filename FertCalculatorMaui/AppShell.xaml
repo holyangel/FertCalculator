@@ -23,6 +23,8 @@
         <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
 
+    <MenuItem Text="Toggle Units: {Binding UnitsTypeLabel}" Clicked="OnToggleUnitsClicked"/>
+
     <MenuItem Text="Manage Fertilizers" Clicked="OnManageFertilizersClicked" />
     <MenuItem Text="Load Mix" Clicked="OnLoadMixClicked" />
     <MenuItem Text="Save Mix" Clicked="OnSaveMixClicked" />

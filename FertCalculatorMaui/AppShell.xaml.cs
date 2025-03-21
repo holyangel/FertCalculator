@@ -12,6 +12,7 @@ public partial class AppShell : Shell
 {
     private readonly MainPage mainPage;
     private readonly IServiceProvider serviceProvider;
+    private readonly MainViewModel mainViewModel;
     
     public AppShell(IServiceProvider serviceProvider)
     {
@@ -25,6 +26,12 @@ public partial class AppShell : Shell
             
             // Get the MainPage from the service provider
             mainPage = serviceProvider.GetRequiredService<MainPage>();
+            
+            // Get the MainViewModel from the service provider
+            mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
+            
+            // Set the binding context for the shell to access the MainViewModel properties
+            BindingContext = mainViewModel;
             
             // Register routes for navigation
             Routing.RegisterRoute(nameof(AddFertilizerPage), typeof(AddFertilizerPage));
@@ -140,6 +147,20 @@ public partial class AppShell : Shell
         catch (Exception ex)
         {
             Debug.WriteLine($"Exception in OnExportClicked: {ex.Message}\n{ex.StackTrace}");
+        }
+        FlyoutIsPresented = false;
+    }
+    
+    private void OnToggleUnitsClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            // Call the ToggleUnits command on the MainViewModel
+            mainViewModel.ToggleUnitsCommand.Execute(null);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in OnToggleUnitsClicked: {ex.Message}\n{ex.StackTrace}");
         }
         FlyoutIsPresented = false;
     }
