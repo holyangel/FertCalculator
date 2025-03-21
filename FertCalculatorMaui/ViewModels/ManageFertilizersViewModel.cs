@@ -148,11 +148,30 @@ namespace FertCalculatorMaui.ViewModels
                 string details = $"Name: {fertilizer.Name}\n\n";
                 
                 // Add nutrient information
-                var nutrientDetails = new List<(string Name, double Value)>
+                var nutrientDetails = new List<(string Name, double Value)>();
+                
+                // Add Nitrogen
+                nutrientDetails.Add(("Nitrogen (N)", fertilizer.NitrogenPercent));
+                
+                // Add Phosphorus with oxide form if applicable
+                string phosphorusLabel = "Phosphorus (P)";
+                if (fertilizer.IsPhosphorusInOxideForm && fertilizer.PhosphorusPercent > 0)
                 {
-                    ("Nitrogen (N)", fertilizer.NitrogenPercent),
-                    ("Phosphorus (P)", fertilizer.PhosphorusPercent),
-                    ("Potassium (K)", fertilizer.PotassiumPercent),
+                    phosphorusLabel = $"Phosphorus (P) [P₂O₅: {fertilizer.OriginalPhosphorusValue:F2}%]";
+                }
+                nutrientDetails.Add((phosphorusLabel, fertilizer.PhosphorusPercent));
+                
+                // Add Potassium with oxide form if applicable
+                string potassiumLabel = "Potassium (K)";
+                if (fertilizer.IsPotassiumInOxideForm && fertilizer.PotassiumPercent > 0)
+                {
+                    potassiumLabel = $"Potassium (K) [K₂O: {fertilizer.OriginalPotassiumValue:F2}%]";
+                }
+                nutrientDetails.Add((potassiumLabel, fertilizer.PotassiumPercent));
+                
+                // Add remaining nutrients
+                nutrientDetails.AddRange(new List<(string Name, double Value)>
+                {
                     ("Calcium (Ca)", fertilizer.CalciumPercent),
                     ("Magnesium (Mg)", fertilizer.MagnesiumPercent),
                     ("Sulfur (S)", fertilizer.SulfurPercent),
@@ -166,7 +185,7 @@ namespace FertCalculatorMaui.ViewModels
                     ("Silica (Si)", fertilizer.SilicaPercent),
                     ("Humic Acid", fertilizer.HumicAcidPercent),
                     ("Fulvic Acid", fertilizer.FulvicAcidPercent)
-                };
+                });
                 
                 var nonZeroNutrients = nutrientDetails
                     .Where(n => n.Value > 0)
@@ -183,17 +202,6 @@ namespace FertCalculatorMaui.ViewModels
                 else
                 {
                     details += "No nutrients specified.";
-                }
-                
-                // Add information about P and K form
-                if (fertilizer.IsPhosphorusInOxideForm && fertilizer.PhosphorusPercent > 0)
-                {
-                    details += $"\nPhosphorus is in oxide form (P₂O₅): {fertilizer.OriginalPhosphorusValue:F2}%";
-                }
-                
-                if (fertilizer.IsPotassiumInOxideForm && fertilizer.PotassiumPercent > 0)
-                {
-                    details += $"\nPotassium is in oxide form (K₂O): {fertilizer.OriginalPotassiumValue:F2}%";
                 }
                 
                 await dialogService.DisplayAlertAsync("Fertilizer Details", details, "Close");
