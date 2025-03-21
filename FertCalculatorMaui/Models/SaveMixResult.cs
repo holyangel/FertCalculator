@@ -1,3 +1,5 @@
+using System;
+
 namespace FertCalculatorMaui.Models
 {
     public class SaveMixResult : EventArgs

@@ -1,6 +1,8 @@
+using System;
 using System.Globalization;
+using Microsoft.Maui.Controls;
 
-namespace FertCalculatorMaui
+namespace FertCalculatorMaui.Converters
 {
     public class EnumToBoolConverter : IValueConverter
     {

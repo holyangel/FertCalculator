@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using CommunityToolkit.Mvvm.Messaging;
+using FertCalculatorMaui.Models;
 
 namespace FertCalculatorMaui.Messages;
 

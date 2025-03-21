@@ -12,9 +12,82 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
+            <!-- Custom Button Style -->
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="BorderWidth" Value="0"/>
+                <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Padding" Value="14,10"/>
+                <Setter Property="MinimumHeightRequest" Value="44"/>
+                <Setter Property="MinimumWidthRequest" Value="44"/>
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="TextColor" Value="{StaticResource Gray400}" />
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Gray600}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            
+            <!-- Custom RadioButton Style -->
+            <Style x:Key="RadioButtonStyle" TargetType="RadioButton">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="MinimumHeightRequest" Value="44"/>
+                <Setter Property="MinimumWidthRequest" Value="44"/>
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            
+            <!-- Style for CheckBox labels -->
+            <Style x:Key="CheckBoxLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="VerticalOptions" Value="Center" />
+            </Style>
+            
+            <!-- Style for Entry fields -->
+            <Style x:Key="EntryTextStyle" TargetType="Entry">
+                <Setter Property="MinimumHeightRequest" Value="44"/>
+                <Setter Property="MinimumWidthRequest" Value="44"/>
+                <Setter Property="WidthRequest" Value="100" />
+                <Setter Property="Keyboard" Value="Numeric" />
+                <Setter Property="HorizontalOptions" Value="Start"/>
+                <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
+            </Style>
+            
+            <!-- Style for Grid items in CollectionView -->
+            <Style x:Key="CollectionViewItemStyle" TargetType="Grid">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Margin" Value="0,2" />
+                <Setter Property="Padding" Value="5" />
+            </Style>
+            
             <!-- Converters -->
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+            <converters:UnitLabelConverter x:Key="UnitLabelConverter" />
+            <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

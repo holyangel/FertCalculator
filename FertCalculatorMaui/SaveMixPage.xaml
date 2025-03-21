@@ -37,8 +37,8 @@
         <Label Text="{Binding BindingContext.ErrorMessage, Source={x:Reference SaveMixPageRoot}}" TextColor="Red" IsVisible="{Binding BindingContext.HasError, Source={x:Reference SaveMixPageRoot}}" />
         
         <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" Margin="0,20,0,0">
-            <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" />
-            <Button Text="Cancel" Clicked="OnCancelClicked" WidthRequest="100" />
+            <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" Style="{StaticResource ButtonStyle}" Padding="10,5" />
+            <Button Text="Cancel" Clicked="OnCancelClicked" WidthRequest="100" Style="{StaticResource ButtonStyle}" Padding="10,5" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

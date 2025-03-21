@@ -18,7 +18,7 @@
             
             <HorizontalStackLayout Spacing="12" Margin="15,0,0,0" HorizontalOptions="Center">
                 <Button Command="{Binding AddFertilizerCommand}" 
-                        ToolTipProperties.Text="Add Fertilizer">
+                        ToolTipProperties.Text="Add Fertilizer" Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe800;"
@@ -26,7 +26,7 @@
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding LoadMixCommand}" 
-                        ToolTipProperties.Text="Load Mix">
+                        ToolTipProperties.Text="Load Mix" Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe2c6;"
@@ -34,7 +34,7 @@
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding SaveMixCommand}" 
-                        ToolTipProperties.Text="Save Mix">
+                        ToolTipProperties.Text="Save Mix" Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe161;"
@@ -42,7 +42,7 @@
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding ClearMixCommand}" 
-                        ToolTipProperties.Text="Clear Mix">
+                        ToolTipProperties.Text="Clear Mix" Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe5c9;"
@@ -50,7 +50,7 @@
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding CompareMixCommand}" 
-                        ToolTipProperties.Text="Compare Mix">
+                        ToolTipProperties.Text="Compare Mix" Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe3b9;"

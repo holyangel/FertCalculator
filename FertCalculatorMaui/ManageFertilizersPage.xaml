@@ -11,6 +11,7 @@
         <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="5">
             <Label Text="Available Fertilizers" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
             <Button Text="Add New Fertilizer" 
+                    Style="{StaticResource ButtonStyle}"
                     Command="{Binding BindingContext.AddFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                     HorizontalOptions="Center"
                     Margin="0,0,0,10" />
@@ -23,6 +24,7 @@
                 <DataTemplate>
                     <Grid ColumnDefinitions="55,*,Auto,Auto" Padding="10" Style="{StaticResource CollectionViewItemStyle}">
                         <Button Grid.Column="0" 
+                                Style="{StaticResource ButtonStyle}"
                                 Command="{Binding BindingContext.EditFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                                 CommandParameter="{Binding .}"
                                 Margin="0,0,5,0"
@@ -39,13 +41,13 @@
                                FontSize="16"
                                TextDecorations="Underline">
                             <Label.GestureRecognizers>
-                                <TapGestureRecognizer 
-                                    Command="{Binding BindingContext.ShowFertilizerDetailsCommand, Source={x:Reference ManageFertilizersPageRoot}}"
-                                    CommandParameter="{Binding .}" />
+                                <TapGestureRecognizer Command="{Binding BindingContext.ShowFertilizerDetailsCommand, Source={x:Reference ManageFertilizersPageRoot}}"
+                                                      CommandParameter="{Binding .}" />
                             </Label.GestureRecognizers>
                         </Label>
 
                         <Button Grid.Column="2" 
+                                Style="{StaticResource ButtonStyle}"
                                 Command="{Binding BindingContext.AddToMixCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                                 CommandParameter="{Binding .}"
                                 Margin="5,0,0,0">
@@ -57,6 +59,7 @@
                         </Button>
                         
                         <Button Grid.Column="3" 
+                                Style="{StaticResource ButtonStyle}"
                                 Command="{Binding BindingContext.DeleteFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                                 CommandParameter="{Binding .}"
                                 Margin="5,0,0,0">
@@ -72,6 +75,7 @@
         </CollectionView>
         
         <Button Grid.Row="2" 
+                Style="{StaticResource ButtonStyle}"
                 Text="Back to Main Page" 
                 Command="{Binding BindingContext.BackToMixCommand, Source={x:Reference ManageFertilizersPageRoot}}"
                 HorizontalOptions="Center"

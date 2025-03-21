@@ -17,12 +17,16 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .UseSkiaSharp()  // Add SkiaSharp handlers
+            .UseSkiaSharp()  // Add SkiaSharp handlers for both LiveCharts and ColorPicker
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
+            })
+            .ConfigureMauiHandlers(handlers =>
+            {
+                // Register any custom handlers here
             });
 
         // Configure LiveCharts
@@ -35,6 +39,13 @@ public static class MauiProgram
         // Register services as singletons for state persistence
         builder.Services.AddSingleton<FileService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
+        builder.Services.AddSingleton<AppSettings>();
+        
+        // Register App class
+        builder.Services.AddTransient<App>();
+        
+        // Register AppShell
+        builder.Services.AddTransient<AppShell>();
         
         // Register ViewModels
         builder.Services.AddSingleton<MainViewModel>();  // Singleton to maintain state across the app
@@ -45,52 +56,18 @@ public static class MauiProgram
         builder.Services.AddTransient<ManageFertilizersViewModel>();
         builder.Services.AddTransient<EditQuantityViewModel>();
         builder.Services.AddTransient<CompareMixViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
         
-        // Register pages with proper dependency injection
-        builder.Services.AddTransient<MainPage>(services => 
-            new MainPage(
-                services.GetRequiredService<FileService>(),
-                services.GetRequiredService<IDialogService>()));
-
-        builder.Services.AddTransient<AddFertilizerPage>(services => 
-            new AddFertilizerPage(
-                services.GetRequiredService<FileService>(),
-                services.GetRequiredService<IDialogService>()));
-
-        // For SaveMixPage, we need to provide an empty list of FertilizerQuantity objects
-        // since it's typically created with runtime parameters
-        builder.Services.AddTransient<SaveMixPage>(services => 
-            new SaveMixPage(
-                services.GetRequiredService<FileService>(),
-                new List<FertilizerQuantity>()));
-
-        builder.Services.AddTransient<ImportOptionsPage>(services => 
-            new ImportOptionsPage(
-                services.GetRequiredService<FileService>(),
-                services.GetRequiredService<MainViewModel>().AvailableFertilizers,
-                services.GetRequiredService<MainViewModel>().SavedMixes));
-
-        builder.Services.AddTransient<ExportOptionsPage>(services => 
-            new ExportOptionsPage(
-                services.GetRequiredService<FileService>(),
-                services.GetRequiredService<MainViewModel>().AvailableFertilizers.ToList(),
-                services.GetRequiredService<MainViewModel>().SavedMixes));
-
-        builder.Services.AddTransient<ManageFertilizersPage>(services => 
-            new ManageFertilizersPage(
-                services.GetRequiredService<FileService>(),
-                services.GetRequiredService<IDialogService>(),
-                services.GetRequiredService<MainViewModel>().AvailableFertilizers));
-
-        // Note: EditQuantityPage is typically created with runtime parameters
-        // and not directly from the DI container, so we register it without parameters
+        // Register Pages with explicit constructor injection
+        builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<AddFertilizerPage>();
+        builder.Services.AddTransient<SaveMixPage>();
+        builder.Services.AddTransient<ImportOptionsPage>();
+        builder.Services.AddTransient<ExportOptionsPage>();
+        builder.Services.AddTransient<ManageFertilizersPage>();
         builder.Services.AddTransient<EditQuantityPage>();
-
-        // Register CompareMixPage with FileService and IDialogService
-        builder.Services.AddTransient<CompareMixPage>(services => 
-            new CompareMixPage(
-                services.GetRequiredService<FileService>(),
-                services.GetRequiredService<IDialogService>()));
+        builder.Services.AddTransient<CompareMixPage>();
+        builder.Services.AddTransient<SettingsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -79,20 +79,18 @@
                                TextColor="Gray"
                                BackgroundColor="Black"
                                IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}}"/>
-                        <lvc:CartesianChart Grid.Row="1"
-                            Series="{Binding BindingContext.NutrientSeries, Source={x:Reference CompareMixPageRoot}}"
-                            XAxes="{Binding BindingContext.XAxes, Source={x:Reference CompareMixPageRoot}}"
-                            YAxes="{Binding BindingContext.YAxes, Source={x:Reference CompareMixPageRoot}}"
-                            LegendPosition="Bottom"
-                                            BackgroundColor="Black"
-                            IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}}"/>
+                        
+                        <!-- Chart will be loaded dynamically in code-behind -->
+                        <Grid x:Name="ChartContainer" Grid.Row="1" BackgroundColor="Black">
+                            <!-- Chart will be added here programmatically -->
+                        </Grid>
+                        
                         <Label Grid.Row="1" 
                                Text="Select both mixes to display chart" 
                                HorizontalOptions="Center" 
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
-                               FontSize="16"
-                               IsVisible="{Binding BindingContext.HasChartData, Converter={StaticResource BoolToInverseBoolConverter}, Source={x:Reference CompareMixPageRoot}}"/>
+                               VerticalOptions="Center" 
+                               TextColor="Gray"
+                               IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}, Converter={StaticResource BoolToInverseBoolConverter}}"/>
                     </Grid>
                 </Frame>
                 

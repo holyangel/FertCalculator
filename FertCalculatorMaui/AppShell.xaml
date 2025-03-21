@@ -6,10 +6,12 @@
     xmlns:local="clr-namespace:FertCalculatorMaui"
     Shell.FlyoutBehavior="Flyout"
     Title="Fertilizer Calculator"
-    BackgroundColor="Black">
+    ForegroundColor="White"
+    TitleColor="White"
+    BackgroundColor="#512BD4">
 
     <Shell.FlyoutHeader>
-        <Grid HeightRequest="120" BackgroundColor="{StaticResource Primary}">
+        <Grid HeightRequest="120" BackgroundColor="#512BD4">
             <Label Text="Fertilizer Calculator" 
                    TextColor="White" 
                    FontSize="24" 
@@ -19,12 +21,14 @@
         </Grid>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Home" Icon="home.png" Route="MainPage">
-        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
-    </FlyoutItem>
+    <!-- This is the default route that will be loaded when the app starts -->
+    <ShellContent 
+        Title="Home"
+        Icon="home.png"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
 
     <MenuItem Text="Toggle Units: {Binding UnitsTypeLabel}" Clicked="OnToggleUnitsClicked"/>
-
     <MenuItem Text="Manage Fertilizers" Clicked="OnManageFertilizersClicked" />
     <MenuItem Text="Load Mix" Clicked="OnLoadMixClicked" />
     <MenuItem Text="Save Mix" Clicked="OnSaveMixClicked" />
@@ -33,5 +37,6 @@
     <MenuItem Text="Toggle Mix Window" Clicked="OnToggleMixVisibilityClicked" />
     <MenuItem Text="Import Fertilizers/Mixes" Clicked="OnImportClicked" />
     <MenuItem Text="Export Fertilizers/Mixes" Clicked="OnExportClicked" />
+    <MenuItem Text="Settings" Clicked="OnSettingsClicked" />
 
 </Shell>

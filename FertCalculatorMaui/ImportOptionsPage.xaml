@@ -2,13 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:FertCalculatorMaui"
+             xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.ImportOptionsPage"
              x:Name="ImportOptionsPageRoot"
              Title="Import Options">
     
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+            <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     

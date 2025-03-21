@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using FertCalculatorMaui.Messages;
 using FertCalculatorMaui.Services;
+using System.Diagnostics;
 
 namespace FertCalculatorMaui.ViewModels;
 
@@ -235,10 +236,55 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            await Shell.Current.Navigation.PushAsync(new CompareMixPage(fileService, CurrentMix.ToList(), UseImperialUnits));
+            Debug.WriteLine("CompareMix command executed");
+            
+            // Get the current navigation
+            var navigation = GetCurrentNavigation();
+            if (navigation == null)
+            {
+                Debug.WriteLine("Navigation service is not available");
+                await dialogService.DisplayAlertAsync("Error", "Navigation service is not available", "OK");
+                return;
+            }
+
+            // Get the service provider from the current application
+            var serviceProvider = Application.Current?.Handler?.MauiContext?.Services;
+            if (serviceProvider == null)
+            {
+                Debug.WriteLine("Service provider is not available");
+                await dialogService.DisplayAlertAsync("Error", "Service provider is not available", "OK");
+                return;
+            }
+
+            try
+            {
+                // Get CompareMixPage from DI
+                var compareMixPage = serviceProvider.GetService<CompareMixPage>();
+                if (compareMixPage == null)
+                {
+                    Debug.WriteLine("Failed to create CompareMixPage from DI");
+                    await dialogService.DisplayAlertAsync("Error", "Failed to create Compare Mix page", "OK");
+                    return;
+                }
+
+                Debug.WriteLine("Successfully created CompareMixPage from DI");
+                
+                // Initialize the page with current mix data
+                await compareMixPage.InitializeWithCurrentMix(CurrentMix.ToList(), UseImperialUnits);
+                
+                // Navigate to the page
+                await navigation.PushAsync(compareMixPage);
+                Debug.WriteLine("Successfully navigated to CompareMixPage");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error initializing or navigating to CompareMixPage: {ex.Message}");
+                await dialogService.DisplayAlertAsync("Error", $"Failed to initialize Compare Mix page: {ex.Message}", "OK");
+            }
         }
         catch (Exception ex)
         {
+            Debug.WriteLine($"Error in CompareMix command: {ex.Message}");
             await dialogService.DisplayAlertAsync("Error", $"Failed to open Compare Mix page: {ex.Message}", "OK");
         }
     }
@@ -498,5 +544,16 @@ public partial class MainViewModel : ObservableObject
         {
             dialogService.DisplayAlertAsync("Error", $"Failed to add fertilizer to mix: {ex.Message}", "OK");
         }
+    }
+
+    // Helper method to get the current navigation
+    private INavigation GetCurrentNavigation()
+    {
+        // Try to get navigation from Shell first
+        if (Shell.Current?.Navigation != null)
+            return Shell.Current.Navigation;
+            
+        // Fallback to Application.Current.MainPage.Navigation
+        return Application.Current?.MainPage?.Navigation;
     }
 }

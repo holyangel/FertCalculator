@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
+             xmlns:controls="clr-namespace:Maui.ColorPicker;assembly=Maui.ColorPicker"
+             x:Class="FertCalculatorMaui.SettingsPage"
+             x:DataType="viewmodels:SettingsViewModel"
+             Title="Settings">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label 
+                Text="Settings"
+                FontSize="24"
+                FontAttributes="Bold"
+                HorizontalOptions="Center" />
+
+            <!-- Button Background Color -->
+            <Frame BorderColor="Gray" Padding="10" CornerRadius="5">
+                <VerticalStackLayout Spacing="10">
+                    <Label 
+                        Text="Button Background Color"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+                    
+                    <controls:ColorPicker
+                        x:Name="BackgroundColorPicker"
+                        HeightRequest="200"
+                        PickedColorChanged="BackgroundColorPicker_PickedColorChanged"
+                        ColorSpectrumStyle="TintToHueToShadeStyle"
+                        PointerRingDiameterUnits="0.7"
+                        PointerRingBorderUnits="0.3" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Button Text Color -->
+            <Frame BorderColor="Gray" Padding="10" CornerRadius="5">
+                <VerticalStackLayout Spacing="10">
+                    <Label 
+                        Text="Button Text Color"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+                    
+                    <controls:ColorPicker
+                        x:Name="TextColorPicker"
+                        HeightRequest="200"
+                        PickedColorChanged="TextColorPicker_PickedColorChanged"
+                        ColorSpectrumStyle="TintToHueToShadeStyle"
+                        PointerRingDiameterUnits="0.7"
+                        PointerRingBorderUnits="0.3" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Preview -->
+            <Frame BorderColor="Gray" Padding="10" CornerRadius="5">
+                <VerticalStackLayout Spacing="10">
+                    <Label 
+                        Text="Preview"
+                        FontSize="18"
+                        FontAttributes="Bold" />
+                    
+                    <Button 
+                        Text="Sample Button"
+                        Style="{StaticResource ButtonStyle}"
+                        BackgroundColor="{Binding ButtonBackgroundColor}"
+                        TextColor="{Binding ButtonTextColor}"
+                        HorizontalOptions="Center"
+                        WidthRequest="200" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Reset Button -->
+            <Button 
+                Text="Reset to Default Colors"
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding ResetToDefaultsCommand}"
+                HorizontalOptions="Center"
+                WidthRequest="200" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
