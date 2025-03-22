@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FertCalculatorMaui.Messages;
+using FertCalculatorMaui.Services;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
@@ -188,29 +190,17 @@ namespace FertCalculatorMaui.ViewModels
         [ObservableProperty]
         private ObservableCollection<Fertilizer> availableFertilizers = new();
 
-        // Command for toggling between metric and imperial units
-        [RelayCommand]
-        private void ToggleUnit()
-        {
-            UseImperialUnits = !UseImperialUnits;
-            UpdateUnitLabels();
-            CalculateMix1Nutrients();
-            CalculateMix2Nutrients();
-            UpdateChartData();
-        }
-
-        private void UpdateUnitLabels()
-        {
-            UnitsTypeLabel = UseImperialUnits ? "Imperial Units" : "Metric Units";
-            PpmHeaderLabel = UseImperialUnits ? "(PPM per Gallon)" : "(PPM per Liter)";
-            UnitButtonColor = UseImperialUnits ? Colors.Orange : Colors.DodgerBlue;
-        }
-
         public CompareMixViewModel(IEnumerable<Fertilizer> fertilizers, IEnumerable<FertilizerMix> mixes)
         {
             AvailableFertilizers = new ObservableCollection<Fertilizer>(fertilizers);
             AvailableMixes = new ObservableCollection<FertilizerMix>(mixes);
             Name = "Compare Mixes";
+            
+            // Get the application-wide unit setting
+            var appSettings = new AppSettings();
+            UseImperialUnits = appSettings.UseImperialUnits;
+            
+            // Initialize unit labels
             UpdateUnitLabels();
 
             // Initialize with default axes that work in both light and dark modes
@@ -291,7 +281,7 @@ namespace FertCalculatorMaui.ViewModels
             }
         }
 
-        private void CalculateMix1Nutrients()
+        public void CalculateMix1Nutrients()
         {
             if (SelectedMix1?.Ingredients == null)
             {
@@ -353,7 +343,7 @@ namespace FertCalculatorMaui.ViewModels
                 Mix1HumicAcidPpm + Mix1FulvicAcidPpm;
         }
 
-        private void CalculateMix2Nutrients()
+        public void CalculateMix2Nutrients()
         {
             if (SelectedMix2?.Ingredients == null)
             {
@@ -415,49 +405,7 @@ namespace FertCalculatorMaui.ViewModels
                 Mix2HumicAcidPpm + Mix2FulvicAcidPpm;
         }
 
-        private void ResetMix1Nutrients()
-        {
-            Mix1NitrogenPpm = 0;
-            Mix1PhosphorusPpm = 0;
-            Mix1PotassiumPpm = 0;
-            Mix1CalciumPpm = 0;
-            Mix1MagnesiumPpm = 0;
-            Mix1SulfurPpm = 0;
-            Mix1BoronPpm = 0;
-            Mix1CopperPpm = 0;
-            Mix1IronPpm = 0;
-            Mix1ManganesePpm = 0;
-            Mix1MolybdenumPpm = 0;
-            Mix1ZincPpm = 0;
-            Mix1ChlorinePpm = 0;
-            Mix1SilicaPpm = 0;
-            Mix1HumicAcidPpm = 0;
-            Mix1FulvicAcidPpm = 0;
-            Mix1TotalNutrientPpm = 0;
-        }
-
-        private void ResetMix2Nutrients()
-        {
-            Mix2NitrogenPpm = 0;
-            Mix2PhosphorusPpm = 0;
-            Mix2PotassiumPpm = 0;
-            Mix2CalciumPpm = 0;
-            Mix2MagnesiumPpm = 0;
-            Mix2SulfurPpm = 0;
-            Mix2BoronPpm = 0;
-            Mix2CopperPpm = 0;
-            Mix2IronPpm = 0;
-            Mix2ManganesePpm = 0;
-            Mix2MolybdenumPpm = 0;
-            Mix2ZincPpm = 0;
-            Mix2ChlorinePpm = 0;
-            Mix2SilicaPpm = 0;
-            Mix2HumicAcidPpm = 0;
-            Mix2FulvicAcidPpm = 0;
-            Mix2TotalNutrientPpm = 0;
-        }
-
-        private void UpdateChartData()
+        public void UpdateChartData()
         {
             if (SelectedMix1 == null || SelectedMix2 == null)
             {
@@ -600,11 +548,58 @@ namespace FertCalculatorMaui.ViewModels
             }
         }
 
-        // Close command implementation
+        private void UpdateUnitLabels()
+        {
+            PpmHeaderLabel = UseImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
+        }
+
+        // Methods for resetting nutrient values
+        private void ResetMix1Nutrients()
+        {
+            Mix1NitrogenPpm = 0;
+            Mix1PhosphorusPpm = 0;
+            Mix1PotassiumPpm = 0;
+            Mix1CalciumPpm = 0;
+            Mix1MagnesiumPpm = 0;
+            Mix1SulfurPpm = 0;
+            Mix1BoronPpm = 0;
+            Mix1CopperPpm = 0;
+            Mix1IronPpm = 0;
+            Mix1ManganesePpm = 0;
+            Mix1MolybdenumPpm = 0;
+            Mix1ZincPpm = 0;
+            Mix1ChlorinePpm = 0;
+            Mix1SilicaPpm = 0;
+            Mix1HumicAcidPpm = 0;
+            Mix1FulvicAcidPpm = 0;
+            Mix1TotalNutrientPpm = 0;
+        }
+
+        private void ResetMix2Nutrients()
+        {
+            Mix2NitrogenPpm = 0;
+            Mix2PhosphorusPpm = 0;
+            Mix2PotassiumPpm = 0;
+            Mix2CalciumPpm = 0;
+            Mix2MagnesiumPpm = 0;
+            Mix2SulfurPpm = 0;
+            Mix2BoronPpm = 0;
+            Mix2CopperPpm = 0;
+            Mix2IronPpm = 0;
+            Mix2ManganesePpm = 0;
+            Mix2MolybdenumPpm = 0;
+            Mix2ZincPpm = 0;
+            Mix2ChlorinePpm = 0;
+            Mix2SilicaPpm = 0;
+            Mix2HumicAcidPpm = 0;
+            Mix2FulvicAcidPpm = 0;
+            Mix2TotalNutrientPpm = 0;
+        }
+
+        // Command for closing the page
         [RelayCommand]
         private void Close()
         {
-            // Raise the event to notify the page that close was requested
             CloseRequested?.Invoke(this, EventArgs.Empty);
         }
     }

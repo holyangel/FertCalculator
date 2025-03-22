@@ -14,8 +14,8 @@
     </ContentPage.Resources>
     
     <Grid RowDefinitions="Auto,*,Auto" Padding="10">
-        <!-- Header with Mix Selection and Units Toggle -->
-        <Grid Grid.Row="0" RowDefinitions="Auto,Auto" Margin="0,0,0,10">
+        <!-- Header with Mix Selection -->
+        <Grid Grid.Row="0" RowDefinitions="Auto" Margin="0,0,0,10">
             <!-- Mix Selection Area -->
             <Grid Grid.Row="0" ColumnDefinitions="*,*">
                 <VerticalStackLayout Grid.Column="0" Margin="0,0,5,0">
@@ -52,14 +52,6 @@
                     <Label Text="{Binding BindingContext.Mix2IngredientCount, StringFormat='Ingredients: {0}', Source={x:Reference CompareMixPageRoot}}" FontSize="Small"/>
                 </VerticalStackLayout>
             </Grid>
-
-            <!-- Units Toggle -->
-            <HorizontalStackLayout Grid.Row="1" HorizontalOptions="End" Spacing="10" Margin="0,10,0,0">
-                <Button Text="{Binding BindingContext.UnitsTypeLabel, Source={x:Reference CompareMixPageRoot}}" 
-                        Command="{Binding BindingContext.ToggleUnitCommand, Source={x:Reference CompareMixPageRoot}}"
-                        Style="{StaticResource ButtonStyle}" 
-                        Padding="10,5"/>
-            </HorizontalStackLayout>
         </Grid>
         
         <!-- Main Content with Table and Chart -->
@@ -69,19 +61,19 @@
                 <Frame BorderColor="black" 
                        Padding="5" 
                        Margin="0,0,0,10" 
-                       HeightRequest="320">
+                       HeightRequest="400">
                     <Grid RowDefinitions="Auto,*" BackgroundColor="Black">
                         <Label Text="Nutrient Comparison" 
-                               FontSize="16" 
+                               FontSize="18" 
                                FontAttributes="Bold" 
                                HorizontalOptions="Center" 
-                               Margin="0,0,0,5"
-                               TextColor="Gray"
+                               Margin="0,5,0,5"
+                               TextColor="White"
                                BackgroundColor="Black"
                                IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}}"/>
                         
                         <!-- Chart will be loaded dynamically in code-behind -->
-                        <Grid x:Name="ChartContainer" Grid.Row="1" BackgroundColor="Black">
+                        <Grid x:Name="ChartContainer" Grid.Row="1" BackgroundColor="Black" MinimumHeightRequest="350">
                             <!-- Chart will be added here programmatically -->
                         </Grid>
                         
@@ -97,7 +89,7 @@
                 <!-- Comparison Table -->
                 <Grid ColumnDefinitions="*,*,*" 
                       RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                      BackgroundColor="{AppThemeBinding Light=Transparent, Dark={StaticResource Gray850}}"
+                      BackgroundColor="{AppThemeBinding Light=Transparent, Dark={StaticResource Black}}"
                       Margin="5">
                     <!-- Headers -->
                     <Label Grid.Row="0" Grid.Column="0" Text="Nutrient" FontAttributes="Bold" Margin="0,0,0,5"/>
