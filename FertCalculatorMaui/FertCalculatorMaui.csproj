@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<TargetFrameworks>net9.0-android35.0</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
@@ -55,7 +55,7 @@
 		<!-- Android native library alignment -->
 		<AndroidSoLibNativeLibraryLoadMode>Deep</AndroidSoLibNativeLibraryLoadMode>
 		<AndroidSoLibNativeLibraryDirectories>lib\$(AndroidSoLibNativeLibraryLoadMode)</AndroidSoLibNativeLibraryDirectories>
-		<Title>FertCalc3</Title>
+		<Title>FertilzerCalculator</Title>
 		<Authors>HolyAngel</Authors>
 		<PackageProjectUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</RepositoryUrl>
@@ -66,6 +66,11 @@
 		<GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
 		<!-- Enable XAML compiled bindings with source -->
 		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
+		<NuGetAuditMode>Direct</NuGetAuditMode>
+		<PackageIcon>apppng.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>fertilizer;nutrient;npk;soil;hydro;hydroponics</PackageTags>
+		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -81,6 +86,10 @@
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
+		<!-- Explicitly include Material Icons font to ensure it's included in release builds -->
+		<MauiFont Update="Resources\Fonts\MaterialIcons-Regular.ttf">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</MauiFont>
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -88,6 +97,7 @@
 
 	<ItemGroup>
 	  <None Remove="home.png" />
+	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -122,6 +132,17 @@
 	  </PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Update="Resources\Images\apppng.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
 	<!-- Android native library configuration -->
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
 		<AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == ''">$(ANDROID_HOME)</AndroidSdkDirectory>
@@ -138,6 +159,50 @@
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-android'))">
 		<PublishTrimmed>false</PublishTrimmed>
 		<RunAOTCompilation>false</RunAOTCompilation>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android35.0|AnyCPU'">
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <EnableLLVM>True</EnableLLVM>
+	  <Optimize>True</Optimize>
+	  <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android35.0|ARM64'">
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <EnableLLVM>True</EnableLLVM>
+	  <Optimize>True</Optimize>
+	  <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android35.0|AnyCPU'">
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <EnableLLVM>True</EnableLLVM>
+	  <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android35.0|ARM64'">
+	  <AndroidUseAapt2>True</AndroidUseAapt2>
+	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+	  <AndroidPackageFormat>aab</AndroidPackageFormat>
+	  <RunAOTCompilation>False</RunAOTCompilation>
+	  <EnableLLVM>True</EnableLLVM>
+	  <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+	  <AndroidKeyStore>False</AndroidKeyStore>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
+	  <Optimize>True</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|ARM64'">
+	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
 </Project>

@@ -8,11 +8,7 @@
              x:Class="FertCalculatorMaui.CompareMixPage"
              x:Name="CompareMixPageRoot"
              Title="Compare Mixes">
-    
-    <ContentPage.Resources>
-        <converters:InverseBoolConverter x:Key="BoolToInverseBoolConverter" />
-    </ContentPage.Resources>
-    
+
     <Grid RowDefinitions="Auto,*,Auto" Padding="10">
         <!-- Header with Mix Selection -->
         <Grid Grid.Row="0" RowDefinitions="Auto" Margin="0,0,0,10">
@@ -23,7 +19,7 @@
                     <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
                             StrokeThickness="1"
                             StrokeShape="Rectangle"
-                            Background="{AppThemeBinding Light=White, Dark={StaticResource Gray700}}"
+                            Background="{AppThemeBinding Light=White, Dark={StaticResource Black}}"
                             Margin="0,0,0,5">
                         <Picker ItemsSource="{Binding BindingContext.AvailableMixes, Source={x:Reference CompareMixPageRoot}}" 
                                 ItemDisplayBinding="{Binding Name}"
@@ -40,7 +36,7 @@
                     <Border Stroke="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
                             StrokeThickness="1"
                             StrokeShape="Rectangle"
-                            Background="{AppThemeBinding Light=White, Dark={StaticResource Gray700}}"
+                            Background="{AppThemeBinding Light=White, Dark={StaticResource Black}}"
                             Margin="0,0,0,5">
                         <Picker ItemsSource="{Binding BindingContext.AvailableMixes, Source={x:Reference CompareMixPageRoot}}" 
                                 ItemDisplayBinding="{Binding Name}"
@@ -82,7 +78,7 @@
                                HorizontalOptions="Center" 
                                VerticalOptions="Center" 
                                TextColor="Gray"
-                               IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}, Converter={StaticResource BoolToInverseBoolConverter}}"/>
+                               IsVisible="{Binding BindingContext.HasChartData, Source={x:Reference CompareMixPageRoot}, Converter={StaticResource InverseBoolConverter}}"/>
                     </Grid>
                 </Frame>
                 

@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:FertCalculatorMaui"
              xmlns:viewmodels="clr-namespace:FertCalculatorMaui.ViewModels"
+             xmlns:converters="clr-namespace:FertCalculatorMaui.Converters"
              x:Class="FertCalculatorMaui.EditQuantityPage"
              x:Name="editQuantityPage"
              Title="Edit Quantity">
-    
+
     <VerticalStackLayout Spacing="20" Padding="20" VerticalOptions="Center">
         <Label Text="Edit Quantity" FontSize="Title" HorizontalOptions="Center" />
         
@@ -30,24 +31,24 @@
         </Frame>    
         
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-            <Button Text="+10" Clicked="OnIncrement10GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="+5" Clicked="OnIncrement5GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="+1" Clicked="OnIncrementGramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="+0.1" Clicked="OnIncrementSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="+0.01" Clicked="OnIncrementExtraSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+            <Button Text="+10" Clicked="OnIncrement10GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="+5" Clicked="OnIncrement5GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="+1" Clicked="OnIncrementGramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="+0.1" Clicked="OnIncrementSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="+0.01" Clicked="OnIncrementExtraSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
-            <Button Text="-10" Clicked="OnDecrement10GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="-5" Clicked="OnDecrement5GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="-1" Clicked="OnDecrementGramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="-0.1" Clicked="OnDecrementSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="-0.01" Clicked="OnDecrementExtraSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+            <Button Text="-10" Clicked="OnDecrement10GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="-5" Clicked="OnDecrement5GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="-1" Clicked="OnDecrementGramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="-0.1" Clicked="OnDecrementSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="-0.01" Clicked="OnDecrementExtraSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
         
         <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,20,0,0">
-            <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
-            <Button Text="Cancel" Clicked="OnCancelClicked" WidthRequest="100" Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+            <Button Text="Save" Clicked="OnSaveClicked" WidthRequest="100" Style="{StaticResource ButtonStyle}" />
+            <Button Text="Cancel" Clicked="OnCancelClicked" WidthRequest="100" Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

@@ -6,6 +6,7 @@
              x:Class="FertCalculatorMaui.ExportOptionsPage"
              x:Name="ExportOptionsPageRoot"
              Title="Export Options">
+             
     <VerticalStackLayout Spacing="10" Padding="20">
         <Border Stroke="Gray" 
                 StrokeThickness="1" 
@@ -43,6 +44,7 @@
                                  Style="{StaticResource RadioButtonStyle}"/>
                     <Label Text="Share File" 
                            VerticalOptions="Center"
+                           Style="{StaticResource CheckBoxLabelStyle}"
                            ToolTipProperties.Text="Share the file via email, messaging apps, etc." />
                 </HorizontalStackLayout>
                 
@@ -52,6 +54,7 @@
                                  Style="{StaticResource RadioButtonStyle}" />
                     <Label Text="Save to Documents" 
                            VerticalOptions="Center"
+                           Style="{StaticResource CheckBoxLabelStyle}"
                            ToolTipProperties.Text="Save the file to your Documents folder" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
@@ -68,12 +71,12 @@
                     Command="{Binding ExportCommand}"
                     WidthRequest="120"
                     IsEnabled="{Binding CanExport}" 
-                    Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+                    Style="{StaticResource ButtonStyle}" />
             
             <Button Text="Cancel" 
                     Command="{Binding CancelCommand}"
                     WidthRequest="120" 
-                    Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+                    Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

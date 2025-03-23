@@ -22,7 +22,8 @@
                        SelectedItem="{Binding BindingContext.SelectedFertilizer, Source={x:Reference ManageFertilizersPageRoot}}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="55,*,Auto,Auto" Padding="10" Style="{StaticResource CollectionViewItemStyle}">
+                    <Grid ColumnDefinitions="55,*,Auto,Auto" 
+                          Style="{StaticResource CollectionViewItemStyle}">
                         <Button Grid.Column="0" 
                                 Style="{StaticResource ButtonStyle}"
                                 Command="{Binding BindingContext.EditFertilizerCommand, Source={x:Reference ManageFertilizersPageRoot}}"

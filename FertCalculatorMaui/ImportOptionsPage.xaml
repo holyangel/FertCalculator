@@ -6,13 +6,7 @@
              x:Class="FertCalculatorMaui.ImportOptionsPage"
              x:Name="ImportOptionsPageRoot"
              Title="Import Options">
-    
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
-    
+
     <VerticalStackLayout Spacing="10" Padding="20">
         <Border Stroke="Gray" 
                 StrokeThickness="1" 
@@ -24,15 +18,19 @@
                        FontSize="Subtitle" />
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <CheckBox IsChecked="{Binding ImportFertilizers}" />
+                    <CheckBox IsChecked="{Binding ImportFertilizers}" 
+                              Style="{StaticResource CheckBoxStyle}" />
                     <Label Text="Import Fertilizers" 
-                           VerticalOptions="Center" />
+                           VerticalOptions="Center"
+                           Style="{StaticResource CheckBoxLabelStyle}" />
                 </HorizontalStackLayout>
                 
                 <HorizontalStackLayout Margin="0,5,0,5">
-                    <CheckBox IsChecked="{Binding ImportMixes}" />
+                    <CheckBox IsChecked="{Binding ImportMixes}" 
+                              Style="{StaticResource CheckBoxStyle}" />
                     <Label Text="Import Mixes" 
-                           VerticalOptions="Center" />
+                           VerticalOptions="Center"
+                           Style="{StaticResource CheckBoxLabelStyle}" />
                 </HorizontalStackLayout>
                 
                 <Label Text="When duplicate names are found:" 
@@ -71,12 +69,12 @@
                     Command="{Binding ImportCommand}"
                     WidthRequest="120"
                     IsEnabled="{Binding CanImport}" 
-                    Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+                    Style="{StaticResource ButtonStyle}" />
             
             <Button Text="Cancel" 
                     Command="{Binding CancelCommand}"
                     WidthRequest="120" 
-                    Style="{StaticResource ButtonStyle}" Padding="10,5"/>
+                    Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

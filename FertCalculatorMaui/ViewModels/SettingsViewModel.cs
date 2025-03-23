@@ -16,7 +16,7 @@ namespace FertCalculatorMaui.ViewModels
         private readonly AppSettings appSettings;
 
         [ObservableProperty]
-        private Color buttonBackgroundColor = Colors.DarkGreen;
+        private Color buttonBackgroundColor = Colors.Purple;
 
         [ObservableProperty]
         private Color buttonTextColor = Colors.White;
@@ -57,7 +57,7 @@ namespace FertCalculatorMaui.ViewModels
         {
             try
             {
-                ButtonBackgroundColor = Colors.DarkGreen;
+                ButtonBackgroundColor = Colors.Purple;
                 ButtonTextColor = Colors.White;
                 SaveSettings();
             }

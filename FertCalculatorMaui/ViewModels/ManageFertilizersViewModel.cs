@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -188,15 +189,14 @@ namespace FertCalculatorMaui.ViewModels
                 });
                 
                 var nonZeroNutrients = nutrientDetails
-                    .Where(n => n.Value > 0)
-                    .OrderByDescending(n => n.Value);
+                    .Where(n => n.Value > 0);
                 
                 if (nonZeroNutrients.Any())
                 {
                     details += "Nutrients:\n";
                     foreach (var nutrient in nonZeroNutrients)
                     {
-                        details += $"{nutrient.Name}: {nutrient.Value:F2}%\n";
+                        details += $"{nutrient.Name}: {nutrient.Value:F3}%\n";
                     }
                 }
                 else

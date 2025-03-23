@@ -143,12 +143,21 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel(FileService fileService, IDialogService dialogService)
     {
-        this.fileService = fileService;
-        this.dialogService = dialogService;
+        this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+        this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+        Debug.WriteLine("MainViewModel constructor called with injected services");
 
-        // Load settings
-        var appSettings = new AppSettings();
-        UseImperialUnits = appSettings.UseImperialUnits;
+        // Load settings directly from Preferences
+        try
+        {
+            UseImperialUnits = Preferences.Default.Get("UseImperialUnits", false);
+            Debug.WriteLine($"Loaded unit preference: UseImperialUnits = {UseImperialUnits}");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error loading unit preference: {ex.Message}");
+            UseImperialUnits = false; // Default to metric if there's an error
+        }
         
         // Initialize unit labels
         UpdateUnitDisplay();
@@ -157,6 +166,8 @@ public partial class MainViewModel : ObservableObject
         WeakReferenceMessenger.Default.Register<AddFertilizerToMixMessage>(this, (r, message) => {
             AddFertilizerToMix(message.Value);
         });
+        
+        Debug.WriteLine("MainViewModel initialization completed");
     }
 
     [RelayCommand]
@@ -308,15 +319,26 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void ToggleUnits()
+    public void ToggleUnits()
     {
         UseImperialUnits = !UseImperialUnits;
         UpdateUnitDisplay();
         UpdateNutrientTotals();
 
         // Save the setting
-        var appSettings = new AppSettings();
-        appSettings.UseImperialUnits = UseImperialUnits;
+        try
+        {
+            Preferences.Default.Set("UseImperialUnits", UseImperialUnits);
+            Debug.WriteLine($"Units toggled. UseImperialUnits is now: {UseImperialUnits}");
+            
+            // Send a message to notify other components about the unit change
+            WeakReferenceMessenger.Default.Send(new UnitChangedMessage(UseImperialUnits));
+            Debug.WriteLine("Sent UnitChangedMessage");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error saving unit preference: {ex.Message}");
+        }
     }
 
     [RelayCommand]
@@ -385,6 +407,10 @@ public partial class MainViewModel : ObservableObject
     {
         UnitsTypeLabel = UseImperialUnits ? "g or ml (per gallon)" : "g or ml (per liter)";
         PpmHeaderLabel = UseImperialUnits ? "PPM (per gallon)" : "PPM (per liter)";
+        
+        // Explicitly notify property changes to ensure UI updates
+        OnPropertyChanged(nameof(UnitsTypeLabel));
+        OnPropertyChanged(nameof(PpmHeaderLabel));
     }
 
     public void UpdateNutrientTotals()
@@ -477,11 +503,53 @@ public partial class MainViewModel : ObservableObject
                               BoronPpm + CopperPpm + IronPpm +
                               ManganesePpm + MolybdenumPpm + ZincPpm +
                               ChlorinePpm + SilicaPpm + HumicAcidPpm + FulvicAcidPpm;
+            
+            // Explicitly notify property changes for all PPM values
+            NotifyAllPropertyChanges();
         }
         catch (Exception ex)
         {
-            dialogService.DisplayAlertAsync("Error", $"Failed to update nutrient totals: {ex.Message}", "OK");
+            Debug.WriteLine($"Error updating nutrient totals: {ex.Message}");
         }
+    }
+    
+    private void NotifyAllPropertyChanges()
+    {
+        // Notify all percent properties
+        OnPropertyChanged(nameof(NitrogenPercent));
+        OnPropertyChanged(nameof(PhosphorusPercent));
+        OnPropertyChanged(nameof(PotassiumPercent));
+        OnPropertyChanged(nameof(CalciumPercent));
+        OnPropertyChanged(nameof(MagnesiumPercent));
+        OnPropertyChanged(nameof(SulfurPercent));
+        OnPropertyChanged(nameof(BoronPercent));
+        OnPropertyChanged(nameof(CopperPercent));
+        OnPropertyChanged(nameof(IronPercent));
+        OnPropertyChanged(nameof(ManganesePercent));
+        OnPropertyChanged(nameof(MolybdenumPercent));
+        OnPropertyChanged(nameof(ZincPercent));
+        OnPropertyChanged(nameof(ChlorinePercent));
+        OnPropertyChanged(nameof(SilicaPercent));
+        OnPropertyChanged(nameof(HumicAcidPercent));
+        OnPropertyChanged(nameof(FulvicAcidPercent));
+        
+        // Notify all PPM properties
+        OnPropertyChanged(nameof(NitrogenPpm));
+        OnPropertyChanged(nameof(PhosphorusPpm));
+        OnPropertyChanged(nameof(PotassiumPpm));
+        OnPropertyChanged(nameof(CalciumPpm));
+        OnPropertyChanged(nameof(MagnesiumPpm));
+        OnPropertyChanged(nameof(SulfurPpm));
+        OnPropertyChanged(nameof(BoronPpm));
+        OnPropertyChanged(nameof(CopperPpm));
+        OnPropertyChanged(nameof(IronPpm));
+        OnPropertyChanged(nameof(ManganesePpm));
+        OnPropertyChanged(nameof(MolybdenumPpm));
+        OnPropertyChanged(nameof(ZincPpm));
+        OnPropertyChanged(nameof(ChlorinePpm));
+        OnPropertyChanged(nameof(SilicaPpm));
+        OnPropertyChanged(nameof(HumicAcidPpm));
+        OnPropertyChanged(nameof(FulvicAcidPpm));
     }
 
     private void ResetNutrientTotals()

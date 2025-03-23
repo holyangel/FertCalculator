@@ -8,12 +8,13 @@
     Title="Fertilizer Calculator"
     ForegroundColor="White"
     TitleColor="White"
-    BackgroundColor="#512BD4">
+    BackgroundColor="{StaticResource Primary}"
+    x:Name="AppShellRoot">
 
     <Shell.FlyoutHeader>
-        <Grid HeightRequest="120" BackgroundColor="#512BD4">
+        <Grid HeightRequest="120" BackgroundColor="{StaticResource Primary}">
             <Label Text="Fertilizer Calculator" 
-                   TextColor="White" 
+                   TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" 
                    FontSize="24" 
                    FontAttributes="Bold" 
                    HorizontalOptions="Center" 
@@ -28,7 +29,7 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
-    <MenuItem Text="Toggle Units: {Binding UnitsTypeLabel}" Clicked="OnToggleUnitsClicked"/>
+    <MenuItem Text="Toggle Units: Metric" Clicked="OnToggleUnitsClicked"/>
     <MenuItem Text="Manage Fertilizers" Clicked="OnManageFertilizersClicked" />
     <MenuItem Text="Load Mix" Clicked="OnLoadMixClicked" />
     <MenuItem Text="Save Mix" Clicked="OnSaveMixClicked" />
@@ -37,6 +38,6 @@
     <MenuItem Text="Toggle Mix Window" Clicked="OnToggleMixVisibilityClicked" />
     <MenuItem Text="Import Fertilizers/Mixes" Clicked="OnImportClicked" />
     <MenuItem Text="Export Fertilizers/Mixes" Clicked="OnExportClicked" />
-    <MenuItem Text="Settings" Clicked="OnSettingsClicked" />
+    <!-- <MenuItem Text="Settings" Clicked="OnSettingsClicked" /> -->
 
 </Shell>

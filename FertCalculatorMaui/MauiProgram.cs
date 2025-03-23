@@ -48,26 +48,26 @@ public static class MauiProgram
         builder.Services.AddTransient<AppShell>();
         
         // Register ViewModels
-        builder.Services.AddSingleton<MainViewModel>();  // Singleton to maintain state across the app
-        builder.Services.AddTransient<AddFertilizerViewModel>();
+        builder.Services.AddSingleton<MainViewModel>();
+        builder.Services.AddSingleton<AddFertilizerViewModel>();  // Singleton to maintain state across the app
+        builder.Services.AddTransient<CompareMixViewModel>();
+        builder.Services.AddTransient<EditQuantityViewModel>();
+        builder.Services.AddTransient<ManageFertilizersViewModel>();
         builder.Services.AddTransient<SaveMixViewModel>();
         builder.Services.AddTransient<ImportOptionsViewModel>();
         builder.Services.AddTransient<ExportOptionsViewModel>();
-        builder.Services.AddTransient<ManageFertilizersViewModel>();
-        builder.Services.AddTransient<EditQuantityViewModel>();
-        builder.Services.AddTransient<CompareMixViewModel>();
         builder.Services.AddTransient<SettingsViewModel>();
         
-        // Register Pages with explicit constructor injection
+        // Register Pages
         builder.Services.AddTransient<MainPage>();
-        builder.Services.AddTransient<AddFertilizerPage>();
+        builder.Services.AddTransient<ManageFertilizersPage>();
         builder.Services.AddTransient<SaveMixPage>();
+        builder.Services.AddTransient<CompareMixPage>();
         builder.Services.AddTransient<ImportOptionsPage>();
         builder.Services.AddTransient<ExportOptionsPage>();
-        builder.Services.AddTransient<ManageFertilizersPage>();
-        builder.Services.AddTransient<EditQuantityPage>();
-        builder.Services.AddTransient<CompareMixPage>();
         builder.Services.AddTransient<SettingsPage>();
+        builder.Services.AddTransient<AddFertilizerPage>();
+        builder.Services.AddTransient<EditQuantityPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -5,16 +5,20 @@ using FertCalculatorMaui.Models;
 using FertCalculatorMaui.Services;
 using FertCalculatorMaui.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls;
 
 namespace FertCalculatorMaui;
 
 public partial class AppShell : Shell
 {
-    private readonly MainPage mainPage;
-    private readonly IServiceProvider serviceProvider;
     private readonly MainViewModel mainViewModel;
+    private readonly IServiceProvider serviceProvider;
+    private MainPage mainPage;
     
-    public AppShell(IServiceProvider serviceProvider)
+    // Expose MainViewModel as a public property for binding
+    public MainViewModel MainViewModel => mainViewModel;
+    
+    public AppShell(IServiceProvider serviceProvider, MainViewModel viewModel)
     {
         try
         {
@@ -30,13 +34,26 @@ public partial class AppShell : Shell
             
             this.serviceProvider = serviceProvider;
             
+            // Store the injected MainViewModel
+            mainViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            Debug.WriteLine("MainViewModel injected into AppShell");
+            
             try
             {
-                // Get the MainViewModel from the service provider
-                mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
+                // Set the binding context to this AppShell instance
+                BindingContext = this;
                 
-                // Set the binding context for the shell to access the MainViewModel properties
-                BindingContext = mainViewModel;
+                // Manually wire up the Toggle Units menu item click handler
+                var toggleUnitsMenuItem = this.Items.OfType<MenuItem>().FirstOrDefault(m => m.Text != null && m.Text.Contains("Toggle Units"));
+                if (toggleUnitsMenuItem != null)
+                {
+                    toggleUnitsMenuItem.Clicked += OnToggleUnitsClicked;
+                    Debug.WriteLine("Successfully wired up Toggle Units menu item click handler");
+                }
+                else
+                {
+                    Debug.WriteLine("WARNING: Could not find Toggle Units menu item to wire up click handler");
+                }
                 
                 // Get the MainPage from the service provider - this is optional and can be skipped if it causes issues
                 try
@@ -213,8 +230,33 @@ public partial class AppShell : Shell
     {
         try
         {
-            // Call the ToggleUnits command on the MainViewModel
-            mainViewModel.ToggleUnitsCommand.Execute(null);
+            Debug.WriteLine("=== OnToggleUnitsClicked START ===");
+            
+            if (mainViewModel == null)
+            {
+                Debug.WriteLine("ERROR: mainViewModel is null in OnToggleUnitsClicked");
+                return;
+            }
+            
+            Debug.WriteLine($"Current mainViewModel.UseImperialUnits: {mainViewModel.UseImperialUnits}");
+            Debug.WriteLine($"Current mainViewModel.UnitsTypeLabel: {mainViewModel.UnitsTypeLabel}");
+            
+            // Call the ToggleUnits method directly instead of using the command
+            Debug.WriteLine("Calling ToggleUnits method directly");
+            mainViewModel.ToggleUnits();
+            
+            Debug.WriteLine($"After toggle - mainViewModel.UseImperialUnits: {mainViewModel.UseImperialUnits}");
+            Debug.WriteLine($"After toggle - mainViewModel.UnitsTypeLabel: {mainViewModel.UnitsTypeLabel}");
+            
+            // Update the menu item text directly
+            var menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                menuItem.Text = $"Toggle Units: {mainViewModel.UnitsTypeLabel}";
+                Debug.WriteLine($"Updated menu item text to: {menuItem.Text}");
+            }
+            
+            Debug.WriteLine("=== OnToggleUnitsClicked END ===");
         }
         catch (Exception ex)
         {

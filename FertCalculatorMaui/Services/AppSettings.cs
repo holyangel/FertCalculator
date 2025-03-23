@@ -11,7 +11,7 @@ namespace FertCalculatorMaui.Services
         private const string BUTTON_TEXT_COLOR_KEY = "ButtonTextColor";
         
         private bool useImperialUnits;
-        private string buttonColor = "#FF006400"; // DarkGreen
+        private string buttonColor = "#FF512BD4"; // Purple
         private string buttonTextColor = "#FFFFFFFF"; // White
         
         public AppSettings()
@@ -20,7 +20,7 @@ namespace FertCalculatorMaui.Services
             try
             {
                 UseImperialUnits = Preferences.Default.Get(UNIT_PREFERENCE_KEY, false);
-                ButtonColor = Preferences.Default.Get(BUTTON_COLOR_KEY, "#FF006400");
+                ButtonColor = Preferences.Default.Get(BUTTON_COLOR_KEY, "#FF512BD4");
                 ButtonTextColor = Preferences.Default.Get(BUTTON_TEXT_COLOR_KEY, "#FFFFFFFF");
             }
             catch (Exception ex)
@@ -28,7 +28,7 @@ namespace FertCalculatorMaui.Services
                 Debug.WriteLine($"Error loading settings: {ex.Message}");
                 // Use default values if there's an error
                 UseImperialUnits = false;
-                ButtonColor = "#FF006400";
+                ButtonColor = "#FF512BD4";
                 ButtonTextColor = "#FFFFFFFF";
             }
         }

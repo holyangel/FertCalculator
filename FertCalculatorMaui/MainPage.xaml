@@ -8,53 +8,54 @@
              x:Name="MainPageRoot"
              Title="Fertilizer Calculator">
 
-    <ContentPage.Resources>
-        <converters:UnitLabelConverter x:Key="UnitConverter"/>
-    </ContentPage.Resources>
-
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="*,*" Padding="10">
         <VerticalStackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Spacing="5" Margin="5">
             <Label Text="Current Mix" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" />
             
             <HorizontalStackLayout Spacing="12" Margin="15,0,0,0" HorizontalOptions="Center">
                 <Button Command="{Binding AddFertilizerCommand}" 
-                        ToolTipProperties.Text="Add Fertilizer" Style="{StaticResource ButtonStyle}">
+                        ToolTipProperties.Text="Add Fertilizer" 
+                        Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe800;"
-                                       Color="White" />
+                                       Color="{AppThemeBinding Light=White, Dark=White}" />
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding LoadMixCommand}" 
-                        ToolTipProperties.Text="Load Mix" Style="{StaticResource ButtonStyle}">
+                        ToolTipProperties.Text="Load Mix" 
+                        Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe2c6;"
-                                       Color="White" />
+                                       Color="{AppThemeBinding Light=White, Dark=White}" />
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding SaveMixCommand}" 
-                        ToolTipProperties.Text="Save Mix" Style="{StaticResource ButtonStyle}">
+                        ToolTipProperties.Text="Save Mix" 
+                        Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe161;"
-                                       Color="White" />
+                                       Color="{AppThemeBinding Light=White, Dark=White}" />
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding ClearMixCommand}" 
-                        ToolTipProperties.Text="Clear Mix" Style="{StaticResource ButtonStyle}">
+                        ToolTipProperties.Text="Clear Mix" 
+                        Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe5c9;"
-                                       Color="White" />
+                                       Color="{AppThemeBinding Light=White, Dark=White}" />
                     </Button.ImageSource>
                 </Button>
                 <Button Command="{Binding CompareMixCommand}" 
-                        ToolTipProperties.Text="Compare Mix" Style="{StaticResource ButtonStyle}">
+                        ToolTipProperties.Text="Compare Mix" 
+                        Style="{StaticResource ButtonStyle}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons"
                                        Glyph="&#xe3b9;"
-                                       Color="White" />
+                                       Color="{AppThemeBinding Light=White, Dark=White}" />
                     </Button.ImageSource>
                 </Button>
             </HorizontalStackLayout>
@@ -95,12 +96,13 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+            <!--<HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                 <Button Text="{Binding UnitsTypeLabel}" 
                         Command="{Binding ToggleUnitsCommand}"
                         VerticalOptions="Center" 
                         Style="{StaticResource ButtonStyle}" Padding="10,5"/>
             </HorizontalStackLayout>
+            -->
         </VerticalStackLayout>
         
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">

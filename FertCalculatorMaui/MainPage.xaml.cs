@@ -17,7 +17,7 @@ public partial class MainPage : ContentPage
     private readonly IDialogService dialogService;
     private readonly MainViewModel viewModel;
 
-    public MainPage(FileService fileService, IDialogService dialogService)
+    public MainPage(FileService fileService, IDialogService dialogService, MainViewModel viewModel)
     {
         try
         {
@@ -29,10 +29,14 @@ public partial class MainPage : ContentPage
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
             this.dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             
-            // Initialize ViewModel using dependency injection
-            viewModel = new MainViewModel(this.fileService, this.dialogService);
-            BindingContext = viewModel;
-            Debug.WriteLine("ViewModel initialized and set as BindingContext");
+            // Use the injected MainViewModel
+            this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            BindingContext = this.viewModel;
+            Debug.WriteLine("Injected ViewModel set as BindingContext");
+            
+            // Register for unit change messages
+            WeakReferenceMessenger.Default.Register<UnitChangedMessage>(this, OnUnitChanged);
+            Debug.WriteLine("Registered for UnitChangedMessage");
             
             // Load saved data asynchronously
             _ = InitializeDataAsync();
@@ -42,6 +46,26 @@ public partial class MainPage : ContentPage
         {
             Debug.WriteLine($"Exception in MainPage constructor: {ex.Message}\n{ex.StackTrace}");
             throw; // Rethrow to let the DI container handle it
+        }
+    }
+
+    private void OnUnitChanged(object recipient, UnitChangedMessage message)
+    {
+        try
+        {
+            Debug.WriteLine($"MainPage received UnitChangedMessage: UseImperialUnits = {message.Value}");
+            
+            // Ensure we're on the UI thread
+            MainThread.BeginInvokeOnMainThread(() => {
+                // Refresh the UI with the new unit values
+                viewModel.UpdateUnitDisplay();
+                viewModel.UpdateNutrientTotals();
+                Debug.WriteLine("Updated UI after unit change");
+            });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in OnUnitChanged: {ex.Message}");
         }
     }
 
@@ -187,7 +211,7 @@ public partial class MainPage : ContentPage
         if (sender is Label label && label.BindingContext is FertilizerQuantity fertilizer)
         {
             var editPage = new EditQuantityPage(fertilizer.FertilizerName, fertilizer.Quantity, 
-                viewModel.UseImperialUnits ? "oz/gal" : "g/L", viewModel.UseImperialUnits);
+                viewModel.UseImperialUnits ? "g/gal" : "g/L", viewModel.UseImperialUnits);
             
             editPage.QuantityChanged += (s, args) =>
             {

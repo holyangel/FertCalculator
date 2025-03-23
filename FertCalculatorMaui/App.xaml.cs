@@ -32,6 +32,17 @@ public partial class App : Application
             {
                 InitializeComponent();
                 Debug.WriteLine("App InitializeComponent completed");
+                
+                // Ensure resources are loaded
+                if (Resources == null) {
+                    Debug.WriteLine("WARNING: Resources dictionary is null");
+                    return;
+                }
+                
+                // Check if merged dictionaries are available
+                if (Resources.MergedDictionaries.Count == 0) {
+                    Debug.WriteLine("WARNING: No merged dictionaries found in Resources");
+                }
             }
             catch (Exception ex)
             {
@@ -188,8 +199,10 @@ public partial class App : Application
                         // Try to create AppShell directly
                         try
                         {
-                            var newAppShell = new AppShell(serviceProvider);
-                            Debug.WriteLine("Created AppShell directly");
+                            // Get MainViewModel from service provider
+                            var mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
+                            var newAppShell = new AppShell(serviceProvider, mainViewModel);
+                            Debug.WriteLine("Created AppShell directly with MainViewModel");
                             return newAppShell;
                         }
                         catch (Exception ex)
@@ -209,11 +222,8 @@ public partial class App : Application
             {
                 try
                 {
-                    var mainPage = new MainPage(fileService, dialogService)
-                    {
-                        BindingContext = mainViewModel
-                    };
-                    Debug.WriteLine("Created MainPage directly");
+                    var mainPage = new MainPage(fileService, dialogService, mainViewModel);
+                    Debug.WriteLine("Created MainPage directly with injected MainViewModel");
                     return mainPage;
                 }
                 catch (Exception ex)
@@ -302,6 +312,11 @@ public partial class App : Application
             {
                 Debug.WriteLine("WARNING: Resources dictionary is null");
                 return;
+            }
+            
+            // Check if merged dictionaries are available
+            if (Resources.MergedDictionaries.Count == 0) {
+                Debug.WriteLine("WARNING: No merged dictionaries found in Resources");
             }
 
             // Get the button style from resources
