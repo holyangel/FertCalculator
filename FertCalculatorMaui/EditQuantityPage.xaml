@@ -19,7 +19,7 @@
         <Frame BorderColor="Gray" Padding="10" CornerRadius="5" BackgroundColor="Black">
             <VerticalStackLayout Spacing="10" BackgroundColor="Black">
                 <Entry x:Name="QuantityEntry" 
-                       Text="{Binding Source={x:Reference editQuantityPage}, Path=BindingContext.Quantity, StringFormat='{0:F1}'}"
+                       Text="{Binding Source={x:Reference editQuantityPage}, Path=BindingContext.Quantity, StringFormat='{0:F3}'}"
                        Placeholder="Enter quantity in grams"
                        Keyboard="Numeric"
                        BackgroundColor="Black"

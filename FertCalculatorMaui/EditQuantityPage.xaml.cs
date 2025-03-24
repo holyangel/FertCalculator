@@ -26,7 +26,7 @@ namespace FertCalculatorMaui
             {
                 value += 10.0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -37,7 +37,7 @@ namespace FertCalculatorMaui
             {
                 value += 5.0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -48,7 +48,7 @@ namespace FertCalculatorMaui
             {
                 value += 1.0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -59,7 +59,7 @@ namespace FertCalculatorMaui
             {
                 value += 0.1;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -70,7 +70,7 @@ namespace FertCalculatorMaui
             {
                 value += 0.01;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F2", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -82,7 +82,7 @@ namespace FertCalculatorMaui
                 value -= 10.0;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -94,7 +94,7 @@ namespace FertCalculatorMaui
                 value -= 5.0;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -106,7 +106,7 @@ namespace FertCalculatorMaui
                 value -= 1.0;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -118,7 +118,7 @@ namespace FertCalculatorMaui
                 value -= 0.1;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F1", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
@@ -130,7 +130,7 @@ namespace FertCalculatorMaui
                 value -= 0.01;
                 if (value < 0) value = 0;
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F2", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
             }
         }
 
