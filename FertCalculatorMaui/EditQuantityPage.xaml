@@ -35,7 +35,7 @@
             <Button Text="+5" Clicked="OnIncrement5GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
             <Button Text="+1" Clicked="OnIncrementGramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
             <Button Text="+0.1" Clicked="OnIncrementSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
-            <Button Text="+0.01" Clicked="OnIncrementExtraSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="+0.01" Clicked="OnIncrementExtraSmallClicked" WidthRequest="70" Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
 
         <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
@@ -43,7 +43,7 @@
             <Button Text="-5" Clicked="OnDecrement5GramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
             <Button Text="-1" Clicked="OnDecrementGramClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
             <Button Text="-0.1" Clicked="OnDecrementSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
-            <Button Text="-0.01" Clicked="OnDecrementExtraSmallClicked" WidthRequest="60" Style="{StaticResource ButtonStyle}" />
+            <Button Text="-0.01" Clicked="OnDecrementExtraSmallClicked" WidthRequest="70" Style="{StaticResource ButtonStyle}" />
         </HorizontalStackLayout>
         
         <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" Margin="0,20,0,0">
