@@ -20,6 +20,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+
+    <uses-sdk android:minSdkVersion="29" android:targetSdkVersion="34" />
     
     <!-- Network permissions -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

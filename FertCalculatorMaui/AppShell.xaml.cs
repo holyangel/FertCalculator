@@ -6,6 +6,7 @@ using FertCalculatorMaui.Services;
 using FertCalculatorMaui.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
+using System.Linq;
 
 namespace FertCalculatorMaui;
 
@@ -44,7 +45,9 @@ public partial class AppShell : Shell
                 BindingContext = this;
                 
                 // Manually wire up the Toggle Units menu item click handler
-                var toggleUnitsMenuItem = this.Items.OfType<MenuItem>().FirstOrDefault(m => m.Text != null && m.Text.Contains("Toggle Units"));
+                var toggleUnitsMenuItem = this.Items
+                    .OfType<MenuItem>()
+                    .FirstOrDefault(m => m.Text == "Toggle Units: Metric");
                 if (toggleUnitsMenuItem != null)
                 {
                     toggleUnitsMenuItem.Clicked += OnToggleUnitsClicked;
