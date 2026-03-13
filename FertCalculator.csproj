@@ -62,6 +62,9 @@
     <Compile Include="SaveMixWindow.xaml.cs">
       <DependentUpon>SaveMixWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CompareMixesWindow.xaml.cs">
+      <DependentUpon>CompareMixesWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddFertlizerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -89,6 +92,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SaveMixWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CompareMixesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
