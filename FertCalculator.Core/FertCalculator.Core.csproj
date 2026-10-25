@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>FertCalculator.Core</RootNamespace>
+    <AssemblyName>FertCalculator.Core</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Description>Shared data model and nutrient calculation logic for FertCalculator (desktop and mobile).</Description>
+  </PropertyGroup>
+
+</Project>

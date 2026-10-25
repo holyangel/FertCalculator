@@ -1,0 +1,70 @@
+@page "/about"
+
+<PageTitle>About — Fertilizer Calculator</PageTitle>
+
+<div class="container-fluid mt-3" style="max-width: 760px">
+    <h3>About Fertilizer Calculator</h3>
+    <p class="text-muted">
+        A nutrient calculator for fertilizer mixes — pick products, enter quantities,
+        and see the resulting elemental PPM breakdown of your solution.
+    </p>
+
+    <h5 class="mt-4">How it works</h5>
+    <ul>
+        <li>
+            <strong>Quantities</strong> are interpreted per the current unit mode —
+            grams or milliliters <em>per liter</em> or <em>per gallon</em> (toggle at the top).
+            Switching modes changes the math, not your saved numbers.
+        </li>
+        <li>
+            <strong>Solid products</strong> are dosed in grams;
+            <strong>liquids</strong> (marked <code>mL</code>) are dosed in milliliters
+            and converted to mass using each product's density.
+        </li>
+        <li>
+            <strong>PPM</strong> = mg of nutrient per liter of solution. The breakdown
+            shows elemental values — label-declared P₂O₅ and K₂O are converted to
+            elemental P and K (×0.4364 and ×0.8301).
+        </li>
+        <li>
+            The fertilizer library ships with ~80 common products. Entries not in the
+            library can be added in the desktop app and imported here via XML.
+        </li>
+    </ul>
+
+    <h5 class="mt-4">What's saved where</h5>
+    <ul>
+        <li>
+            <strong>Saved mixes</strong> and your <strong>unit preference</strong> live in your
+            browser's <code>localStorage</code> — they persist across visits on this
+            device and browser only.
+        </li>
+        <li>
+            <strong>Nothing is sent anywhere.</strong> This is a fully static app — no
+            account, no server-side storage, no tracking. Clearing site data or
+            switching browsers/devices loses your saved mixes unless you export them.
+        </li>
+        <li>
+            <strong>Export XML</strong> downloads your fertilizer library + mixes as a file.
+            <strong>Import XML</strong> restores it. These files are cross-compatible with
+            the Windows desktop app and the Android app — export on one, import on another.
+        </li>
+    </ul>
+
+    <h5 class="mt-4">Caveats</h5>
+    <ul>
+        <li>
+            Product compositions come from labels and published specs — always
+            cross-check against the label on your bottle, especially for products
+            that reformulate.
+        </li>
+        <li>
+            PPM figures are theoretical totals from guaranteed-analysis percentages.
+            They don't account for source water, interactions, or availability.
+        </li>
+        <li>
+            Liquid densities are estimates; if a label lists weight per volume
+            (e.g. lb/gal), that can be entered for better accuracy in the desktop app.
+        </li>
+    </ul>
+</div>

@@ -1,7 +1,7 @@
 # FertCalculator Mobile App
 
 ## Overview
-FertCalculator Mobile is a comprehensive fertilizer calculator app for Android and iOS that helps you manage fertilizers and create custom nutrient mixes. This mobile version brings all the functionality of the desktop application to your smartphone or tablet.
+FertCalculator Mobile is a comprehensive fertilizer calculator app for Android that helps you manage fertilizers and create custom nutrient mixes. This mobile version brings all the functionality of the desktop application to your smartphone or tablet.
 
 ## Features
 
@@ -42,8 +42,8 @@ FertCalculator Mobile is a comprehensive fertilizer calculator app for Android a
   - K₂O to K: multiply by 0.8301
 
 ### Unit Conversion
-- Toggle between metric (PPM per liter) and imperial (PPM per gallon) units
-- Conversion happens automatically using the factor: 1 gallon = 3.78541 liters
+- Toggle between metric (quantities in g/L) and imperial (quantities in g/gal) units
+- PPM is always reported as mg/L; in imperial mode the same gram quantity is treated as a per-gallon dose, so PPM values are divided by 3.78541 (1 gallon = 3.78541 liters)
 - Settings are saved across sessions
 
 ### Mix Comparison
@@ -52,10 +52,10 @@ FertCalculator Mobile is a comprehensive fertilizer calculator app for Android a
 - Identify nutrient deficiencies or excesses
 
 ### Data Import/Export
-- Export your fertilizers and mixes to XML or JSON files
-- Import fertilizers and mixes from XML or JSON files
+- Export your fertilizers and mixes to XML files
+- Import fertilizers and mixes from XML files (both export files and raw Fertilizers.xml / Mixes.xml database files are supported)
 - Options for handling duplicates during import
-- Share your data with other users
+- Share your data with other users, including the Windows desktop version
 
 ## Getting Started
 
@@ -68,9 +68,8 @@ FertCalculator Mobile is a comprehensive fertilizer calculator app for Android a
 7. Use the toggle switch to change between metric and imperial units
 
 ## System Requirements
-- Android 6.0+ or iOS 11.0+
-- .NET MAUI runtime support
-- Internet connection for app updates
+- Android 10 (API 29) or higher
+- iOS is not currently targeted; the project can be extended to other .NET MAUI platforms
 
 ## Support and Feedback
 For support or feedback, please contact us at support@fertcalculator.com

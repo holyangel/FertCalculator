@@ -5,14 +5,16 @@
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>4</OriginalPotassiumValue>
-      <Name>ArmorSi</Name>
-      <NitrogenPercent>0</NitrogenPercent>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Ammonium Sulfate</Name>
+      <NitrogenPercent>21</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
-      <PotassiumPercent>3.3204</PotassiumPercent>
+      <PotassiumPercent>0</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
       <MagnesiumPercent>0</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
+      <SulfurPercent>24</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
       <IronPercent>0</IronPercent>
@@ -20,7 +22,257 @@
       <MolybdenumPercent>0</MolybdenumPercent>
       <ZincPercent>0</ZincPercent>
       <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>10</SilicaPercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>5</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.2</Density>
+      <Name>Athena Blended Bloom A</Name>
+      <NitrogenPercent>4</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>4.1505</PotassiumPercent>
+      <CalciumPercent>3.2</CalciumPercent>
+      <MagnesiumPercent>0.17</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.01</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.06</IronPercent>
+      <ManganesePercent>0.013</ManganesePercent>
+      <MolybdenumPercent>0.0007</MolybdenumPercent>
+      <ZincPercent>0.0045</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>6</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>5</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.16</Density>
+      <Name>Athena Blended Bloom B</Name>
+      <NitrogenPercent>0.7</NitrogenPercent>
+      <PhosphorusPercent>2.6184</PhosphorusPercent>
+      <PotassiumPercent>4.1505</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0.94</MagnesiumPercent>
+      <SulfurPercent>1.3</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0.005</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.12</Density>
+      <Name>Athena Blended CaMg 2-0-0</Name>
+      <NitrogenPercent>2</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
+      <CalciumPercent>2.1</CalciumPercent>
+      <MagnesiumPercent>1.1</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.06</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>1</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.2</Density>
+      <Name>Athena Blended Grow A</Name>
+      <NitrogenPercent>4</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0.8301</PotassiumPercent>
+      <CalciumPercent>4.2</CalciumPercent>
+      <MagnesiumPercent>0.19</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.01</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.06</IronPercent>
+      <ManganesePercent>0.013</ManganesePercent>
+      <MolybdenumPercent>0.0007</MolybdenumPercent>
+      <ZincPercent>0.0045</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>3</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>5</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.14</Density>
+      <Name>Athena Blended Grow B</Name>
+      <NitrogenPercent>1</NitrogenPercent>
+      <PhosphorusPercent>1.3092</PhosphorusPercent>
+      <PotassiumPercent>4.1505</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0.89</MagnesiumPercent>
+      <SulfurPercent>1.3</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0.005</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>4</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>5</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.15</Density>
+      <Name>Athena Blended PK</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>1.7456</PhosphorusPercent>
+      <PotassiumPercent>4.1505</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0.96</MagnesiumPercent>
+      <SulfurPercent>1.5</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>12</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>24</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Athena Pro Bloom 0-12-24</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>5.2368</PhosphorusPercent>
+      <PotassiumPercent>19.9224</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>3</MagnesiumPercent>
+      <SulfurPercent>9</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Athena Pro Core 14-0-0</Name>
+      <NitrogenPercent>14</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
+      <CalciumPercent>17</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.015</BoronPercent>
+      <CopperPercent>0.01</CopperPercent>
+      <IronPercent>0.07</IronPercent>
+      <ManganesePercent>0.025</ManganesePercent>
+      <MolybdenumPercent>0.002</MolybdenumPercent>
+      <ZincPercent>0.01</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.11</Density>
+      <Name>Athena Pro Fade</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
+      <CalciumPercent>4</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.01</BoronPercent>
+      <CopperPercent>0.005</CopperPercent>
+      <IronPercent>0.06</IronPercent>
+      <ManganesePercent>0.013</ManganesePercent>
+      <MolybdenumPercent>0.0007</MolybdenumPercent>
+      <ZincPercent>0.0045</ZincPercent>
+      <ChlorinePercent>7</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>8</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>20</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Athena Pro Grow 2-8-20</Name>
+      <NitrogenPercent>2</NitrogenPercent>
+      <PhosphorusPercent>3.4912</PhosphorusPercent>
+      <PotassiumPercent>16.602</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>3</MagnesiumPercent>
+      <SulfurPercent>8</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
       <HumicAcidPercent>0</HumicAcidPercent>
       <FulvicAcidPercent>0</FulvicAcidPercent>
     </Fertilizer>
@@ -29,6 +281,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0.2</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0.2</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.061</Density>
       <Name>BioBizz Algamic</Name>
       <NitrogenPercent>0.2</NitrogenPercent>
       <PhosphorusPercent>0.08728000000000001</PhosphorusPercent>
@@ -52,6 +306,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>6.49</OriginalPhosphorusValue>
       <OriginalPotassiumValue>4.36</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.064</Density>
       <Name>BioBizz Bloom</Name>
       <NitrogenPercent>2</NitrogenPercent>
       <PhosphorusPercent>2.832236</PhosphorusPercent>
@@ -73,8 +329,35 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>4</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.195</Density>
+      <Name>BioBizz Fish-Mix</Name>
+      <NitrogenPercent>5</NitrogenPercent>
+      <PhosphorusPercent>0.4364</PhosphorusPercent>
+      <PotassiumPercent>3.3204</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>3</OriginalPhosphorusValue>
       <OriginalPotassiumValue>6</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.3</Density>
       <Name>BioBizz Grow</Name>
       <NitrogenPercent>4</NitrogenPercent>
       <PhosphorusPercent>1.3092000000000001</PhosphorusPercent>
@@ -119,18 +402,20 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>34</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>34</OriginalPotassiumValue>
-      <Name>Bud Explosion</Name>
-      <NitrogenPercent>0</NitrogenPercent>
-      <PhosphorusPercent>14.8376</PhosphorusPercent>
-      <PotassiumPercent>28.223399999999998</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>1</MagnesiumPercent>
-      <SulfurPercent>5</SulfurPercent>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.15</Density>
+      <Name>Botanicare Cal-Mag Plus</Name>
+      <NitrogenPercent>2</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
+      <CalciumPercent>3.2</CalciumPercent>
+      <MagnesiumPercent>1.2</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
-      <IronPercent>0</IronPercent>
+      <IronPercent>0.1</IronPercent>
       <ManganesePercent>0</ManganesePercent>
       <MolybdenumPercent>0</MolybdenumPercent>
       <ZincPercent>0</ZincPercent>
@@ -142,15 +427,40 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>3</OriginalPotassiumValue>
-      <Name>Cal+Mag Pro</Name>
-      <NitrogenPercent>12</NitrogenPercent>
-      <PhosphorusPercent>0</PhosphorusPercent>
-      <PotassiumPercent>2.4903</PotassiumPercent>
-      <CalciumPercent>10</CalciumPercent>
-      <MagnesiumPercent>3</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
+      <OriginalPhosphorusValue>27</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>27</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.055</Density>
+      <Name>Botanicare Sweet Candy</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>11.7828</PhosphorusPercent>
+      <PotassiumPercent>22.412699999999997</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>1</MagnesiumPercent>
+      <SulfurPercent>3</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>4</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>34</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>34</OriginalPotassiumValue>
+      <Name>Bud Explosion</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>14.8376</PhosphorusPercent>
+      <PotassiumPercent>28.223399999999998</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>1</MagnesiumPercent>
+      <SulfurPercent>5</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
       <IronPercent>0</IronPercent>
@@ -189,30 +499,9 @@
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>0</OriginalPotassiumValue>
-      <Name>CALiMAGic</Name>
-      <NitrogenPercent>1</NitrogenPercent>
-      <PhosphorusPercent>0</PhosphorusPercent>
-      <PotassiumPercent>0</PotassiumPercent>
-      <CalciumPercent>5</CalciumPercent>
-      <MagnesiumPercent>1.5</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
-      <BoronPercent>0</BoronPercent>
-      <CopperPercent>0</CopperPercent>
-      <IronPercent>0.1</IronPercent>
-      <ManganesePercent>0</ManganesePercent>
-      <MolybdenumPercent>0</MolybdenumPercent>
-      <ZincPercent>0</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>6</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.13</Density>
       <Name>Canna Aqua Flores A</Name>
       <NitrogenPercent>3</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
@@ -236,6 +525,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>4</OriginalPhosphorusValue>
       <OriginalPotassiumValue>3</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.113</Density>
       <Name>Canna Aqua Flores B</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>1.7456</PhosphorusPercent>
@@ -259,6 +550,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>2</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.151</Density>
       <Name>Canna Aqua Vega A</Name>
       <NitrogenPercent>5</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
@@ -282,6 +575,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>3</OriginalPhosphorusValue>
       <OriginalPotassiumValue>4</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.1</Density>
       <Name>Canna Aqua Vega B</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>1.3092000000000001</PhosphorusPercent>
@@ -305,6 +600,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.258</Density>
       <Name>Canna Calmag</Name>
       <NitrogenPercent>5.9</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
@@ -328,6 +625,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>1</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.17</Density>
       <Name>Canna Coco A</Name>
       <NitrogenPercent>4</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
@@ -351,6 +650,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>4</OriginalPhosphorusValue>
       <OriginalPotassiumValue>2</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.1</Density>
       <Name>Canna Coco B</Name>
       <NitrogenPercent>1</NitrogenPercent>
       <PhosphorusPercent>1.7456</PhosphorusPercent>
@@ -374,6 +675,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>13</OriginalPhosphorusValue>
       <OriginalPotassiumValue>14</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.193</Density>
       <Name>Canna PK 13/14</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>5.6732000000000005</PhosphorusPercent>
@@ -397,6 +700,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
       <OriginalPotassiumValue>1.8</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.07</Density>
       <Name>Canna Start</Name>
       <NitrogenPercent>1.3</NitrogenPercent>
       <PhosphorusPercent>0.4364</PhosphorusPercent>
@@ -510,29 +815,6 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>1</OriginalPotassiumValue>
-      <Name>Diamond Nectar</Name>
-      <NitrogenPercent>0</NitrogenPercent>
-      <PhosphorusPercent>0.4364</PhosphorusPercent>
-      <PotassiumPercent>0.8301</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>0</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
-      <BoronPercent>0</BoronPercent>
-      <CopperPercent>0</CopperPercent>
-      <IronPercent>0</IronPercent>
-      <ManganesePercent>0</ManganesePercent>
-      <MolybdenumPercent>0</MolybdenumPercent>
-      <ZincPercent>0</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0.001</HumicAcidPercent>
-      <FulvicAcidPercent>0.009</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0</OriginalPotassiumValue>
       <Name>DiamondK SG Gypsum</Name>
@@ -541,7 +823,7 @@
       <PotassiumPercent>0</PotassiumPercent>
       <CalciumPercent>22.5</CalciumPercent>
       <MagnesiumPercent>0</MagnesiumPercent>
-      <SulfurPercent>13</SulfurPercent>
+      <SulfurPercent>17.5</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
       <IronPercent>0</IronPercent>
@@ -701,8 +983,8 @@
       <PhosphorusPercent>0</PhosphorusPercent>
       <PotassiumPercent>0</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>20.19</MagnesiumPercent>
-      <SulfurPercent>26.64</SulfurPercent>
+      <MagnesiumPercent>9.86</MagnesiumPercent>
+      <SulfurPercent>13.0</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
       <IronPercent>0</IronPercent>
@@ -719,7 +1001,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0.5</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0.7</OriginalPotassiumValue>
-      <Name>FF Big Bloom</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.087</Density>
+      <Name>FoxFarm Big Bloom</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>0.2182</PhosphorusPercent>
       <PotassiumPercent>0.58107</PotassiumPercent>
@@ -742,7 +1026,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>4</OriginalPhosphorusValue>
       <OriginalPotassiumValue>4</OriginalPotassiumValue>
-      <Name>FF GrowBig</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.222</Density>
+      <Name>FoxFarm Grow Big</Name>
       <NitrogenPercent>6</NitrogenPercent>
       <PhosphorusPercent>1.7456</PhosphorusPercent>
       <PotassiumPercent>3.3204</PotassiumPercent>
@@ -765,7 +1051,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>8</OriginalPhosphorusValue>
       <OriginalPotassiumValue>4</OriginalPotassiumValue>
-      <Name>FF Tiger Bloom</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.234</Density>
+      <Name>FoxFarm Tiger Bloom</Name>
       <NitrogenPercent>2</NitrogenPercent>
       <PhosphorusPercent>3.4912</PhosphorusPercent>
       <PotassiumPercent>3.3204</PotassiumPercent>
@@ -786,9 +1074,86 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>4</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.115</Density>
+      <Name>GH Armor Si</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>3.3204</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>10</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.28</Density>
+      <Name>GH CALiMAGic</Name>
+      <NitrogenPercent>1</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
+      <CalciumPercent>5</CalciumPercent>
+      <MagnesiumPercent>1.5</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
       <OriginalPotassiumValue>1</OriginalPotassiumValue>
-      <Name>FloraBlend</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.022</Density>
+      <Name>GH Diamond Nectar</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>0.4364</PhosphorusPercent>
+      <PotassiumPercent>0.8301</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0.001</HumicAcidPercent>
+      <FulvicAcidPercent>0.009</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>1</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.05</Density>
+      <Name>GH FloraBlend</Name>
       <NitrogenPercent>0.5</NitrogenPercent>
       <PhosphorusPercent>0.4364</PhosphorusPercent>
       <PotassiumPercent>0.8301</PotassiumPercent>
@@ -811,7 +1176,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>5</OriginalPhosphorusValue>
       <OriginalPotassiumValue>4</OriginalPotassiumValue>
-      <Name>FloraBloom</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.16</Density>
+      <Name>GH FloraBloom</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>2.182</PhosphorusPercent>
       <PotassiumPercent>3.3204</PotassiumPercent>
@@ -834,7 +1201,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
       <OriginalPotassiumValue>6</OriginalPotassiumValue>
-      <Name>FloraGro</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.11</Density>
+      <Name>GH FloraGro</Name>
       <NitrogenPercent>2</NitrogenPercent>
       <PhosphorusPercent>0.4364</PhosphorusPercent>
       <PotassiumPercent>4.9806</PotassiumPercent>
@@ -857,7 +1226,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>1</OriginalPhosphorusValue>
       <OriginalPotassiumValue>1</OriginalPotassiumValue>
-      <Name>Floralicious Bloom</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.2</Density>
+      <Name>GH Floralicious Bloom</Name>
       <NitrogenPercent>1</NitrogenPercent>
       <PhosphorusPercent>0.4364</PhosphorusPercent>
       <PotassiumPercent>0.8301</PotassiumPercent>
@@ -880,7 +1251,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0.7</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0.6</OriginalPotassiumValue>
-      <Name>Floralicious Grow</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.2</Density>
+      <Name>GH Floralicious Grow</Name>
       <NitrogenPercent>1</NitrogenPercent>
       <PhosphorusPercent>0.30548</PhosphorusPercent>
       <PotassiumPercent>0.49805999999999995</PotassiumPercent>
@@ -903,7 +1276,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0.8</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0.02</OriginalPotassiumValue>
-      <Name>Floralicious Plus</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.15</Density>
+      <Name>GH Floralicious Plus</Name>
       <NitrogenPercent>2</NitrogenPercent>
       <PhosphorusPercent>0.34912000000000004</PhosphorusPercent>
       <PotassiumPercent>0.016602</PotassiumPercent>
@@ -926,7 +1301,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>1</OriginalPotassiumValue>
-      <Name>FloraMicro</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.24</Density>
+      <Name>GH FloraMicro</Name>
       <NitrogenPercent>5</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
       <PotassiumPercent>0.8301</PotassiumPercent>
@@ -949,7 +1326,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>1</OriginalPotassiumValue>
-      <Name>FloraNectar</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.1</Density>
+      <Name>GH FloraNectar</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
       <PotassiumPercent>0.8301</PotassiumPercent>
@@ -972,7 +1351,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>8</OriginalPhosphorusValue>
       <OriginalPotassiumValue>7</OriginalPotassiumValue>
-      <Name>FloraNova Bloom</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.53</Density>
+      <Name>GH FloraNova Bloom</Name>
       <NitrogenPercent>4</NitrogenPercent>
       <PhosphorusPercent>3.4912</PhosphorusPercent>
       <PotassiumPercent>5.8107</PotassiumPercent>
@@ -995,7 +1376,9 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>4</OriginalPhosphorusValue>
       <OriginalPotassiumValue>10</OriginalPotassiumValue>
-      <Name>FloraNova Grow</Name>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.54</Density>
+      <Name>GH FloraNova Grow</Name>
       <NitrogenPercent>7</NitrogenPercent>
       <PhosphorusPercent>1.7456</PhosphorusPercent>
       <PotassiumPercent>8.301</PotassiumPercent>
@@ -1018,7 +1401,7 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>12</OriginalPhosphorusValue>
       <OriginalPotassiumValue>27</OriginalPotassiumValue>
-      <Name>FloraPro Bloom</Name>
+      <Name>GH FloraPro Bloom</Name>
       <NitrogenPercent>7</NitrogenPercent>
       <PhosphorusPercent>5.236800000000001</PhosphorusPercent>
       <PotassiumPercent>22.412699999999997</PotassiumPercent>
@@ -1041,7 +1424,7 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0</OriginalPotassiumValue>
-      <Name>FloraPro Calcium+Micros</Name>
+      <Name>GH FloraPro Calcium+Micros</Name>
       <NitrogenPercent>14</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
       <PotassiumPercent>0</PotassiumPercent>
@@ -1064,7 +1447,7 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>12</OriginalPhosphorusValue>
       <OriginalPotassiumValue>22</OriginalPotassiumValue>
-      <Name>FloraPro Grow</Name>
+      <Name>GH FloraPro Grow</Name>
       <NitrogenPercent>10</NitrogenPercent>
       <PhosphorusPercent>5.236800000000001</PhosphorusPercent>
       <PotassiumPercent>18.2622</PotassiumPercent>
@@ -1087,7 +1470,7 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>24</OriginalPhosphorusValue>
       <OriginalPotassiumValue>26</OriginalPotassiumValue>
-      <Name>FloraPro Late Bloom</Name>
+      <Name>GH FloraPro Late Bloom</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>10.473600000000001</PhosphorusPercent>
       <PotassiumPercent>21.5826</PotassiumPercent>
@@ -1108,8 +1491,154 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>45</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>28</OriginalPotassiumValue>
+      <Name>GH KoolBloom Dry</Name>
+      <NitrogenPercent>2</NitrogenPercent>
+      <PhosphorusPercent>19.638</PhosphorusPercent>
+      <PotassiumPercent>23.2428</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>1</MagnesiumPercent>
+      <SulfurPercent>1.5</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0.001</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>10</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>10</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.19</Density>
+      <Name>GH Liquid KoolBloom</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>4.364</PhosphorusPercent>
+      <PotassiumPercent>8.301</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>15</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>14</OriginalPotassiumValue>
+      <Name>GH MaxiBloom</Name>
+      <NitrogenPercent>5</NitrogenPercent>
+      <PhosphorusPercent>6.546</PhosphorusPercent>
+      <PotassiumPercent>11.6214</PotassiumPercent>
+      <CalciumPercent>5</CalciumPercent>
+      <MagnesiumPercent>3.5</MagnesiumPercent>
+      <SulfurPercent>4</SulfurPercent>
+      <BoronPercent>0.013</BoronPercent>
+      <CopperPercent>0.008</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0.03</ManganesePercent>
+      <MolybdenumPercent>0.002</MolybdenumPercent>
+      <ZincPercent>0.01</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>5</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>14</OriginalPotassiumValue>
+      <Name>GH MaxiGro</Name>
+      <NitrogenPercent>10</NitrogenPercent>
+      <PhosphorusPercent>2.182</PhosphorusPercent>
+      <PotassiumPercent>11.6214</PotassiumPercent>
+      <CalciumPercent>6</CalciumPercent>
+      <MagnesiumPercent>2</MagnesiumPercent>
+      <SulfurPercent>3</SulfurPercent>
+      <BoronPercent>0.02</BoronPercent>
+      <CopperPercent>0.01</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0.05</ManganesePercent>
+      <MolybdenumPercent>0.002</MolybdenumPercent>
+      <ZincPercent>0.018</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0.5</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>1</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.085</Density>
+      <Name>GH RapidStart</Name>
+      <NitrogenPercent>1</NitrogenPercent>
+      <PhosphorusPercent>0.2182</PhosphorusPercent>
+      <PotassiumPercent>0.8301</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0.001</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>7</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>6</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.159</Density>
+      <Name>GH Ripen</Name>
+      <NitrogenPercent>0.5</NitrogenPercent>
+      <PhosphorusPercent>3.0548</PhosphorusPercent>
+      <PotassiumPercent>4.9806</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0.25</MagnesiumPercent>
+      <SulfurPercent>0.3</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0.75</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0.3</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.2</Density>
       <Name>H&amp;G Aqua Flakes A</Name>
       <NitrogenPercent>0.3</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
@@ -1133,6 +1662,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0.3</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0.8</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.32</Density>
       <Name>H&amp;G Aqua Flakes B</Name>
       <NitrogenPercent>0.1</NitrogenPercent>
       <PhosphorusPercent>0.13092</PhosphorusPercent>
@@ -1154,12 +1685,12 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>20</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>30</OriginalPotassiumValue>
+      <OriginalPhosphorusValue>30</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>20</OriginalPotassiumValue>
       <Name>Jacks 10-30-20 Bloom</Name>
       <NitrogenPercent>10</NitrogenPercent>
-      <PhosphorusPercent>8.728</PhosphorusPercent>
-      <PotassiumPercent>24.903</PotassiumPercent>
+      <PhosphorusPercent>13.092</PhosphorusPercent>
+      <PotassiumPercent>16.602</PotassiumPercent>
       <CalciumPercent>0.5</CalciumPercent>
       <MagnesiumPercent>0</MagnesiumPercent>
       <SulfurPercent>0.8</SulfurPercent>
@@ -1384,37 +1915,16 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>45</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>28</OriginalPotassiumValue>
-      <Name>Koolbloom Dry</Name>
-      <NitrogenPercent>2</NitrogenPercent>
-      <PhosphorusPercent>19.638</PhosphorusPercent>
-      <PotassiumPercent>23.2428</PotassiumPercent>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Magnesium Nitrate</Name>
+      <NitrogenPercent>10.9</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>1</MagnesiumPercent>
-      <SulfurPercent>1.5</SulfurPercent>
-      <BoronPercent>0</BoronPercent>
-      <CopperPercent>0</CopperPercent>
-      <IronPercent>0</IronPercent>
-      <ManganesePercent>0</ManganesePercent>
-      <MolybdenumPercent>0.001</MolybdenumPercent>
-      <ZincPercent>0</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>10</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>10</OriginalPotassiumValue>
-      <Name>Liquid KoolBloom</Name>
-      <NitrogenPercent>0</NitrogenPercent>
-      <PhosphorusPercent>4.364</PhosphorusPercent>
-      <PotassiumPercent>8.301</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>0</MagnesiumPercent>
+      <MagnesiumPercent>9.35</MagnesiumPercent>
       <SulfurPercent>0</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
@@ -1453,44 +1963,23 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>15</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>14</OriginalPotassiumValue>
-      <Name>Maxibloom</Name>
-      <NitrogenPercent>5</NitrogenPercent>
-      <PhosphorusPercent>6.546</PhosphorusPercent>
-      <PotassiumPercent>11.6214</PotassiumPercent>
-      <CalciumPercent>5</CalciumPercent>
-      <MagnesiumPercent>3.5</MagnesiumPercent>
-      <SulfurPercent>4</SulfurPercent>
-      <BoronPercent>0.013</BoronPercent>
-      <CopperPercent>0.008</CopperPercent>
-      <IronPercent>0.1</IronPercent>
-      <ManganesePercent>0.03</ManganesePercent>
-      <MolybdenumPercent>0.002</MolybdenumPercent>
-      <ZincPercent>0.01</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>5</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>14</OriginalPotassiumValue>
-      <Name>MaxiGro</Name>
-      <NitrogenPercent>10</NitrogenPercent>
-      <PhosphorusPercent>2.182</PhosphorusPercent>
-      <PotassiumPercent>11.6214</PotassiumPercent>
-      <CalciumPercent>6</CalciumPercent>
-      <MagnesiumPercent>2</MagnesiumPercent>
-      <SulfurPercent>3</SulfurPercent>
-      <BoronPercent>0.02</BoronPercent>
-      <CopperPercent>0.01</CopperPercent>
-      <IronPercent>0.1</IronPercent>
-      <ManganesePercent>0.05</ManganesePercent>
-      <MolybdenumPercent>0.002</MolybdenumPercent>
-      <ZincPercent>0.018</ZincPercent>
+      <OriginalPhosphorusValue>18</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>38</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Masterblend 4-18-38</Name>
+      <NitrogenPercent>4</NitrogenPercent>
+      <PhosphorusPercent>7.8552</PhosphorusPercent>
+      <PotassiumPercent>31.5438</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0.5</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.2</BoronPercent>
+      <CopperPercent>0.05</CopperPercent>
+      <IronPercent>0.4</IronPercent>
+      <ManganesePercent>0.2</ManganesePercent>
+      <MolybdenumPercent>0.01</MolybdenumPercent>
+      <ZincPercent>0.05</ZincPercent>
       <ChlorinePercent>0</ChlorinePercent>
       <SilicaPercent>0</SilicaPercent>
       <HumicAcidPercent>0</HumicAcidPercent>
@@ -1614,12 +2103,177 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>52</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>34</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Monopotassium Phosphate (MKP)</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>22.6928</PhosphorusPercent>
+      <PotassiumPercent>28.2234</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>52</OriginalPotassiumValue>
+      <OriginalPotassiumValue>3</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.26</Density>
+      <Name>Plagron Cal+Mag Pro</Name>
+      <NitrogenPercent>12</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>2.4903</PotassiumPercent>
+      <CalciumPercent>10</CalciumPercent>
+      <MagnesiumPercent>3</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>30</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>20</OriginalPotassiumValue>
+      <Name>Plant-Prod 10-30-20 Bloom</Name>
+      <NitrogenPercent>10</NitrogenPercent>
+      <PhosphorusPercent>13.092</PhosphorusPercent>
+      <PotassiumPercent>16.602</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>1.3</MagnesiumPercent>
+      <SulfurPercent>1.8</SulfurPercent>
+      <BoronPercent>0.02</BoronPercent>
+      <CopperPercent>0.05</CopperPercent>
+      <IronPercent>0.25</IronPercent>
+      <ManganesePercent>0.05</ManganesePercent>
+      <MolybdenumPercent>0.003</MolybdenumPercent>
+      <ZincPercent>0.05</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>8</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>26</OriginalPotassiumValue>
+      <Name>Plant-Prod 12-8-26 Grow</Name>
+      <NitrogenPercent>12</NitrogenPercent>
+      <PhosphorusPercent>3.4912</PhosphorusPercent>
+      <PotassiumPercent>21.5826</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>2.5</MagnesiumPercent>
+      <SulfurPercent>5.1</SulfurPercent>
+      <BoronPercent>0.02</BoronPercent>
+      <CopperPercent>0.05</CopperPercent>
+      <IronPercent>0.25</IronPercent>
+      <ManganesePercent>0.05</ManganesePercent>
+      <MolybdenumPercent>0.0005</MolybdenumPercent>
+      <ZincPercent>0.05</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>14</OriginalPotassiumValue>
+      <Name>Plant-Prod 15-0-14 Kick</Name>
+      <NitrogenPercent>15</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>11.6214</PotassiumPercent>
+      <CalciumPercent>11</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.02</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0.25</IronPercent>
+      <ManganesePercent>0.05</ManganesePercent>
+      <MolybdenumPercent>0.015</MolybdenumPercent>
+      <ZincPercent>0.05</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>30</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>15</OriginalPotassiumValue>
+      <Name>Plant-Prod 15-30-15 Boost</Name>
+      <NitrogenPercent>15</NitrogenPercent>
+      <PhosphorusPercent>13.092</PhosphorusPercent>
+      <PotassiumPercent>12.4515</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.02</BoronPercent>
+      <CopperPercent>0.05</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0.05</ManganesePercent>
+      <MolybdenumPercent>0.0005</MolybdenumPercent>
+      <ZincPercent>0.05</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>31</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>37</OriginalPotassiumValue>
+      <Name>Plant-Prod 4-31-37 Finisher</Name>
+      <NitrogenPercent>4</NitrogenPercent>
+      <PhosphorusPercent>13.5284</PhosphorusPercent>
+      <PotassiumPercent>30.7137</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0.02</BoronPercent>
+      <CopperPercent>0.05</CopperPercent>
+      <IronPercent>0.1</IronPercent>
+      <ManganesePercent>0.05</ManganesePercent>
+      <MolybdenumPercent>0.0005</MolybdenumPercent>
+      <ZincPercent>0.05</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>60</OriginalPotassiumValue>
       <Name>Potassium Chloride (Muriate)</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
-      <PotassiumPercent>43.1652</PotassiumPercent>
+      <PotassiumPercent>49.806</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
       <MagnesiumPercent>0</MagnesiumPercent>
       <SulfurPercent>0</SulfurPercent>
@@ -1630,6 +2284,31 @@
       <MolybdenumPercent>0</MolybdenumPercent>
       <ZincPercent>0</ZincPercent>
       <ChlorinePercent>47</ChlorinePercent>
+      <SilicaPercent>0</SilicaPercent>
+      <HumicAcidPercent>0</HumicAcidPercent>
+      <FulvicAcidPercent>0</FulvicAcidPercent>
+    </Fertilizer>
+    <Fertilizer>
+      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>46</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Potassium Nitrate</Name>
+      <NitrogenPercent>13</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>38.1846</PotassiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
+      <ChlorinePercent>0</ChlorinePercent>
       <SilicaPercent>0</SilicaPercent>
       <HumicAcidPercent>0</HumicAcidPercent>
       <FulvicAcidPercent>0</FulvicAcidPercent>
@@ -1660,44 +2339,23 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>30</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>20</OriginalPotassiumValue>
-      <Name>PP 10-30-20 Bloom</Name>
-      <NitrogenPercent>10</NitrogenPercent>
-      <PhosphorusPercent>13.092</PhosphorusPercent>
-      <PotassiumPercent>16.602</PotassiumPercent>
+      <OriginalPhosphorusValue>2</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>4</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.1</Density>
+      <Name>Rhizoflora Purpinator</Name>
+      <NitrogenPercent>0</NitrogenPercent>
+      <PhosphorusPercent>0.8728</PhosphorusPercent>
+      <PotassiumPercent>3.3204</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>1.3</MagnesiumPercent>
-      <SulfurPercent>1.8</SulfurPercent>
-      <BoronPercent>0.02</BoronPercent>
-      <CopperPercent>0.05</CopperPercent>
-      <IronPercent>0.25</IronPercent>
-      <ManganesePercent>0.05</ManganesePercent>
-      <MolybdenumPercent>0.003</MolybdenumPercent>
-      <ZincPercent>0.05</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>8</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>26</OriginalPotassiumValue>
-      <Name>PP 12-8-26 Grow</Name>
-      <NitrogenPercent>12</NitrogenPercent>
-      <PhosphorusPercent>3.4912</PhosphorusPercent>
-      <PotassiumPercent>21.5826</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>2.5</MagnesiumPercent>
-      <SulfurPercent>5.1</SulfurPercent>
-      <BoronPercent>0.02</BoronPercent>
-      <CopperPercent>0.05</CopperPercent>
-      <IronPercent>0.25</IronPercent>
-      <ManganesePercent>0.05</ManganesePercent>
-      <MolybdenumPercent>0.0005</MolybdenumPercent>
-      <ZincPercent>0.05</ZincPercent>
+      <MagnesiumPercent>0</MagnesiumPercent>
+      <SulfurPercent>0</SulfurPercent>
+      <BoronPercent>0</BoronPercent>
+      <CopperPercent>0</CopperPercent>
+      <IronPercent>0</IronPercent>
+      <ManganesePercent>0</ManganesePercent>
+      <MolybdenumPercent>0</MolybdenumPercent>
+      <ZincPercent>0</ZincPercent>
       <ChlorinePercent>0</ChlorinePercent>
       <SilicaPercent>0</SilicaPercent>
       <HumicAcidPercent>0</HumicAcidPercent>
@@ -1707,113 +2365,23 @@
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>14</OriginalPotassiumValue>
-      <Name>PP 15-0-14 Kick</Name>
-      <NitrogenPercent>15</NitrogenPercent>
+      <OriginalPotassiumValue>4</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.054</Density>
+      <Name>Rhizoflora Terpinator</Name>
+      <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
-      <PotassiumPercent>11.6214</PotassiumPercent>
-      <CalciumPercent>11</CalciumPercent>
-      <MagnesiumPercent>0</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
-      <BoronPercent>0.02</BoronPercent>
-      <CopperPercent>0</CopperPercent>
-      <IronPercent>0.25</IronPercent>
-      <ManganesePercent>0.05</ManganesePercent>
-      <MolybdenumPercent>0.015</MolybdenumPercent>
-      <ZincPercent>0.05</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>30</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>15</OriginalPotassiumValue>
-      <Name>PP 15-30-15 Boost</Name>
-      <NitrogenPercent>15</NitrogenPercent>
-      <PhosphorusPercent>13.092</PhosphorusPercent>
-      <PotassiumPercent>12.4515</PotassiumPercent>
+      <PotassiumPercent>3.3204</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
       <MagnesiumPercent>0</MagnesiumPercent>
       <SulfurPercent>0</SulfurPercent>
-      <BoronPercent>0.02</BoronPercent>
-      <CopperPercent>0.05</CopperPercent>
-      <IronPercent>0.1</IronPercent>
-      <ManganesePercent>0.05</ManganesePercent>
-      <MolybdenumPercent>0.0005</MolybdenumPercent>
-      <ZincPercent>0.05</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>31</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>37</OriginalPotassiumValue>
-      <Name>PP 4-31-37 Finisher</Name>
-      <NitrogenPercent>4</NitrogenPercent>
-      <PhosphorusPercent>13.5284</PhosphorusPercent>
-      <PotassiumPercent>30.7137</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>0</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
-      <BoronPercent>0.02</BoronPercent>
-      <CopperPercent>0.05</CopperPercent>
-      <IronPercent>0.1</IronPercent>
-      <ManganesePercent>0.05</ManganesePercent>
-      <MolybdenumPercent>0.0005</MolybdenumPercent>
-      <ZincPercent>0.05</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>0.5</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>1</OriginalPotassiumValue>
-      <Name>RapidStart</Name>
-      <NitrogenPercent>1</NitrogenPercent>
-      <PhosphorusPercent>0.2182</PhosphorusPercent>
-      <PotassiumPercent>0.8301</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>0</MagnesiumPercent>
-      <SulfurPercent>0</SulfurPercent>
-      <BoronPercent>0</BoronPercent>
-      <CopperPercent>0</CopperPercent>
-      <IronPercent>0</IronPercent>
-      <ManganesePercent>0</ManganesePercent>
-      <MolybdenumPercent>0.001</MolybdenumPercent>
-      <ZincPercent>0</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>0</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>7</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>6</OriginalPotassiumValue>
-      <Name>Ripen</Name>
-      <NitrogenPercent>0.5</NitrogenPercent>
-      <PhosphorusPercent>3.0548</PhosphorusPercent>
-      <PotassiumPercent>4.9806</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>0.25</MagnesiumPercent>
-      <SulfurPercent>0.3</SulfurPercent>
       <BoronPercent>0</BoronPercent>
       <CopperPercent>0</CopperPercent>
       <IronPercent>0</IronPercent>
       <ManganesePercent>0</ManganesePercent>
       <MolybdenumPercent>0</MolybdenumPercent>
       <ZincPercent>0</ZincPercent>
-      <ChlorinePercent>0.75</ChlorinePercent>
+      <ChlorinePercent>0</ChlorinePercent>
       <SilicaPercent>0</SilicaPercent>
       <HumicAcidPercent>0</HumicAcidPercent>
       <FulvicAcidPercent>0</FulvicAcidPercent>
@@ -1823,6 +2391,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>18</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.35</Density>
       <Name>Sea-K</Name>
       <NitrogenPercent>0</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>
@@ -1867,35 +2437,14 @@
     <Fertilizer>
       <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>27</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>27</OriginalPotassiumValue>
-      <Name>Sweet Candy</Name>
-      <NitrogenPercent>0</NitrogenPercent>
-      <PhosphorusPercent>11.7828</PhosphorusPercent>
-      <PotassiumPercent>22.412699999999997</PotassiumPercent>
-      <CalciumPercent>0</CalciumPercent>
-      <MagnesiumPercent>1</MagnesiumPercent>
-      <SulfurPercent>3</SulfurPercent>
-      <BoronPercent>0</BoronPercent>
-      <CopperPercent>0</CopperPercent>
-      <IronPercent>0</IronPercent>
-      <ManganesePercent>0</ManganesePercent>
-      <MolybdenumPercent>0</MolybdenumPercent>
-      <ZincPercent>0</ZincPercent>
-      <ChlorinePercent>0</ChlorinePercent>
-      <SilicaPercent>0</SilicaPercent>
-      <HumicAcidPercent>4</HumicAcidPercent>
-      <FulvicAcidPercent>0</FulvicAcidPercent>
-    </Fertilizer>
-    <Fertilizer>
-      <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
-      <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-      <OriginalPhosphorusValue>2</OriginalPhosphorusValue>
-      <OriginalPotassiumValue>4</OriginalPotassiumValue>
-      <Name>Terpinator/Purpinator</Name>
-      <NitrogenPercent>0</NitrogenPercent>
-      <PhosphorusPercent>0.8728</PhosphorusPercent>
-      <PotassiumPercent>3.3204</PotassiumPercent>
+      <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+      <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>false</IsLiquid>
+      <Density>1</Density>
+      <Name>Urea</Name>
+      <NitrogenPercent>46</NitrogenPercent>
+      <PhosphorusPercent>0</PhosphorusPercent>
+      <PotassiumPercent>0</PotassiumPercent>
       <CalciumPercent>0</CalciumPercent>
       <MagnesiumPercent>0</MagnesiumPercent>
       <SulfurPercent>0</SulfurPercent>
@@ -1915,6 +2464,8 @@
       <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
       <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
       <OriginalPotassiumValue>0</OriginalPotassiumValue>
+      <IsLiquid>true</IsLiquid>
+      <Density>1.11</Density>
       <Name>Vitalink Calmag+</Name>
       <NitrogenPercent>1.8</NitrogenPercent>
       <PhosphorusPercent>0</PhosphorusPercent>

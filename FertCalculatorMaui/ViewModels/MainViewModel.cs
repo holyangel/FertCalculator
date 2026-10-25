@@ -13,7 +13,6 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly FileService fileService;
     private readonly IDialogService dialogService;
-    private const double GALLON_TO_LITER = 3.78541;
 
     [ObservableProperty]
     private ObservableCollection<Fertilizer> availableFertilizers = new();
@@ -167,6 +166,16 @@ public partial class MainViewModel : ObservableObject
             AddFertilizerToMix(message.Value);
         });
         
+        WeakReferenceMessenger.Default.Register<FertilizerDeletedMessage>(this, (r, message) => {
+            // Remove the deleted fertilizer from the current mix if present
+            for (int i = CurrentMix.Count - 1; i >= 0; i--)
+            {
+                if (string.Equals(CurrentMix[i].FertilizerName, message.Value, StringComparison.OrdinalIgnoreCase))
+                    CurrentMix.RemoveAt(i);
+            }
+            UpdateNutrientTotals();
+        });
+        
         Debug.WriteLine("MainViewModel initialization completed");
     }
 
@@ -191,15 +200,43 @@ public partial class MainViewModel : ObservableObject
             var mix = await dialogService.DisplayActionSheetAsync("Load Mix", "Cancel", null, SavedMixes.Select(m => m.Name).ToArray());
             if (mix != null && mix != "Cancel")
             {
-                var selectedMix = SavedMixes.FirstOrDefault(m => m.Name == mix);
+                var selectedMix = SavedMixes.FirstOrDefault(m => string.Equals(m.Name, mix, StringComparison.OrdinalIgnoreCase));
                 if (selectedMix != null)
                 {
+                    if (CurrentMix.Count > 0)
+                    {
+                        bool confirm = await dialogService.DisplayConfirmationAsync("Confirm Load",
+                            "Loading a mix will replace your current mix. Continue?", "Yes", "No");
+                        if (!confirm)
+                            return;
+                    }
+
                     CurrentMix.Clear();
+                    int skipped = 0;
                     foreach (var item in selectedMix.Ingredients)
                     {
-                        CurrentMix.Add(item);
+                        // Verify the fertilizer still exists, and copy the quantity so
+                        // the saved mix isn't mutated by later edits
+                        if (AvailableFertilizers.Any(f => string.Equals(f.Name, item.FertilizerName, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            CurrentMix.Add(new FertilizerQuantity
+                            {
+                                FertilizerName = item.FertilizerName,
+                                Quantity = item.Quantity
+                            });
+                        }
+                        else
+                        {
+                            skipped++;
+                        }
                     }
                     UpdateNutrientTotals();
+
+                    if (skipped > 0)
+                    {
+                        await dialogService.DisplayAlertAsync("Mix Loaded",
+                            $"Skipped {skipped} ingredient(s) whose fertilizer no longer exists.", "OK");
+                    }
                 }
             }
         }
@@ -305,7 +342,7 @@ public partial class MainViewModel : ObservableObject
     {
         try
         {
-            var item = CurrentMix.FirstOrDefault(x => x.FertilizerName == fertilizerName);
+            var item = CurrentMix.FirstOrDefault(x => string.Equals(x.FertilizerName, fertilizerName, StringComparison.OrdinalIgnoreCase));
             if (item != null)
             {
                 CurrentMix.Remove(item);
@@ -421,17 +458,17 @@ public partial class MainViewModel : ObservableObject
             ResetNutrientTotals();
 
             double totalQuantity = 0;
-            
-            // Calculate the contribution of each fertilizer to the total
+
+            // Calculate the weighted average nutrient percentage of the mix
             foreach (var item in CurrentMix)
             {
-                var fertilizer = AvailableFertilizers.FirstOrDefault(f => f.Name == item.FertilizerName);
+                var fertilizer = AvailableFertilizers.FirstOrDefault(f => string.Equals(f.Name, item.FertilizerName, StringComparison.OrdinalIgnoreCase));
                 if (fertilizer != null)
                 {
-                    double quantity = item.Quantity;
+                    // For liquids the quantity is mL — weight by density to get grams.
+                    double quantity = item.Quantity * fertilizer.EffectiveDensity;
                     totalQuantity += quantity;
-                    
-                    // Calculate weighted contribution for percentage display
+
                     NitrogenPercent += (fertilizer.NitrogenPercent / 100) * quantity;
                     PhosphorusPercent += (fertilizer.PhosphorusPercent / 100) * quantity;
                     PotassiumPercent += (fertilizer.PotassiumPercent / 100) * quantity;
@@ -448,27 +485,9 @@ public partial class MainViewModel : ObservableObject
                     SilicaPercent += (fertilizer.SilicaPercent / 100) * quantity;
                     HumicAcidPercent += (fertilizer.HumicAcidPercent / 100) * quantity;
                     FulvicAcidPercent += (fertilizer.FulvicAcidPercent / 100) * quantity;
-                    
-                    // Calculate PPM directly from fertilizer PPM values
-                    NitrogenPpm += fertilizer.NitrogenPpm(UseImperialUnits) * quantity;
-                    PhosphorusPpm += fertilizer.PhosphorusPpm(UseImperialUnits) * quantity;
-                    PotassiumPpm += fertilizer.PotassiumPpm(UseImperialUnits) * quantity;
-                    CalciumPpm += fertilizer.CalciumPpm(UseImperialUnits) * quantity;
-                    MagnesiumPpm += fertilizer.MagnesiumPpm(UseImperialUnits) * quantity;
-                    SulfurPpm += fertilizer.SulfurPpm(UseImperialUnits) * quantity;
-                    BoronPpm += fertilizer.BoronPpm(UseImperialUnits) * quantity;
-                    CopperPpm += fertilizer.CopperPpm(UseImperialUnits) * quantity;
-                    IronPpm += fertilizer.IronPpm(UseImperialUnits) * quantity;
-                    ManganesePpm += fertilizer.ManganesePpm(UseImperialUnits) * quantity;
-                    MolybdenumPpm += fertilizer.MolybdenumPpm(UseImperialUnits) * quantity;
-                    ZincPpm += fertilizer.ZincPpm(UseImperialUnits) * quantity;
-                    ChlorinePpm += fertilizer.ChlorinePpm(UseImperialUnits) * quantity;
-                    SilicaPpm += fertilizer.SilicaPpm(UseImperialUnits) * quantity;
-                    HumicAcidPpm += fertilizer.HumicAcidPpm(UseImperialUnits) * quantity;
-                    FulvicAcidPpm += fertilizer.FulvicAcidPpm(UseImperialUnits) * quantity;
                 }
             }
-            
+
             // Normalize by total quantity
             if (totalQuantity > 0)
             {
@@ -489,20 +508,33 @@ public partial class MainViewModel : ObservableObject
                 HumicAcidPercent = (HumicAcidPercent / totalQuantity) * 100;
                 FulvicAcidPercent = (FulvicAcidPercent / totalQuantity) * 100;
             }
-            
+
             // Calculate total nutrient percentage
             TotalNutrientPercent = NitrogenPercent + PhosphorusPercent + PotassiumPercent +
                                   CalciumPercent + MagnesiumPercent + SulfurPercent +
                                   BoronPercent + CopperPercent + IronPercent +
                                   ManganesePercent + MolybdenumPercent + ZincPercent +
                                   ChlorinePercent + SilicaPercent + HumicAcidPercent + FulvicAcidPercent;
-            
-            // Calculate total PPM
-            TotalNutrientPpm = NitrogenPpm + PhosphorusPpm + PotassiumPpm +
-                              CalciumPpm + MagnesiumPpm + SulfurPpm +
-                              BoronPpm + CopperPpm + IronPpm +
-                              ManganesePpm + MolybdenumPpm + ZincPpm +
-                              ChlorinePpm + SilicaPpm + HumicAcidPpm + FulvicAcidPpm;
+
+            // Sum PPM contributions via the shared calculator
+            var totals = MixCalculator.Calculate(CurrentMix, AvailableFertilizers, UseImperialUnits);
+            NitrogenPpm = totals.Nitrogen;
+            PhosphorusPpm = totals.Phosphorus;
+            PotassiumPpm = totals.Potassium;
+            CalciumPpm = totals.Calcium;
+            MagnesiumPpm = totals.Magnesium;
+            SulfurPpm = totals.Sulfur;
+            BoronPpm = totals.Boron;
+            CopperPpm = totals.Copper;
+            IronPpm = totals.Iron;
+            ManganesePpm = totals.Manganese;
+            MolybdenumPpm = totals.Molybdenum;
+            ZincPpm = totals.Zinc;
+            ChlorinePpm = totals.Chlorine;
+            SilicaPpm = totals.Silica;
+            HumicAcidPpm = totals.HumicAcid;
+            FulvicAcidPpm = totals.FulvicAcid;
+            TotalNutrientPpm = totals.Total;
             
             // Explicitly notify property changes for all PPM values
             NotifyAllPropertyChanges();
@@ -599,6 +631,14 @@ public partial class MainViewModel : ObservableObject
 
         try
         {
+            // Prevent duplicate entries in the mix
+            if (CurrentMix.Any(x => string.Equals(x.FertilizerName, fertilizer.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                _ = dialogService.DisplayAlertAsync("Already Added",
+                    "This fertilizer is already in the current mix.", "OK");
+                return;
+            }
+
             var quantity = new FertilizerQuantity
             {
                 FertilizerName = fertilizer.Name,

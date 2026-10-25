@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using FertCalculator.Core;
 
 namespace FertilizerCalculator
 {
@@ -10,10 +11,6 @@ namespace FertilizerCalculator
     {
         public Fertilizer NewFertilizer { get; private set; }
         private bool isEditMode;
-
-        // Conversion factors
-        private const double P2O5_TO_P = 0.4364;  // Multiply P₂O₅ by this to get P
-        private const double K2O_TO_K = 0.8301;   // Multiply K₂O by this to get K
 
         public AddFertilizerWindow(Fertilizer existingFertilizer = null)
         {
@@ -68,6 +65,8 @@ namespace FertilizerCalculator
                 SilicaTextBox.Text = existingFertilizer.SilicaPercent.ToString("F3");
                 HumicAcidTextBox.Text = existingFertilizer.HumicAcidPercent.ToString("F3");
                 FulvicAcidTextBox.Text = existingFertilizer.FulvicAcidPercent.ToString("F3");
+                IsLiquidCheckBox.IsChecked = existingFertilizer.IsLiquid;
+                DensityTextBox.Text = existingFertilizer.Density.ToString("F3");
             }
             else
             {
@@ -129,7 +128,7 @@ namespace FertilizerCalculator
             if (isPhosphorusInOxideForm)
             {
                 // Convert from P₂O₅ to P for storage
-                phosphorusValue *= P2O5_TO_P;
+                phosphorusValue = Fertilizer.P2O5ToP(phosphorusValue);
             }
 
             // Get potassium value with conversion if needed
@@ -140,8 +139,11 @@ namespace FertilizerCalculator
             if (isPotassiumInOxideForm)
             {
                 // Convert from K₂O to K for storage
-                potassiumValue *= K2O_TO_K;
+                potassiumValue = Fertilizer.K2OToK(potassiumValue);
             }
+
+            double density = ParseTextBoxValue(DensityTextBox);
+            if (density <= 0) density = 1.0;
 
             // Create new fertilizer object
             NewFertilizer = new Fertilizer
@@ -168,7 +170,12 @@ namespace FertilizerCalculator
                 IsPhosphorusInOxideForm = isPhosphorusInOxideForm,
                 IsPotassiumInOxideForm = isPotassiumInOxideForm,
                 OriginalPhosphorusValue = originalPhosphorusValue,
-                OriginalPotassiumValue = originalPotassiumValue
+                OriginalPotassiumValue = originalPotassiumValue,
+
+                // Liquid handling: quantities for liquid products are mL,
+                // converted to grams via density
+                IsLiquid = IsLiquidCheckBox.IsChecked == true,
+                Density = density
             };
 
             DialogResult = true;
@@ -177,11 +184,27 @@ namespace FertilizerCalculator
 
         private double ParseTextBoxValue(TextBox textBox)
         {
-            if (double.TryParse(textBox.Text, out double value))
+            if (double.TryParse(textBox.Text, System.Globalization.NumberStyles.Float,
+                    System.Globalization.CultureInfo.CurrentCulture, out double value))
             {
                 return value;
             }
             return 0.0;
+        }
+
+        // Returns true if the proposed text is a valid partial/complete non-negative
+        // decimal number using the current culture's decimal separator.
+        private static bool IsValidDecimalText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return true;
+
+            string separator = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            if (text == separator)
+                return true;
+
+            return double.TryParse(text, System.Globalization.NumberStyles.AllowDecimalPoint,
+                System.Globalization.CultureInfo.CurrentCulture, out _);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -192,21 +215,15 @@ namespace FertilizerCalculator
 
         private void DecimalInputValidation(object sender, TextCompositionEventArgs e)
         {
-            // Allow only digits and decimal point
-            Regex regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-
-            // Get the current text and the text that would result after the new input
             TextBox textBox = sender as TextBox;
-            string proposedText = textBox.Text.Insert(textBox.CaretIndex, e.Text);
+            if (textBox == null) { e.Handled = true; return; }
 
-            // Check if the proposed text is a valid decimal number
-            e.Handled = !regex.IsMatch(proposedText);
+            // Account for any selected text being replaced
+            string proposedText = textBox.Text
+                .Remove(textBox.SelectionStart, textBox.SelectionLength)
+                .Insert(textBox.SelectionStart, e.Text);
 
-            // Additional check to prevent multiple decimal points
-            if (e.Text == "." && textBox.Text.Contains("."))
-            {
-                e.Handled = true;
-            }
+            e.Handled = !IsValidDecimalText(proposedText);
         }
     }
 }

@@ -1,2 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfFertilizerMix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+<ArrayOfFertilizerMix xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FertilizerMix>
+    <Name>Gypsum+Maxibloom</Name>
+    <Ingredients>
+      <FertilizerQuantity>
+        <FertilizerName>GH MaxiBloom</FertilizerName>
+        <Quantity>7</Quantity>
+      </FertilizerQuantity>
+      <FertilizerQuantity>
+        <FertilizerName>DTE SG Gypsum</FertilizerName>
+        <Quantity>1</Quantity>
+      </FertilizerQuantity>
+    </Ingredients>
+  </FertilizerMix>
+  <FertilizerMix>
+    <Name>Lucas Formula - 8/16</Name>
+    <Ingredients>
+      <FertilizerQuantity>
+        <FertilizerName>GH FloraMicro</FertilizerName>
+        <Quantity>8</Quantity>
+      </FertilizerQuantity>
+      <FertilizerQuantity>
+        <FertilizerName>GH FloraBloom</FertilizerName>
+        <Quantity>16</Quantity>
+      </FertilizerQuantity>
+    </Ingredients>
+  </FertilizerMix>
+  <FertilizerMix>
+    <Name>Jacks 4-2-0</Name>
+    <Ingredients>
+      <FertilizerQuantity>
+        <FertilizerName>Jacks 5-12-26 Part A</FertilizerName>
+        <Quantity>4</Quantity>
+      </FertilizerQuantity>
+      <FertilizerQuantity>
+        <FertilizerName>Jacks 15-0-0 Part B</FertilizerName>
+        <Quantity>2</Quantity>
+      </FertilizerQuantity>
+    </Ingredients>
+  </FertilizerMix>
+  <FertilizerMix>
+    <Name>Jacks 3-2-1</Name>
+    <Ingredients>
+      <FertilizerQuantity>
+        <FertilizerName>Jacks 5-12-26 Part A</FertilizerName>
+        <Quantity>3.6</Quantity>
+      </FertilizerQuantity>
+      <FertilizerQuantity>
+        <FertilizerName>Jacks 15-0-0 Part B</FertilizerName>
+        <Quantity>2.4</Quantity>
+      </FertilizerQuantity>
+      <FertilizerQuantity>
+        <FertilizerName>Epsom Salt - Magnesium Sulfate</FertilizerName>
+        <Quantity>1.2</Quantity>
+      </FertilizerQuantity>
+    </Ingredients>
+  </FertilizerMix>
+</ArrayOfFertilizerMix>

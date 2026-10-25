@@ -1,0 +1,31 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Run core tests
+        run: dotnet test FertCalculator.Core.Tests/FertCalculator.Core.Tests.csproj -c Release
+
+      - name: Build desktop app
+        run: dotnet build FertCalculator.csproj -c Release
+
+      - name: Restore MAUI workloads
+        run: dotnet workload restore FertCalculatorMaui/FertCalculatorMaui.csproj
+
+      - name: Build MAUI app (Android)
+        run: dotnet build FertCalculatorMaui/FertCalculatorMaui.csproj -c Release -f net9.0-android

@@ -32,9 +32,9 @@ Current Version: 2.0
 
 ### Nutrient Calculations
 
-- Real-time calculation of nutrient concentrations in PPM
-- Toggle between metric (PPM per liter) and imperial (PPM per gallon) units
-- Automatic conversion between unit systems
+- Real-time calculation of nutrient concentrations in PPM (mg/L)
+- Toggle between metric (quantities in g/L) and imperial (quantities in g/gal) units
+- The selected unit changes how mix quantities are interpreted: in imperial mode the entered quantity is grams per gallon, so concentrations are divided by 3.78541
 - Total PPM calculation for overall nutrient concentration
 
 ### Mix Comparison
@@ -67,9 +67,32 @@ Current Version: 2.0
   - P₂O₅ to P: multiply by 0.4364
   - K₂O to K: multiply by 0.8301
 - The application maintains alphabetical order for fertilizers, making them easier to find.
+- Quantities follow the selected unit: enter grams per liter in metric mode or grams per gallon in imperial mode. Saved mixes use whatever unit was active when the quantities were entered.
+- Fertilizers marked as liquid are dosed in milliliters. Label percentages are by weight, so the app converts mL to grams using the product's density — check "Liquid" and set the density (g/mL) when adding a liquid fertilizer. If the label gives lb/gal, multiply by 0.12 to get g/mL.
 - You can export your data to share with other users or as a backup.
 
 ## System Requirements
 
 - Windows operating system
 - .NET Framework 4.7.2 or higher
+
+## Project Structure
+
+- `FertCalculator.csproj` — WPF desktop app (.NET Framework 4.7.2)
+- `FertCalculatorMaui/` — .NET MAUI mobile app (net9.0-android, net9.0-windows for local builds)
+- `FertCalculator.Core/` — shared models, unit conversion, and nutrient math (.NET Standard 2.0) used by both apps
+- `FertCalculator.Core.Tests/` — xUnit tests covering calculations and XML serialization compatibility
+
+## Building
+
+```bash
+# Desktop app + shared core + tests
+dotnet build FertCalculator.sln
+dotnet test FertCalculator.Core.Tests/FertCalculator.Core.Tests.csproj
+
+# Mobile app (requires the maui-android workload and an Android SDK)
+dotnet workload restore FertCalculatorMaui/FertCalculatorMaui.csproj
+dotnet build FertCalculatorMaui/FertCalculatorMaui.csproj -f net9.0-android
+```
+
+Data files (`Fertilizers.xml`, `Mixes.xml`) are stored next to the executable. Writes are atomic and keep a `.bak` backup of the previous version; an unreadable file is moved aside to `.corrupt` rather than being overwritten. Exported files are `ExportData` XML documents with a `Version` field — older files without a version still import on both apps.

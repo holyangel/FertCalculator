@@ -1,10 +1,8 @@
 using System;
-using System.ComponentModel;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Microsoft.Maui.Storage;
+using System.ComponentModel;
 
-namespace FertCalculatorMaui
+namespace FertCalculator.Core
 {
     [Serializable]
     public class Fertilizer : INotifyPropertyChanged
@@ -26,15 +24,22 @@ namespace FertCalculatorMaui
         private double silicaPercent;
         private double humicAcidPercent;
         private double fulvicAcidPercent;
-        
-        // Constants for unit conversion
-        private const double GALLON_TO_LITER = 3.78541;
 
         // Properties to store original input format and values
         public bool IsPhosphorusInOxideForm { get; set; }
         public bool IsPotassiumInOxideForm { get; set; }
         public double OriginalPhosphorusValue { get; set; }
         public double OriginalPotassiumValue { get; set; }
+
+        // Liquid products are dosed in mL, but label percentages are by weight,
+        // so the density converts mL -> grams. Defaults keep pre-existing files
+        // (which lack these elements) behaving exactly as before.
+        public bool IsLiquid { get; set; }
+        public double Density { get; set; } = 1.0;
+
+        // Grams of product per mL for liquids; 1.0 for solids / unset density.
+        // Read-only, so XmlSerializer ignores it.
+        public double EffectiveDensity => IsLiquid && Density > 0 ? Density : 1.0;
 
         public string Name
         {
@@ -139,14 +144,15 @@ namespace FertCalculatorMaui
             set { fulvicAcidPercent = value; OnPropertyChanged(nameof(FulvicAcidPercent)); }
         }
 
-        // PPM calculation with support for metric/imperial units
+        // Convert percentage to decimal (divide by 100) and multiply by 1000 to get
+        // mg of nutrient per gram of fertilizer (i.e. PPM for a 1 g/L dose).
+        // With useImperial, the value is scaled for a dose expressed in g/gal.
         private double GetPpmValue(double percentValue, bool useImperial = false)
         {
             double basePpm = (percentValue / 100) * 1000;
-            return useImperial ? basePpm / GALLON_TO_LITER : basePpm;
+            return useImperial ? basePpm / MixCalculator.GallonToLiter : basePpm;
         }
 
-        // Properties that calculate PPM values with unit conversion
         public double NitrogenPpm(bool useImperial = false) => GetPpmValue(NitrogenPercent, useImperial);
         public double PhosphorusPpm(bool useImperial = false) => GetPpmValue(PhosphorusPercent, useImperial);
         public double PotassiumPpm(bool useImperial = false) => GetPpmValue(PotassiumPercent, useImperial);
@@ -172,7 +178,7 @@ namespace FertCalculatorMaui
         public static double P2O5ToP(double p2o5Value) => p2o5Value * 0.4364;
         public static double K2OToK(double k2oValue) => k2oValue * 0.8301;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -197,7 +203,7 @@ namespace FertCalculatorMaui
             set { quantity = value; OnPropertyChanged(nameof(Quantity)); }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -209,5 +215,17 @@ namespace FertCalculatorMaui
     {
         public string Name { get; set; } = string.Empty;
         public List<FertilizerQuantity> Ingredients { get; set; } = new List<FertilizerQuantity>();
+    }
+
+    [Serializable]
+    public class ExportData
+    {
+        // Increment when the export schema changes. Older readers ignore unknown
+        // elements, and older files deserialize with this default.
+        public const int CurrentVersion = 1;
+
+        public int Version { get; set; } = CurrentVersion;
+        public List<Fertilizer> Fertilizers { get; set; } = new List<Fertilizer>();
+        public List<FertilizerMix> Mixes { get; set; } = new List<FertilizerMix>();
     }
 }

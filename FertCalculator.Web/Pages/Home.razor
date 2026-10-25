@@ -1,0 +1,324 @@
+﻿@page "/"
+@using System.Xml.Serialization
+@using FertCalculator.Core
+@inject HttpClient Http
+@inject IJSRuntime JS
+
+<div class="container-fluid mt-3">
+    <div class="d-flex align-items-center mb-3">
+        <h3 class="mb-0 me-3">Fertilizer Calculator</h3>
+        <button class="btn btn-outline-secondary btn-sm" @onclick="ToggleUnits">
+            @(useImperial ? "Switch to Liter" : "Switch to Gallon")
+        </button>
+        <span class="ms-3 text-muted">@(useImperial ? "Quantities in g or mL per gallon" : "Quantities in g or mL per liter")</span>
+    </div>
+
+    @if (fertilizers == null)
+    {
+        <p><em>Loading fertilizer library…</em></p>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Fertilizer library -->
+            <div class="col-md-5">
+                <h5>Available Fertilizers (@FilteredFertilizers.Count())</h5>
+                <input class="form-control form-control-sm mb-2" placeholder="Filter…" @bind="search" @bind:event="oninput" />
+                <div class="list-group" style="max-height:60vh;overflow-y:auto">
+                    @foreach (var f in FilteredFertilizers)
+                    {
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between"
+                                @onclick="() => AddToMix(f)">
+                            <span>@f.Name@(f.IsLiquid ? " (mL)" : "")</span>
+                            <small class="text-muted">N @f.NitrogenPercent.ToString("F1")%</small>
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Current mix + totals -->
+            <div class="col-md-7">
+                <h5>Current Mix <small class="text-muted">@(loadedMixName == null ? "— unsaved —" : $"— {loadedMixName} —")</small></h5>
+
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Fertilizer</th><th style="width:140px">Qty</th><th style="width:50px"></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in currentMix)
+                        {
+                            <tr>
+                                <td>@item.FertilizerName</td>
+                                <td><input type="number" step="0.01" class="form-control form-control-sm"
+                                           @bind="item.Quantity" @bind:event="oninput" @bind:after="Recalc" /></td>
+                                <td><button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveItem(item)">×</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="d-flex gap-2 mb-3 flex-wrap">
+                    <input class="form-control form-control-sm" style="width:180px" placeholder="Mix name" @bind="mixName" />
+                    <button class="btn btn-sm btn-primary" @onclick="SaveMix" disabled="@(currentMix.Count == 0 || string.IsNullOrWhiteSpace(mixName))">Save</button>
+                    @if (savedMixes.Count > 0)
+                    {
+                        <select class="form-select form-select-sm" style="width:180px" @bind="selectedMixName">
+                            <option value="">— saved mixes —</option>
+                            @foreach (var m in savedMixes)
+                            {
+                                <option value="@m.Name">@m.Name</option>
+                            }
+                        </select>
+                        <button class="btn btn-sm btn-outline-primary" @onclick="LoadMix" disabled="@(string.IsNullOrEmpty(selectedMixName))">Load</button>
+                        <button class="btn btn-sm btn-outline-danger" @onclick="DeleteMix" disabled="@(string.IsNullOrEmpty(selectedMixName))">Delete</button>
+                    }
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="ExportXml" disabled="@(fertilizers.Count == 0 && savedMixes.Count == 0)">Export XML</button>
+                    <label class="btn btn-sm btn-outline-secondary mb-0">
+                        Import XML
+                        <input id="importFile" type="file" accept=".xml" style="display:none" @onchange="ImportXml" />
+                    </label>
+                    <button class="btn btn-sm btn-outline-light" @onclick="CopyBreakdown">Copy breakdown</button>
+                </div>
+
+                <h5>Nutrient Breakdown <small class="text-muted">PPM (mg/L)</small></h5>
+                <table class="table table-sm table-striped" style="max-width:420px">
+                    <tbody>
+                        <tr><td>Nitrogen (N)</td><td class="text-end">@totals.Nitrogen.ToString("F2")</td></tr>
+                        <tr><td>Phosphorus (P)</td><td class="text-end">@totals.Phosphorus.ToString("F2")</td></tr>
+                        <tr><td>Potassium (K)</td><td class="text-end">@totals.Potassium.ToString("F2")</td></tr>
+                        <tr><td>Calcium (Ca)</td><td class="text-end">@totals.Calcium.ToString("F2")</td></tr>
+                        <tr><td>Magnesium (Mg)</td><td class="text-end">@totals.Magnesium.ToString("F2")</td></tr>
+                        <tr><td>Sulfur (S)</td><td class="text-end">@totals.Sulfur.ToString("F2")</td></tr>
+                        <tr><td>Boron (B)</td><td class="text-end">@totals.Boron.ToString("F2")</td></tr>
+                        <tr><td>Copper (Cu)</td><td class="text-end">@totals.Copper.ToString("F2")</td></tr>
+                        <tr><td>Iron (Fe)</td><td class="text-end">@totals.Iron.ToString("F2")</td></tr>
+                        <tr><td>Manganese (Mn)</td><td class="text-end">@totals.Manganese.ToString("F2")</td></tr>
+                        <tr><td>Molybdenum (Mo)</td><td class="text-end">@totals.Molybdenum.ToString("F2")</td></tr>
+                        <tr><td>Zinc (Zn)</td><td class="text-end">@totals.Zinc.ToString("F2")</td></tr>
+                        <tr><td>Chlorine (Cl)</td><td class="text-end">@totals.Chlorine.ToString("F2")</td></tr>
+                        <tr><td>Silica (Si)</td><td class="text-end">@totals.Silica.ToString("F2")</td></tr>
+                        <tr><td>Humic Acid</td><td class="text-end">@totals.HumicAcid.ToString("F2")</td></tr>
+                        <tr><td>Fulvic Acid</td><td class="text-end">@totals.FulvicAcid.ToString("F2")</td></tr>
+                        <tr class="fw-bold"><td>TOTAL PPM</td><td class="text-end">@totals.Total.ToString("F2")</td></tr>
+                    </tbody>
+                </table>
+                @if (!string.IsNullOrEmpty(status))
+                {
+                    <div class="alert alert-info py-1 px-2 mt-2">@status</div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<Fertilizer> fertilizers = new();
+    private List<FertilizerMix> savedMixes = new();
+    private List<FertilizerQuantity> currentMix = new();
+    private NutrientTotals totals = new();
+    private bool useImperial;
+    private string search = "";
+    private string? loadedMixName;
+    private string mixName = "";
+    private string? selectedMixName;
+    private string? status;
+
+    private const string MixesKey = "fertcalc.mixes";
+    private const string ImperialKey = "fertcalc.imperial";
+
+    private IEnumerable<Fertilizer> FilteredFertilizers =>
+        fertilizers.Where(f => string.IsNullOrEmpty(search) ||
+            (f.Name?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+
+    protected override async Task OnInitializedAsync()
+    {
+        var serializer = new XmlSerializer(typeof(List<Fertilizer>));
+        await using var stream = await Http.GetStreamAsync("data/Fertilizers.xml");
+        fertilizers = (List<Fertilizer>)serializer.Deserialize(stream)!;
+        fertilizers = fertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
+
+        string? imperial = await JS.InvokeAsync<string?>("fertcalc.loadLocal", ImperialKey);
+        useImperial = imperial == "1";
+
+        var mixesXml = await JS.InvokeAsync<string?>("fertcalc.loadLocal", MixesKey);
+        if (!string.IsNullOrEmpty(mixesXml))
+        {
+            var mixSer = new XmlSerializer(typeof(List<FertilizerMix>));
+            using var reader = new StringReader(mixesXml);
+            savedMixes = (List<FertilizerMix>)mixSer.Deserialize(reader)!;
+        }
+    }
+
+    private void AddToMix(Fertilizer f)
+    {
+        if (currentMix.Any(i => string.Equals(i.FertilizerName, f.Name, StringComparison.OrdinalIgnoreCase)))
+        {
+            status = $"{f.Name} is already in the mix.";
+            return;
+        }
+        currentMix.Add(new FertilizerQuantity { FertilizerName = f.Name, Quantity = 1.0 });
+        loadedMixName = null;
+        Recalc();
+    }
+
+    private void RemoveItem(FertilizerQuantity item)
+    {
+        currentMix.Remove(item);
+        loadedMixName = null;
+        Recalc();
+    }
+
+    private void Recalc()
+    {
+        totals = MixCalculator.Calculate(currentMix, fertilizers, useImperial);
+    }
+
+    private async Task ToggleUnits()
+    {
+        useImperial = !useImperial;
+        await JS.InvokeVoidAsync("fertcalc.saveLocal", ImperialKey, useImperial ? "1" : "0");
+        Recalc();
+    }
+
+    private async Task SaveMix()
+    {
+        var name = mixName.Trim();
+        var existing = savedMixes.FirstOrDefault(m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
+        var ingredients = currentMix.Select(i => new FertilizerQuantity
+        {
+            FertilizerName = i.FertilizerName,
+            Quantity = i.Quantity
+        }).ToList();
+
+        if (existing != null)
+        {
+            existing.Ingredients = ingredients;
+            status = $"Updated mix '{name}'.";
+        }
+        else
+        {
+            savedMixes.Add(new FertilizerMix { Name = name, Ingredients = ingredients });
+            status = $"Saved mix '{name}'.";
+        }
+        loadedMixName = name;
+        await PersistMixes();
+    }
+
+    private void LoadMix()
+    {
+        var mix = savedMixes.FirstOrDefault(m => m.Name == selectedMixName);
+        if (mix == null) return;
+        currentMix = mix.Ingredients.Select(i => new FertilizerQuantity
+        {
+            FertilizerName = i.FertilizerName,
+            Quantity = i.Quantity
+        }).ToList();
+        loadedMixName = mix.Name;
+        Recalc();
+        status = $"Loaded '{mix.Name}'.";
+    }
+
+    private async Task DeleteMix()
+    {
+        var mix = savedMixes.FirstOrDefault(m => m.Name == selectedMixName);
+        if (mix == null) return;
+        savedMixes.Remove(mix);
+        status = $"Deleted mix '{mix.Name}'.";
+        await PersistMixes();
+    }
+
+    private async Task PersistMixes()
+    {
+        var serializer = new XmlSerializer(typeof(List<FertilizerMix>));
+        using var writer = new StringWriter();
+        serializer.Serialize(writer, savedMixes);
+        await JS.InvokeVoidAsync("fertcalc.saveLocal", MixesKey, writer.ToString());
+    }
+
+    private async Task ExportXml()
+    {
+        var data = new ExportData { Fertilizers = fertilizers, Mixes = savedMixes };
+        var serializer = new XmlSerializer(typeof(ExportData));
+        using var writer = new StringWriter();
+        serializer.Serialize(writer, data);
+        await JS.InvokeVoidAsync("fertcalc.downloadXml", "FertCalculator_Export.xml", writer.ToString());
+    }
+
+    private async Task ImportXml()
+    {
+        var xml = await JS.InvokeAsync<string?>("fertcalc.readFile", "importFile");
+        if (string.IsNullOrEmpty(xml)) return;
+
+        try
+        {
+            ExportData? data = null;
+            var serExport = new XmlSerializer(typeof(ExportData));
+            try { using (var r = new StringReader(xml)) data = (ExportData)serExport.Deserialize(r)!; }
+            catch { }
+
+            if (data == null)
+            {
+                var serF = new XmlSerializer(typeof(List<Fertilizer>));
+                try { using (var r = new StringReader(xml)) data = new ExportData { Fertilizers = (List<Fertilizer>)serF.Deserialize(r)! }; }
+                catch { }
+            }
+            if (data == null)
+            {
+                var serM = new XmlSerializer(typeof(List<FertilizerMix>));
+                try { using (var r = new StringReader(xml)) data = new ExportData { Mixes = (List<FertilizerMix>)serM.Deserialize(r)! }; }
+                catch { }
+            }
+
+            if (data == null)
+            {
+                status = "File is not a recognized FertCalculator data file.";
+                return;
+            }
+
+            int addedF = 0, addedM = 0;
+            foreach (var f in data.Fertilizers)
+            {
+                if (!fertilizers.Any(x => string.Equals(x.Name, f.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    fertilizers.Add(f);
+                    addedF++;
+                }
+            }
+            foreach (var m in data.Mixes)
+            {
+                if (!savedMixes.Any(x => string.Equals(x.Name, m.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    savedMixes.Add(m);
+                    addedM++;
+                }
+            }
+            await PersistMixes();
+            status = $"Imported {addedF} fertilizer(s), {addedM} mix(es).";
+        }
+        catch (Exception ex)
+        {
+            status = $"Import failed: {ex.Message}";
+        }
+    }
+
+    private async Task CopyBreakdown()
+    {
+        var rows = new (string n, double v)[]
+        {
+            ("Nitrogen (N)", totals.Nitrogen), ("Phosphorus (P)", totals.Phosphorus),
+            ("Potassium (K)", totals.Potassium), ("Calcium (Ca)", totals.Calcium),
+            ("Magnesium (Mg)", totals.Magnesium), ("Sulfur (S)", totals.Sulfur),
+            ("Boron (B)", totals.Boron), ("Copper (Cu)", totals.Copper),
+            ("Iron (Fe)", totals.Iron), ("Manganese (Mn)", totals.Manganese),
+            ("Molybdenum (Mo)", totals.Molybdenum), ("Zinc (Zn)", totals.Zinc),
+            ("Chlorine (Cl)", totals.Chlorine), ("Silica (Si)", totals.Silica),
+            ("Humic Acid", totals.HumicAcid), ("Fulvic Acid", totals.FulvicAcid),
+            ("TOTAL PPM", totals.Total),
+        };
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"Nutrient\t{(useImperial ? "PPM (per gallon)" : "PPM (per liter)")}");
+        foreach (var (n, v) in rows) sb.AppendLine($"{n}\t{v:F2}");
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", sb.ToString());
+        status = "Breakdown copied to clipboard.";
+    }
+}

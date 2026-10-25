@@ -24,10 +24,10 @@ public class FileService
 
     public FileService()
     {
-        // Initialize the app data directory with default files if needed
-        InitializeDefaultFilesAsync().ConfigureAwait(false);
     }
 
+    // Initializes the embedded default data on first run. Called (and awaited)
+    // from LoadFertilizersAsync so there is no unobserved fire-and-forget work.
     private async Task InitializeDefaultFilesAsync()
     {
         try
@@ -98,6 +98,14 @@ public class FileService
         try
         {
             var fertilizers = await LoadFromXmlAsync<List<Fertilizer>>(FERTILIZERS_FILENAME);
+
+            // First run: seed the database from the embedded resource
+            if (fertilizers == null || fertilizers.Count == 0)
+            {
+                await InitializeDefaultFilesAsync();
+                fertilizers = await LoadFromXmlAsync<List<Fertilizer>>(FERTILIZERS_FILENAME);
+            }
+
             return fertilizers ?? new List<Fertilizer>();
         }
         catch (Exception ex)
@@ -157,24 +165,50 @@ public class FileService
 
     public async Task<T?> LoadFromXmlAsync<T>(string fileName) where T : class
     {
+        string filePath = Path.Combine(GetAppDataDirectory(), fileName);
         try
         {
-            string filePath = Path.Combine(GetAppDataDirectory(), fileName);
-            
             if (!File.Exists(filePath))
                 return null;
 
             // Use Task.Run to perform file operations on a background thread
-            return await Task.Run(async () => 
+            var result = await Task.Run(async () =>
             {
                 using FileStream stream = File.OpenRead(filePath);
                 return await LoadFromXmlAsync<T>(stream);
             });
+
+            // A file that exists but can't be deserialized is corrupt — move it
+            // aside so the next save doesn't silently destroy the user's data.
+            if (result == null)
+                QuarantineCorruptFile(filePath);
+
+            return result;
         }
         catch (Exception ex)
         {
             System.Console.WriteLine($"Error loading XML file: {ex.Message}");
+            QuarantineCorruptFile(filePath);
             return null;
+        }
+    }
+
+    // Moves an unreadable file aside so the app can start clean without
+    // silently overwriting the user's data on the next save.
+    private static void QuarantineCorruptFile(string filePath)
+    {
+        try
+        {
+            if (File.Exists(filePath))
+            {
+                string quarantinePath = filePath + ".corrupt";
+                File.Copy(filePath, quarantinePath, true);
+                File.Delete(filePath);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"Error quarantining corrupt file: {ex.Message}");
         }
     }
 
@@ -225,9 +259,10 @@ public class FileService
                         serializer.Serialize(fileStream, data);
                     }
 
-                    // If the target file exists, delete it
+                    // Keep a backup of the previous version, then swap in the new file
                     if (File.Exists(filePath))
                     {
+                        File.Copy(filePath, filePath + ".bak", true);
                         File.Delete(filePath);
                     }
 
@@ -515,11 +550,33 @@ public class FileService
 #endif
     }
 
+    // Buffers the stream and tries each known XML shape: ExportData first, then
+    // the raw database formats (ArrayOfFertilizer / ArrayOfFertilizerMix) so
+    // files copied directly between installs also import.
     public async Task<ExportResult> ImportDataAsync(Stream stream)
     {
         try
         {
-            var importData = await LoadFromXmlAsync<ExportData>(stream);
+            using var buffer = new MemoryStream();
+            await stream.CopyToAsync(buffer);
+
+            var importData = TryDeserializeXml<ExportData>(buffer);
+            if (importData == null)
+            {
+                var fertilizers = TryDeserializeXml<List<Fertilizer>>(buffer);
+                if (fertilizers != null)
+                {
+                    importData = new ExportData { Fertilizers = fertilizers };
+                }
+                else
+                {
+                    var mixes = TryDeserializeXml<List<FertilizerMix>>(buffer);
+                    if (mixes != null)
+                    {
+                        importData = new ExportData { Mixes = mixes };
+                    }
+                }
+            }
             
             if (importData == null)
                 return new ExportResult { Success = false, Error = "Failed to deserialize data" };
@@ -536,17 +593,25 @@ public class FileService
             return new ExportResult { Success = false, Error = ex.Message };
         }
     }
+
+    private static T? TryDeserializeXml<T>(MemoryStream buffer) where T : class
+    {
+        try
+        {
+            buffer.Position = 0;
+            var serializer = new XmlSerializer(typeof(T));
+            return serializer.Deserialize(buffer) as T;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }
 
 public class ExportResult
 {
     public bool Success { get; set; }
     public string Error { get; set; } = string.Empty;
-    public ExportData? ImportedData { get; set; }
-}
-
-public class ExportData
-{
-    public List<Fertilizer> Fertilizers { get; set; } = new List<Fertilizer>();
-    public List<FertilizerMix> Mixes { get; set; } = new List<FertilizerMix>();
+    public FertCalculator.Core.ExportData? ImportedData { get; set; }
 }

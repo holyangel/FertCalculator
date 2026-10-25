@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- The canonical data files live in the repo root; sync them into wwwroot
+       before every build/publish so there's a single source of truth. -->
+  <Target Name="SyncDataFiles" BeforeTargets="Build;Publish">
+    <Copy SourceFiles="..\Fertilizers.xml" DestinationFiles="wwwroot\data\Fertilizers.xml" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="..\Mixes.xml" DestinationFiles="wwwroot\data\Mixes.xml" SkipUnchangedFiles="true" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FertCalculator.Core\FertCalculator.Core.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.21" PrivateAssets="all" />
+  </ItemGroup>
+
+
+</Project>

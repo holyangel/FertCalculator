@@ -9,6 +9,19 @@
         Title="Fertilizer Calculator v2.0" Height="875" Width="1000" WindowStartupLocation="CenterScreen"
         Background="#1E1E1E">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <Style x:Key="SelectableValue" TargetType="TextBox">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Cursor" Value="IBeam"/>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -48,12 +61,21 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Available Fertilizers" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+                <StackPanel Margin="0,0,0,5">
+                    <TextBlock Text="Available Fertilizers" FontSize="16" FontWeight="Bold"/>
+                    <TextBox x:Name="FertilizerSearchBox" Margin="0,5,0,0" Height="24"
+                             TextChanged="FertilizerSearchBox_TextChanged"
+                             ToolTip="Type to filter fertilizers by name"/>
+                </StackPanel>
 
                 <ListBox x:Name="FertilizerListBox" Grid.Row="1" SelectionMode="Single" MouseDoubleClick="FertilizerListBox_MouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Name}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text=" (mL)" Opacity="0.6"
+                                           Visibility="{Binding IsLiquid, Converter={StaticResource BoolToVis}}"/>
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -81,7 +103,11 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Current Mix" FontSize="16" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Current Mix" FontSize="16" FontWeight="Bold"/>
+                        <TextBlock x:Name="CurrentMixNameText" Text="— unsaved —" Opacity="0.7"
+                                   Margin="10,0,0,0" VerticalAlignment="Bottom"/>
+                    </StackPanel>
 
                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                         <ComboBox x:Name="SavedMixesComboBox" Width="200" DisplayMemberPath="Name" Margin="0,0,0,5"/>
@@ -101,7 +127,7 @@
                           MouseDoubleClick="MixListBox_MouseDoubleClick">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Fertilizer" Binding="{Binding FertilizerName}" Width="*" IsReadOnly="True" />
-                        <DataGridTextColumn Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=N2}" Width="100">
+                        <DataGridTextColumn x:Name="QuantityColumn" Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=F2}" Width="120">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -150,7 +176,12 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Text="Nutrient Breakdown" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <TextBlock Text="Nutrient Breakdown" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <Button Content="Copy" Width="60" Height="22" Margin="10,0,0,0" Padding="0"
+                                    VerticalAlignment="Center" Click="CopyBreakdown_Click"
+                                    ToolTip="Copy the nutrient breakdown to the clipboard"/>
+                        </StackPanel>
 
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -199,24 +230,24 @@
                             <TextBlock Grid.Row="17" Text="TOTAL PPM" FontWeight="Bold"/>
 
                             <!-- Nutrient values -->
-                            <TextBlock x:Name="NitrogenValueTextBlock" Grid.Row="0" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="PhosphorusValueTextBlock" Grid.Row="1" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="PotassiumValueTextBlock" Grid.Row="2" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="CalciumValueTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="MagnesiumValueTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="SulfurValueTextBlock" Grid.Row="5" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="BoronValueTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="CopperValueTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="IronValueTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="ManganeseValueTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="MolybdenumValueTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="ZincValueTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="ChlorineValueTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="SilicaValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="HumicAcidValueTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
-                            <TextBlock x:Name="FulvicAcidValueTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" TextAlignment="Right"/>
+                            <TextBox x:Name="NitrogenValueTextBlock" Grid.Row="0" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="PhosphorusValueTextBlock" Grid.Row="1" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="PotassiumValueTextBlock" Grid.Row="2" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="CalciumValueTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="MagnesiumValueTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="SulfurValueTextBlock" Grid.Row="5" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="BoronValueTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="CopperValueTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="IronValueTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="ManganeseValueTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="MolybdenumValueTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="ZincValueTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="ChlorineValueTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="SilicaValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="HumicAcidValueTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="FulvicAcidValueTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
                             <TextBlock Grid.Row="16" Grid.Column="1" Text="" Height="10"/>
-                            <TextBlock x:Name="TotalPpmValueTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold"/>
+                            <TextBox x:Name="TotalPpmValueTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold" Style="{StaticResource SelectableValue}"/>
                         </Grid>
                     </Grid>
 
@@ -231,7 +262,7 @@
                         <StackPanel Grid.Row="1">
                             <TextBlock x:Name="UnitLabel" Text="PPM (mg/L)" FontWeight="Bold" Margin="0,0,0,10"/>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-                                All nutrient values are shown in parts per million (PPM). Add fertilizers to your mix by selecting from the available list and entering the quantity in grams per liter or per gallon depending on your selected unit.
+                                All nutrient values are shown in parts per million (PPM). Add fertilizers to your mix by selecting from the available list and entering the quantity per liter or per gallon depending on your selected unit — grams for solids, milliliters for fertilizers marked as liquid (converted by density).
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
                                 When adding new fertilizers, enter the percentage of each nutrient as shown on the label. For phosphorus and potassium, be sure the selected dropdown is accurate for your nutrient label. Most US labels list P and K in their oxide form (P₂O₅ or K₂O).

@@ -21,8 +21,6 @@ namespace FertCalculatorMaui.ViewModels
 {
     public partial class CompareMixViewModel : ObservableObject
     {
-        private const double GALLON_TO_LITER = 3.78541;
-
         // Event that the page can subscribe to for handling navigation
         public event EventHandler CloseRequested;
 
@@ -289,58 +287,24 @@ namespace FertCalculatorMaui.ViewModels
                 return;
             }
 
-            // Reset all nutrient values
-            ResetMix1Nutrients();
-
-            foreach (var ingredient in SelectedMix1.Ingredients)
-            {
-                // Find the fertilizer by name
-                var fertilizer = AvailableFertilizers.FirstOrDefault(f => f.Name == ingredient.FertilizerName);
-                if (fertilizer == null) continue;
-
-                // Get the base PPM values (per liter)
-                double nitrogenPpm = fertilizer.NitrogenPpm() * ingredient.Quantity;
-                double phosphorusPpm = fertilizer.PhosphorusPpm() * ingredient.Quantity;
-                double potassiumPpm = fertilizer.PotassiumPpm() * ingredient.Quantity;
-                double calciumPpm = fertilizer.CalciumPpm() * ingredient.Quantity;
-                double magnesiumPpm = fertilizer.MagnesiumPpm() * ingredient.Quantity;
-                double sulfurPpm = fertilizer.SulfurPpm() * ingredient.Quantity;
-                double boronPpm = fertilizer.BoronPpm() * ingredient.Quantity;
-                double copperPpm = fertilizer.CopperPpm() * ingredient.Quantity;
-                double ironPpm = fertilizer.IronPpm() * ingredient.Quantity;
-                double manganesePpm = fertilizer.ManganesePpm() * ingredient.Quantity;
-                double molybdenumPpm = fertilizer.MolybdenumPpm() * ingredient.Quantity;
-                double zincPpm = fertilizer.ZincPpm() * ingredient.Quantity;
-                double chlorinePpm = fertilizer.ChlorinePpm() * ingredient.Quantity;
-                double silicaPpm = fertilizer.SilicaPpm() * ingredient.Quantity;
-                double humicAcidPpm = fertilizer.HumicAcidPpm() * ingredient.Quantity;
-                double fulvicAcidPpm = fertilizer.FulvicAcidPpm() * ingredient.Quantity;
-
-                // Convert to imperial if needed (divide by GALLON_TO_LITER to convert from per liter to per gallon)
-                double conversionFactor = UseImperialUnits ? 1.0 / GALLON_TO_LITER : 1.0;
-                Mix1NitrogenPpm += nitrogenPpm * conversionFactor;
-                Mix1PhosphorusPpm += phosphorusPpm * conversionFactor;
-                Mix1PotassiumPpm += potassiumPpm * conversionFactor;
-                Mix1CalciumPpm += calciumPpm * conversionFactor;
-                Mix1MagnesiumPpm += magnesiumPpm * conversionFactor;
-                Mix1SulfurPpm += sulfurPpm * conversionFactor;
-                Mix1BoronPpm += boronPpm * conversionFactor;
-                Mix1CopperPpm += copperPpm * conversionFactor;
-                Mix1IronPpm += ironPpm * conversionFactor;
-                Mix1ManganesePpm += manganesePpm * conversionFactor;
-                Mix1MolybdenumPpm += molybdenumPpm * conversionFactor;
-                Mix1ZincPpm += zincPpm * conversionFactor;
-                Mix1ChlorinePpm += chlorinePpm * conversionFactor;
-                Mix1SilicaPpm += silicaPpm * conversionFactor;
-                Mix1HumicAcidPpm += humicAcidPpm * conversionFactor;
-                Mix1FulvicAcidPpm += fulvicAcidPpm * conversionFactor;
-            }
-
-            // Calculate total nutrients
-            Mix1TotalNutrientPpm = Mix1NitrogenPpm + Mix1PhosphorusPpm + Mix1PotassiumPpm + Mix1CalciumPpm + 
-                Mix1MagnesiumPpm + Mix1SulfurPpm + Mix1BoronPpm + Mix1CopperPpm + Mix1IronPpm + 
-                Mix1ManganesePpm + Mix1MolybdenumPpm + Mix1ZincPpm + Mix1ChlorinePpm + Mix1SilicaPpm + 
-                Mix1HumicAcidPpm + Mix1FulvicAcidPpm;
+            var totals = MixCalculator.Calculate(SelectedMix1.Ingredients, AvailableFertilizers, UseImperialUnits);
+            Mix1NitrogenPpm = totals.Nitrogen;
+            Mix1PhosphorusPpm = totals.Phosphorus;
+            Mix1PotassiumPpm = totals.Potassium;
+            Mix1CalciumPpm = totals.Calcium;
+            Mix1MagnesiumPpm = totals.Magnesium;
+            Mix1SulfurPpm = totals.Sulfur;
+            Mix1BoronPpm = totals.Boron;
+            Mix1CopperPpm = totals.Copper;
+            Mix1IronPpm = totals.Iron;
+            Mix1ManganesePpm = totals.Manganese;
+            Mix1MolybdenumPpm = totals.Molybdenum;
+            Mix1ZincPpm = totals.Zinc;
+            Mix1ChlorinePpm = totals.Chlorine;
+            Mix1SilicaPpm = totals.Silica;
+            Mix1HumicAcidPpm = totals.HumicAcid;
+            Mix1FulvicAcidPpm = totals.FulvicAcid;
+            Mix1TotalNutrientPpm = totals.Total;
         }
 
         public void CalculateMix2Nutrients()
@@ -351,58 +315,24 @@ namespace FertCalculatorMaui.ViewModels
                 return;
             }
 
-            // Reset all nutrient values
-            ResetMix2Nutrients();
-
-            foreach (var ingredient in SelectedMix2.Ingredients)
-            {
-                // Find the fertilizer by name
-                var fertilizer = AvailableFertilizers.FirstOrDefault(f => f.Name == ingredient.FertilizerName);
-                if (fertilizer == null) continue;
-
-                // Get the base PPM values (per liter)
-                double nitrogenPpm = fertilizer.NitrogenPpm() * ingredient.Quantity;
-                double phosphorusPpm = fertilizer.PhosphorusPpm() * ingredient.Quantity;
-                double potassiumPpm = fertilizer.PotassiumPpm() * ingredient.Quantity;
-                double calciumPpm = fertilizer.CalciumPpm() * ingredient.Quantity;
-                double magnesiumPpm = fertilizer.MagnesiumPpm() * ingredient.Quantity;
-                double sulfurPpm = fertilizer.SulfurPpm() * ingredient.Quantity;
-                double boronPpm = fertilizer.BoronPpm() * ingredient.Quantity;
-                double copperPpm = fertilizer.CopperPpm() * ingredient.Quantity;
-                double ironPpm = fertilizer.IronPpm() * ingredient.Quantity;
-                double manganesePpm = fertilizer.ManganesePpm() * ingredient.Quantity;
-                double molybdenumPpm = fertilizer.MolybdenumPpm() * ingredient.Quantity;
-                double zincPpm = fertilizer.ZincPpm() * ingredient.Quantity;
-                double chlorinePpm = fertilizer.ChlorinePpm() * ingredient.Quantity;
-                double silicaPpm = fertilizer.SilicaPpm() * ingredient.Quantity;
-                double humicAcidPpm = fertilizer.HumicAcidPpm() * ingredient.Quantity;
-                double fulvicAcidPpm = fertilizer.FulvicAcidPpm() * ingredient.Quantity;
-
-                // Convert to imperial if needed (divide by GALLON_TO_LITER to convert from per liter to per gallon)
-                double conversionFactor = UseImperialUnits ? 1.0 / GALLON_TO_LITER : 1.0;
-                Mix2NitrogenPpm += nitrogenPpm * conversionFactor;
-                Mix2PhosphorusPpm += phosphorusPpm * conversionFactor;
-                Mix2PotassiumPpm += potassiumPpm * conversionFactor;
-                Mix2CalciumPpm += calciumPpm * conversionFactor;
-                Mix2MagnesiumPpm += magnesiumPpm * conversionFactor;
-                Mix2SulfurPpm += sulfurPpm * conversionFactor;
-                Mix2BoronPpm += boronPpm * conversionFactor;
-                Mix2CopperPpm += copperPpm * conversionFactor;
-                Mix2IronPpm += ironPpm * conversionFactor;
-                Mix2ManganesePpm += manganesePpm * conversionFactor;
-                Mix2MolybdenumPpm += molybdenumPpm * conversionFactor;
-                Mix2ZincPpm += zincPpm * conversionFactor;
-                Mix2ChlorinePpm += chlorinePpm * conversionFactor;
-                Mix2SilicaPpm += silicaPpm * conversionFactor;
-                Mix2HumicAcidPpm += humicAcidPpm * conversionFactor;
-                Mix2FulvicAcidPpm += fulvicAcidPpm * conversionFactor;
-            }
-
-            // Calculate total nutrients
-            Mix2TotalNutrientPpm = Mix2NitrogenPpm + Mix2PhosphorusPpm + Mix2PotassiumPpm + Mix2CalciumPpm + 
-                Mix2MagnesiumPpm + Mix2SulfurPpm + Mix2BoronPpm + Mix2CopperPpm + Mix2IronPpm + 
-                Mix2ManganesePpm + Mix2MolybdenumPpm + Mix2ZincPpm + Mix2ChlorinePpm + Mix2SilicaPpm + 
-                Mix2HumicAcidPpm + Mix2FulvicAcidPpm;
+            var totals = MixCalculator.Calculate(SelectedMix2.Ingredients, AvailableFertilizers, UseImperialUnits);
+            Mix2NitrogenPpm = totals.Nitrogen;
+            Mix2PhosphorusPpm = totals.Phosphorus;
+            Mix2PotassiumPpm = totals.Potassium;
+            Mix2CalciumPpm = totals.Calcium;
+            Mix2MagnesiumPpm = totals.Magnesium;
+            Mix2SulfurPpm = totals.Sulfur;
+            Mix2BoronPpm = totals.Boron;
+            Mix2CopperPpm = totals.Copper;
+            Mix2IronPpm = totals.Iron;
+            Mix2ManganesePpm = totals.Manganese;
+            Mix2MolybdenumPpm = totals.Molybdenum;
+            Mix2ZincPpm = totals.Zinc;
+            Mix2ChlorinePpm = totals.Chlorine;
+            Mix2SilicaPpm = totals.Silica;
+            Mix2HumicAcidPpm = totals.HumicAcid;
+            Mix2FulvicAcidPpm = totals.FulvicAcid;
+            Mix2TotalNutrientPpm = totals.Total;
         }
 
         public void UpdateChartData()

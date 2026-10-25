@@ -23,3 +23,13 @@ public class FertilizersUpdatedMessage : ValueChangedMessage<Fertilizer>
     {
     }
 }
+
+/// <summary>
+/// Message sent when a fertilizer is deleted; carries the deleted fertilizer's name
+/// </summary>
+public class FertilizerDeletedMessage : ValueChangedMessage<string>
+{
+    public FertilizerDeletedMessage(string fertilizerName) : base(fertilizerName)
+    {
+    }
+}

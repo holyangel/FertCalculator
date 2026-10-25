@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml.Serialization;
-using FertilizerCalculator;
+using FertCalculator.Core;
+using FertCalculator.Properties;
 
 namespace FertilizerCalculator
 {
@@ -20,9 +22,9 @@ namespace FertilizerCalculator
         private ObservableCollection<FertilizerMix> savedMixes;
         private ObservableCollection<FertilizerQuantity> currentMix;
         private bool isMetricUnits = true; // true = per liter, false = per gallon
-        private const double GALLON_TO_LITER = 3.78541;
-        private string fertilizerDbPath = "Fertilizers.xml";
-        private string mixesDbPath = "Mixes.xml";
+        private string loadedMixName = null; // name of the mix the current mix was loaded/saved as
+        private readonly string fertilizerDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Fertilizers.xml");
+        private readonly string mixesDbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Mixes.xml");
 
         public MainWindow()
         {
@@ -41,9 +43,37 @@ namespace FertilizerCalculator
             FertilizerListBox.ItemsSource = availableFertilizers;
             MixListBox.ItemsSource = currentMix;
             SavedMixesComboBox.ItemsSource = savedMixes;
-            
-            // Set up unit toggle
+
+            // Restore saved unit preference (true = imperial)
+            isMetricUnits = !Settings.Default.UnitPreference;
             UpdateUnitDisplay();
+            UpdateCurrentMixLabel();
+
+            // Live filtering for the fertilizer list
+            CollectionViewSource.GetDefaultView(availableFertilizers).Filter = item =>
+                string.IsNullOrEmpty(FertilizerSearchBox.Text) ||
+                ((Fertilizer)item).Name?.IndexOf(FertilizerSearchBox.Text, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private void FertilizerSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(availableFertilizers).Refresh();
+        }
+
+        // Shows which saved mix the current ingredients belong to
+        private void UpdateCurrentMixLabel()
+        {
+            CurrentMixNameText.Text = loadedMixName == null ? "— unsaved —" : $"— {loadedMixName} —";
+        }
+
+        // Any edit to the current mix means it no longer matches the loaded mix
+        private void MarkMixModified()
+        {
+            if (loadedMixName != null)
+            {
+                loadedMixName = null;
+                UpdateCurrentMixLabel();
+            }
         }
 
         private void LoadFertilizers()
@@ -57,8 +87,7 @@ namespace FertilizerCalculator
                     {
                         var fertilizers = (List<Fertilizer>)serializer.Deserialize(reader);
                         availableFertilizers.Clear();
-                        // Sort fertilizers alphabetically by name before adding to the collection
-                        foreach (var fertilizer in fertilizers.OrderBy(f => f.Name))
+                        foreach (var fertilizer in fertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()))
                         {
                             availableFertilizers.Add(fertilizer);
                         }
@@ -66,20 +95,52 @@ namespace FertilizerCalculator
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading fertilizers: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    QuarantineCorruptFile(fertilizerDbPath);
+                    MessageBox.Show($"Error loading fertilizers: {ex.Message}\n\nThe file was moved to {fertilizerDbPath}.corrupt and a fresh database will be used.",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        // Writes XML via a temp file and keeps a .bak copy of the previous version,
+        // so a crash or bad save never leaves the real file truncated.
+        private static void SaveXml<T>(T data, string path)
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            string tempPath = path + ".tmp";
+            using (var writer = new StreamWriter(tempPath))
+            {
+                serializer.Serialize(writer, data);
+            }
+            if (File.Exists(path))
+            {
+                File.Copy(path, path + ".bak", true);
+            }
+            File.Copy(tempPath, path, true);
+            File.Delete(tempPath);
+        }
+
+        // Renames an unreadable data file aside so the app can start clean
+        // without silently overwriting the user's data on the next save.
+        private static void QuarantineCorruptFile(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    string quarantinePath = path + ".corrupt";
+                    File.Copy(path, quarantinePath, true);
+                    File.Delete(path);
+                }
+            }
+            catch { }
         }
 
         private void SaveFertilizers()
         {
             try
             {
-                var serializer = new XmlSerializer(typeof(List<Fertilizer>));
-                using (var writer = new StreamWriter(fertilizerDbPath))
-                {
-                    serializer.Serialize(writer, availableFertilizers.ToList());
-                }
+                SaveXml(availableFertilizers.ToList(), fertilizerDbPath);
             }
             catch (Exception ex)
             {
@@ -93,7 +154,7 @@ namespace FertilizerCalculator
             if (FertilizerListBox.SelectedItem is Fertilizer selectedFertilizer)
             {
                 // Check if already in mix
-                if (currentMix.Any(i => i.FertilizerName == selectedFertilizer.Name))
+                if (currentMix.Any(i => string.Equals(i.FertilizerName, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     MessageBox.Show("This fertilizer is already in the current mix.", "Already Added", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
@@ -108,6 +169,7 @@ namespace FertilizerCalculator
 
                 currentMix.Add(quantity);
                 UpdateNutrientTotals();
+                MarkMixModified();
 
                 // Optional: Show a status message
                 StatusText.Text = $"Added {selectedFertilizer.Name} to mix";
@@ -133,28 +195,38 @@ namespace FertilizerCalculator
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading mixes: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    QuarantineCorruptFile(mixesDbPath);
+                    MessageBox.Show($"Error loading mixes: {ex.Message}\n\nThe file was moved to {mixesDbPath}.corrupt and a fresh database will be used.",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
+        // Returns true if the proposed text is a valid partial/complete non-negative
+        // decimal number using the current culture's decimal separator.
+        private static bool IsValidDecimalText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return true;
+
+            string separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            if (text == separator)
+                return true; // user just typed the separator
+
+            return double.TryParse(text, NumberStyles.AllowDecimalPoint, CultureInfo.CurrentCulture, out _);
+        }
+
         private void DecimalInputValidation(object sender, TextCompositionEventArgs e)
         {
-            // Allow only digits and decimal point
-            Regex regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-
-            // Get the current text and the text that would result after the new input
             TextBox textBox = sender as TextBox;
-            string proposedText = textBox.Text.Insert(textBox.CaretIndex, e.Text);
+            if (textBox == null) { e.Handled = true; return; }
 
-            // Check if the proposed text is a valid decimal number
-            e.Handled = !regex.IsMatch(proposedText);
+            // Account for any selected text being replaced
+            string proposedText = textBox.Text
+                .Remove(textBox.SelectionStart, textBox.SelectionLength)
+                .Insert(textBox.SelectionStart, e.Text);
 
-            // Additional check to prevent multiple decimal points
-            if (e.Text == "." && textBox.Text.Contains("."))
-            {
-                e.Handled = true;
-            }
+            e.Handled = !IsValidDecimalText(proposedText);
         }
 
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -163,16 +235,29 @@ namespace FertilizerCalculator
             if (e.Key == Key.V && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                 TextBox textBox = sender as TextBox;
-                string clipboardText = Clipboard.GetText();
+                if (textBox == null || !Clipboard.ContainsText())
+                {
+                    e.Handled = true;
+                    return;
+                }
 
-                // Get the text that would result after pasting
-                string proposedText = textBox.Text.Substring(0, textBox.SelectionStart) +
-                                     clipboardText +
-                                     textBox.Text.Substring(textBox.SelectionStart + textBox.SelectionLength);
+                string clipboardText;
+                try
+                {
+                    clipboardText = Clipboard.GetText();
+                }
+                catch
+                {
+                    e.Handled = true;
+                    return;
+                }
 
-                // Check if the proposed text is a valid decimal number
-                Regex regex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-                if (!regex.IsMatch(proposedText))
+                // Get the text that would result after pasting (replacing any selection)
+                string proposedText = textBox.Text
+                    .Remove(textBox.SelectionStart, textBox.SelectionLength)
+                    .Insert(textBox.SelectionStart, clipboardText);
+
+                if (!IsValidDecimalText(proposedText))
                 {
                     e.Handled = true; // Prevent the paste operation
                 }
@@ -181,7 +266,7 @@ namespace FertilizerCalculator
 
         private void MixListBox_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if (e.Column.Header.ToString() == "Quantity (g/L)")
+            if (e.Column == QuantityColumn)
             {
                 if (e.EditingElement is TextBox textBox && e.Row.Item is FertilizerQuantity item)
                 {
@@ -189,6 +274,7 @@ namespace FertilizerCalculator
                     {
                         item.Quantity = quantity;
                         UpdateNutrientTotals();
+                        MarkMixModified();
                     }
                     else
                     {
@@ -212,6 +298,7 @@ namespace FertilizerCalculator
 
                     // Update nutrient totals
                     UpdateNutrientTotals();
+                    MarkMixModified();
 
                     // Update status
                     StatusText.Text = $"Removed {selectedItem.FertilizerName} from mix";
@@ -228,9 +315,10 @@ namespace FertilizerCalculator
             var dataGrid = sender as DataGrid;
             if (dataGrid == null) return;
 
-            // Get the clicked cell
+            // Get the clicked cell — Column is null when nothing is current
+            // (e.g. double-clicking an empty area of the grid)
             var cell = dataGrid.CurrentCell;
-            if (cell == null) return;
+            if (cell.Column == null) return;
 
             // Check if the clicked column is the fertilizer name column (first column)
             if (cell.Column.DisplayIndex == 0 && MixListBox.SelectedItem is FertilizerQuantity selectedItem)
@@ -238,6 +326,7 @@ namespace FertilizerCalculator
                 // Remove the selected item
                 currentMix.Remove(selectedItem);
                 UpdateNutrientTotals();
+                MarkMixModified();
 
                 // Update status
                 StatusText.Text = $"Removed {selectedItem.FertilizerName} from mix";
@@ -251,11 +340,7 @@ namespace FertilizerCalculator
         {
             try
             {
-                var serializer = new XmlSerializer(typeof(List<FertilizerMix>));
-                using (var writer = new StreamWriter(mixesDbPath))
-                {
-                    serializer.Serialize(writer, savedMixes.ToList());
-                }
+                SaveXml(savedMixes.ToList(), mixesDbPath);
             }
             catch (Exception ex)
             {
@@ -269,7 +354,7 @@ namespace FertilizerCalculator
             if (dialog.ShowDialog() == true)
             {
                 // Check for duplicate names
-                if (availableFertilizers.Any(f => f.Name == dialog.NewFertilizer.Name))
+                if (availableFertilizers.Any(f => string.Equals(f.Name, dialog.NewFertilizer.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     MessageBox.Show("A fertilizer with this name already exists.", "Duplicate Name", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -277,9 +362,9 @@ namespace FertilizerCalculator
                 
                 // Add the new fertilizer
                 availableFertilizers.Add(dialog.NewFertilizer);
-                
+
                 // Re-sort the list alphabetically
-                var sortedList = availableFertilizers.OrderBy(f => f.Name).ToList();
+                var sortedList = availableFertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
                 availableFertilizers.Clear();
                 foreach (var fertilizer in sortedList)
                 {
@@ -298,8 +383,8 @@ namespace FertilizerCalculator
                 if (dialog.ShowDialog() == true)
                 {
                     // Check for duplicate names if name changed
-                    if (dialog.NewFertilizer.Name != selectedFertilizer.Name && 
-                        availableFertilizers.Any(f => f.Name == dialog.NewFertilizer.Name))
+                    if (!string.Equals(dialog.NewFertilizer.Name, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase) && 
+                        availableFertilizers.Any(f => string.Equals(f.Name, dialog.NewFertilizer.Name, StringComparison.OrdinalIgnoreCase)))
                     {
                         MessageBox.Show("A fertilizer with this name already exists.", "Duplicate Name", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
@@ -308,9 +393,9 @@ namespace FertilizerCalculator
                     // Update the fertilizer
                     int index = availableFertilizers.IndexOf(selectedFertilizer);
                     availableFertilizers[index] = dialog.NewFertilizer;
-                    
+
                     // Re-sort the list alphabetically
-                    var sortedList = availableFertilizers.OrderBy(f => f.Name).ToList();
+                    var sortedList = availableFertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
                     availableFertilizers.Clear();
                     foreach (var fertilizer in sortedList)
                     {
@@ -334,7 +419,7 @@ namespace FertilizerCalculator
             // Update current mix
             foreach (var item in currentMix)
             {
-                if (item.FertilizerName == oldName)
+                if (string.Equals(item.FertilizerName, oldName, StringComparison.OrdinalIgnoreCase))
                 {
                     item.FertilizerName = newName;
                 }
@@ -345,7 +430,7 @@ namespace FertilizerCalculator
             {
                 foreach (var item in mix.Ingredients)
                 {
-                    if (item.FertilizerName == oldName)
+                    if (string.Equals(item.FertilizerName, oldName, StringComparison.OrdinalIgnoreCase))
                     {
                         item.FertilizerName = newName;
                     }
@@ -361,8 +446,8 @@ namespace FertilizerCalculator
             if (FertilizerListBox.SelectedItem is Fertilizer selectedFertilizer)
             {
                 // Check if the fertilizer is used in any mixes
-                bool isUsed = currentMix.Any(i => i.FertilizerName == selectedFertilizer.Name) ||
-                              savedMixes.Any(m => m.Ingredients.Any(i => i.FertilizerName == selectedFertilizer.Name));
+                bool isUsed = currentMix.Any(i => string.Equals(i.FertilizerName, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase)) ||
+                              savedMixes.Any(m => m.Ingredients.Any(i => string.Equals(i.FertilizerName, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase)));
                 
                 if (isUsed)
                 {
@@ -378,7 +463,7 @@ namespace FertilizerCalculator
                     // Remove from current mix
                     for (int i = currentMix.Count - 1; i >= 0; i--)
                     {
-                        if (currentMix[i].FertilizerName == selectedFertilizer.Name)
+                        if (string.Equals(currentMix[i].FertilizerName, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase))
                             currentMix.RemoveAt(i);
                     }
                     
@@ -387,7 +472,7 @@ namespace FertilizerCalculator
                     {
                         for (int i = mix.Ingredients.Count - 1; i >= 0; i--)
                         {
-                            if (mix.Ingredients[i].FertilizerName == selectedFertilizer.Name)
+                            if (string.Equals(mix.Ingredients[i].FertilizerName, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase))
                                 mix.Ingredients.RemoveAt(i);
                         }
                     }
@@ -410,7 +495,7 @@ namespace FertilizerCalculator
             if (FertilizerListBox.SelectedItem is Fertilizer selectedFertilizer)
             {
                 // Check if already in mix
-                if (currentMix.Any(i => i.FertilizerName == selectedFertilizer.Name))
+                if (currentMix.Any(i => string.Equals(i.FertilizerName, selectedFertilizer.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     MessageBox.Show("This fertilizer is already in the current mix.", "Already Added", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
@@ -424,6 +509,7 @@ namespace FertilizerCalculator
                 
                 currentMix.Add(quantity);
                 UpdateNutrientTotals();
+                MarkMixModified();
             }
             else
             {
@@ -437,6 +523,7 @@ namespace FertilizerCalculator
             {
                 currentMix.Remove(selectedItem);
                 UpdateNutrientTotals();
+                MarkMixModified();
             }
             else
             {
@@ -458,65 +545,72 @@ namespace FertilizerCalculator
 
         public void UpdateNutrientTotals()
         {
-            double totalN = 0, totalP = 0, totalK = 0, totalCa = 0, totalMg = 0, totalS = 0;
-            double totalB = 0, totalFe = 0, totalCu = 0, totalMn = 0, totalMo = 0, totalZn = 0;
-            double totalChlorine = 0, totalSilica = 0,totalHumicAcid = 0, totalFulvicAcid = 0;
-            
-            foreach (var item in currentMix)
+            var totals = MixCalculator.Calculate(currentMix, availableFertilizers, !isMetricUnits);
+
+            NitrogenValueTextBlock.Text = totals.Nitrogen.ToString("F2");
+            PhosphorusValueTextBlock.Text = totals.Phosphorus.ToString("F2");
+            PotassiumValueTextBlock.Text = totals.Potassium.ToString("F2");
+            CalciumValueTextBlock.Text = totals.Calcium.ToString("F2");
+            MagnesiumValueTextBlock.Text = totals.Magnesium.ToString("F2");
+            SulfurValueTextBlock.Text = totals.Sulfur.ToString("F2");
+            BoronValueTextBlock.Text = totals.Boron.ToString("F2");
+            CopperValueTextBlock.Text = totals.Copper.ToString("F2");
+            IronValueTextBlock.Text = totals.Iron.ToString("F2");
+            ManganeseValueTextBlock.Text = totals.Manganese.ToString("F2");
+            MolybdenumValueTextBlock.Text = totals.Molybdenum.ToString("F2");
+            ZincValueTextBlock.Text = totals.Zinc.ToString("F2");
+            ChlorineValueTextBlock.Text = totals.Chlorine.ToString("F2");
+            SilicaValueTextBlock.Text = totals.Silica.ToString("F2");
+            HumicAcidValueTextBlock.Text = totals.HumicAcid.ToString("F2");
+            FulvicAcidValueTextBlock.Text = totals.FulvicAcid.ToString("F2");
+            TotalPpmValueTextBlock.Text = totals.Total.ToString("F2");
+        }
+
+        private void CopyBreakdown_Click(object sender, RoutedEventArgs e)
+        {
+            var rows = new (string Name, TextBox Box)[]
             {
-                var fertilizer = availableFertilizers.FirstOrDefault(f => f.Name == item.FertilizerName);
-                if (fertilizer != null)
-                {
-                    double quantity = item.Quantity;
-                    totalN += fertilizer.NitrogenPpm * quantity;
-                    totalP += fertilizer.PhosphorusPpm * quantity;
-                    totalK += fertilizer.PotassiumPpm * quantity;
-                    totalCa += fertilizer.CalciumPpm * quantity;
-                    totalMg += fertilizer.MagnesiumPpm * quantity;
-                    totalS += fertilizer.SulfurPpm * quantity;
-                    totalB += fertilizer.BoronPpm * quantity;
-                    totalCu += fertilizer.CopperPpm * quantity;
-                    totalFe += fertilizer.IronPpm * quantity;
-                    totalMn += fertilizer.ManganesePpm * quantity;
-                    totalMo += fertilizer.MolybdenumPpm * quantity;
-                    totalZn += fertilizer.ZincPpm * quantity;
-                    totalChlorine += fertilizer.ChlorinePpm * quantity;
-                    totalSilica += fertilizer.SilicaPpm * quantity;
-                    totalHumicAcid += fertilizer.HumicAcidPpm * quantity;
-                    totalFulvicAcid += fertilizer.FulvicAcidPpm * quantity;
-                }
+                ("Nitrogen (N)", NitrogenValueTextBlock),
+                ("Phosphorus (P)", PhosphorusValueTextBlock),
+                ("Potassium (K)", PotassiumValueTextBlock),
+                ("Calcium (Ca)", CalciumValueTextBlock),
+                ("Magnesium (Mg)", MagnesiumValueTextBlock),
+                ("Sulfur (S)", SulfurValueTextBlock),
+                ("Boron (B)", BoronValueTextBlock),
+                ("Copper (Cu)", CopperValueTextBlock),
+                ("Iron (Fe)", IronValueTextBlock),
+                ("Manganese (Mn)", ManganeseValueTextBlock),
+                ("Molybdenum (Mo)", MolybdenumValueTextBlock),
+                ("Zinc (Zn)", ZincValueTextBlock),
+                ("Chlorine (Cl)", ChlorineValueTextBlock),
+                ("Silica (Si)", SilicaValueTextBlock),
+                ("Humic Acid", HumicAcidValueTextBlock),
+                ("Fulvic Acid", FulvicAcidValueTextBlock),
+                ("TOTAL PPM", TotalPpmValueTextBlock),
+            };
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine($"Nutrient\t{(isMetricUnits ? "PPM (per liter)" : "PPM (per gallon)")}");
+            foreach (var (name, box) in rows)
+                sb.AppendLine($"{name}\t{box.Text}");
+
+            try
+            {
+                Clipboard.SetText(sb.ToString());
+                StatusText.Text = "Nutrient breakdown copied to clipboard";
             }
-            
-            // Apply unit conversion if needed
-            double conversionFactor = isMetricUnits ? 1.0 : 1.0 / GALLON_TO_LITER;
-            
-            // Update UI
-            NitrogenValueTextBlock.Text = (totalN * conversionFactor).ToString("F2");
-            PhosphorusValueTextBlock.Text = (totalP * conversionFactor).ToString("F2");
-            PotassiumValueTextBlock.Text = (totalK * conversionFactor).ToString("F2");
-            CalciumValueTextBlock.Text = (totalCa * conversionFactor).ToString("F2");
-            MagnesiumValueTextBlock.Text = (totalMg * conversionFactor).ToString("F2");
-            SulfurValueTextBlock.Text = (totalS * conversionFactor).ToString("F2");
-            BoronValueTextBlock.Text = (totalB * conversionFactor).ToString("F2");
-            CopperValueTextBlock.Text = (totalCu * conversionFactor).ToString("F2");
-            IronValueTextBlock.Text = (totalFe * conversionFactor).ToString("F2");
-            ManganeseValueTextBlock.Text = (totalMn * conversionFactor).ToString("F2");
-            MolybdenumValueTextBlock.Text = (totalMo * conversionFactor).ToString("F2");
-            ZincValueTextBlock.Text = (totalZn * conversionFactor).ToString("F2");
-            ChlorineValueTextBlock.Text = (totalChlorine * conversionFactor).ToString("F2");
-            SilicaValueTextBlock.Text = (totalSilica * conversionFactor).ToString("F2");
-            HumicAcidValueTextBlock.Text = (totalHumicAcid * conversionFactor).ToString("F2");
-            FulvicAcidValueTextBlock.Text = (totalFulvicAcid * conversionFactor).ToString("F2");
-            
-            double totalPpm = totalN + totalP + totalK + totalCa + totalMg + totalS + 
-                             totalB + totalCu + totalFe + totalMn + totalMo +totalZn + 
-                             totalChlorine + totalSilica +totalHumicAcid + totalFulvicAcid;
-            TotalPpmValueTextBlock.Text = (totalPpm * conversionFactor).ToString("F2");
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not access the clipboard: {ex.Message}", "Copy Failed",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void UnitToggleButton_Click(object sender, RoutedEventArgs e)
         {
             isMetricUnits = !isMetricUnits;
+            Settings.Default.UnitPreference = !isMetricUnits;
+            Settings.Default.Save();
             UpdateUnitDisplay();
             UpdateNutrientTotals();
         }
@@ -524,7 +618,8 @@ namespace FertilizerCalculator
         private void UpdateUnitDisplay()
         {
             UnitToggleButton.Content = isMetricUnits ? "Switch to Gallon" : "Switch to Liter";
-            UnitLabel.Text = isMetricUnits ? "PPM (mg/L)" : "PPM (mg/gal)";
+            UnitLabel.Text = isMetricUnits ? "PPM (mg/L) — quantities in g or mL/L" : "PPM (mg/L) — quantities in g or mL/gal";
+            QuantityColumn.Header = isMetricUnits ? "Quantity (g or mL/L)" : "Quantity (g or mL/gal)";
         }
 
         private void SaveMixButton_Click(object sender, RoutedEventArgs e)
@@ -535,52 +630,56 @@ namespace FertilizerCalculator
                 return;
             }
             
-            var dialog = new SaveMixWindow();
+            var dialog = new SaveMixWindow(savedMixes.Select(m => m.Name));
             if (dialog.ShowDialog() == true)
             {
                 string mixName = dialog.MixName;
-                
-                // Check for duplicate names
-                if (savedMixes.Any(m => m.Name == mixName))
+
+                // If the name matches an existing mix, offer to update it in place
+                var existingMix = savedMixes.FirstOrDefault(m => string.Equals(m.Name, mixName, StringComparison.OrdinalIgnoreCase));
+                if (existingMix != null)
                 {
                     var result = MessageBox.Show(
-                        "A mix with this name already exists. Do you want to overwrite it?",
-                        "Duplicate Name",
+                        $"Update the saved mix '{existingMix.Name}' with the current mix?",
+                        "Update Mix",
                         MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning);
-                    
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        // Remove existing mix
-                        var existingMix = savedMixes.First(m => m.Name == mixName);
-                        savedMixes.Remove(existingMix);
-                    }
-                    else
-                    {
+                        MessageBoxImage.Question);
+
+                    if (result != MessageBoxResult.Yes)
                         return;
-                    }
+
+                    // Replace the existing mix's ingredients (keeping it in place)
+                    existingMix.Name = mixName;
+                    existingMix.Ingredients = currentMix.Select(item => new FertilizerQuantity
+                    {
+                        FertilizerName = item.FertilizerName,
+                        Quantity = item.Quantity
+                    }).ToList();
+
+                    SaveMixes();
+                    loadedMixName = mixName;
+                    UpdateCurrentMixLabel();
+                    SavedMixesComboBox.SelectedItem = existingMix;
+                    StatusText.Text = $"Updated mix '{mixName}'";
+                    return;
                 }
-                
+
                 // Create new mix
                 var newMix = new FertilizerMix
                 {
                     Name = mixName,
-                    Ingredients = new List<FertilizerQuantity>()
-                };
-                
-                // Copy ingredients
-                foreach (var item in currentMix)
-                {
-                    newMix.Ingredients.Add(new FertilizerQuantity
+                    Ingredients = currentMix.Select(item => new FertilizerQuantity
                     {
                         FertilizerName = item.FertilizerName,
                         Quantity = item.Quantity
-                    });
-                }
-                
+                    }).ToList()
+                };
+
                 savedMixes.Add(newMix);
                 SaveMixes();
-                
+                loadedMixName = mixName;
+                UpdateCurrentMixLabel();
+
                 // Update combobox selection
                 SavedMixesComboBox.SelectedItem = newMix;
             }
@@ -607,10 +706,11 @@ namespace FertilizerCalculator
                 currentMix.Clear();
                 
                 // Add ingredients from selected mix
+                int skipped = 0;
                 foreach (var ingredient in selectedMix.Ingredients)
                 {
                     // Verify the fertilizer still exists
-                    if (availableFertilizers.Any(f => f.Name == ingredient.FertilizerName))
+                    if (availableFertilizers.Any(f => string.Equals(f.Name, ingredient.FertilizerName, StringComparison.OrdinalIgnoreCase)))
                     {
                         currentMix.Add(new FertilizerQuantity
                         {
@@ -618,9 +718,18 @@ namespace FertilizerCalculator
                             Quantity = ingredient.Quantity
                         });
                     }
+                    else
+                    {
+                        skipped++;
+                    }
                 }
                 
+                loadedMixName = selectedMix.Name;
+                UpdateCurrentMixLabel();
                 UpdateNutrientTotals();
+
+                if (skipped > 0)
+                    StatusText.Text = $"Loaded '{selectedMix.Name}' ({skipped} ingredient(s) skipped — fertilizer not found)";
             }
             else
             {
@@ -659,7 +768,7 @@ namespace FertilizerCalculator
             }
 
             // Open the comparison window
-            var compareWindow = new CompareMixesWindow(savedMixes.ToList(), availableFertilizers.ToList());
+            var compareWindow = new CompareMixesWindow(savedMixes.ToList(), availableFertilizers.ToList(), isMetricUnits);
             compareWindow.Owner = this;
             compareWindow.ShowDialog();
         }
@@ -711,12 +820,14 @@ namespace FertilizerCalculator
             {
                 try
                 {
-                    // Deserialize import data
-                    var serializer = new XmlSerializer(typeof(ExportData));
-                    ExportData importData;
-                    using (var reader = new StreamReader(dialog.FileName))
+                    // Deserialize import data (accepts ExportData files or raw
+                    // Fertilizers.xml / Mixes.xml database files)
+                    ExportData importData = DeserializeImportFile(dialog.FileName);
+                    if (importData == null)
                     {
-                        importData = (ExportData)serializer.Deserialize(reader);
+                        MessageBox.Show("The selected file is not a recognized FertCalculator data file.",
+                            "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
                     }
                     
                     // Ask user what to import
@@ -731,7 +842,7 @@ namespace FertilizerCalculator
                         {
                             foreach (var fertilizer in importData.Fertilizers)
                             {
-                                if (!availableFertilizers.Any(f => f.Name == fertilizer.Name))
+                                if (!availableFertilizers.Any(f => string.Equals(f.Name, fertilizer.Name, StringComparison.OrdinalIgnoreCase)))
                                 {
                                     availableFertilizers.Add(fertilizer);
                                     importedFertilizers++;
@@ -739,7 +850,7 @@ namespace FertilizerCalculator
                             }
                             
                             // Sort the fertilizers alphabetically after import
-                            var sortedFertilizers = availableFertilizers.OrderBy(f => f.Name).ToList();
+                            var sortedFertilizers = availableFertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
                             availableFertilizers.Clear();
                             foreach (var fertilizer in sortedFertilizers)
                             {
@@ -754,13 +865,13 @@ namespace FertilizerCalculator
                         {
                             foreach (var mix in importData.Mixes)
                             {
-                                if (!savedMixes.Any(m => m.Name == mix.Name))
+                                if (!savedMixes.Any(m => string.Equals(m.Name, mix.Name, StringComparison.OrdinalIgnoreCase)))
                                 {
                                     // Verify all ingredients exist
                                     bool allIngredientsExist = true;
                                     foreach (var ingredient in mix.Ingredients)
                                     {
-                                        if (!availableFertilizers.Any(f => f.Name == ingredient.FertilizerName))
+                                        if (!availableFertilizers.Any(f => string.Equals(f.Name, ingredient.FertilizerName, StringComparison.OrdinalIgnoreCase)))
                                         {
                                             allIngredientsExist = false;
                                             break;
@@ -791,6 +902,45 @@ namespace FertilizerCalculator
             }
         }
 
+        // Tries to read the file as an ExportData document, then falls back to the
+        // raw database formats (ArrayOfFertilizer / ArrayOfFertilizerMix).
+        private static ExportData DeserializeImportFile(string path)
+        {
+            try
+            {
+                var serializer = new XmlSerializer(typeof(ExportData));
+                using (var reader = new StreamReader(path))
+                {
+                    return (ExportData)serializer.Deserialize(reader);
+                }
+            }
+            catch (InvalidOperationException) { }
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(List<Fertilizer>));
+                using (var reader = new StreamReader(path))
+                {
+                    var fertilizers = (List<Fertilizer>)serializer.Deserialize(reader);
+                    return new ExportData { Fertilizers = fertilizers };
+                }
+            }
+            catch (InvalidOperationException) { }
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(List<FertilizerMix>));
+                using (var reader = new StreamReader(path))
+                {
+                    var mixes = (List<FertilizerMix>)serializer.Deserialize(reader);
+                    return new ExportData { Mixes = mixes };
+                }
+            }
+            catch (InvalidOperationException) { }
+
+            return null;
+        }
+
         private void ClearMixButton_Click(object sender, RoutedEventArgs e)
         {
             if (currentMix.Count > 0)
@@ -805,6 +955,7 @@ namespace FertilizerCalculator
                 {
                     currentMix.Clear();
                     UpdateNutrientTotals();
+                    MarkMixModified();
                     StatusText.Text = $"Cleared mix";
                 }
             }

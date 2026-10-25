@@ -19,125 +19,40 @@ namespace FertCalculatorMaui
             BindingContext = viewModel;
         }
 
-        private void OnIncrement10GramClicked(object sender, EventArgs e)
+        // Parses the entry text using the device culture first, then invariant,
+        // so both "." and locale decimal separators (e.g. ",") work.
+        private static bool TryParseQuantity(string? text, out double value)
+        {
+            return double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value)
+                || double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+        }
+
+        private void AdjustQuantity(double delta)
         {
             var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
+            if (TryParseQuantity(textValue, out double value))
             {
-                value += 10.0;
+                value = Math.Max(0, value + delta);
                 viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
+                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.CurrentCulture));
             }
         }
 
-        private void OnIncrement5GramClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value += 5.0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnIncrementGramClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value += 1.0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnIncrementSmallClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value += 0.1;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnIncrementExtraSmallClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value += 0.01;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnDecrement10GramClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value -= 10.0;
-                if (value < 0) value = 0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnDecrement5GramClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value -= 5.0;
-                if (value < 0) value = 0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnDecrementGramClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value -= 1.0;
-                if (value < 0) value = 0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnDecrementSmallClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value -= 0.1;
-                if (value < 0) value = 0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
-
-        private void OnDecrementExtraSmallClicked(object sender, EventArgs e)
-        {
-            var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-            {
-                value -= 0.01;
-                if (value < 0) value = 0;
-                viewModel.Quantity = value;
-                QuantityEntry.SetValue(Entry.TextProperty, value.ToString("F3", CultureInfo.InvariantCulture));
-            }
-        }
+        private void OnIncrement10GramClicked(object sender, EventArgs e) => AdjustQuantity(10.0);
+        private void OnIncrement5GramClicked(object sender, EventArgs e) => AdjustQuantity(5.0);
+        private void OnIncrementGramClicked(object sender, EventArgs e) => AdjustQuantity(1.0);
+        private void OnIncrementSmallClicked(object sender, EventArgs e) => AdjustQuantity(0.1);
+        private void OnIncrementExtraSmallClicked(object sender, EventArgs e) => AdjustQuantity(0.01);
+        private void OnDecrement10GramClicked(object sender, EventArgs e) => AdjustQuantity(-10.0);
+        private void OnDecrement5GramClicked(object sender, EventArgs e) => AdjustQuantity(-5.0);
+        private void OnDecrementGramClicked(object sender, EventArgs e) => AdjustQuantity(-1.0);
+        private void OnDecrementSmallClicked(object sender, EventArgs e) => AdjustQuantity(-0.1);
+        private void OnDecrementExtraSmallClicked(object sender, EventArgs e) => AdjustQuantity(-0.01);
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
             var textValue = QuantityEntry.GetValue(Entry.TextProperty) as string;
-            if (double.TryParse(textValue, NumberStyles.Any, CultureInfo.InvariantCulture, out double newQuantity))
+            if (TryParseQuantity(textValue, out double newQuantity))
             {
                 QuantityChanged?.Invoke(this, new QuantityChangedEventArgs(viewModel.FertilizerName, newQuantity));
                 await Navigation.PopAsync();

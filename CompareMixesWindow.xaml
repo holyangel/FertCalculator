@@ -3,6 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Compare Mixes" Height="700" Width="800"
         Background="#1E1E1E">
+    <Window.Resources>
+        <Style x:Key="SelectableValue" TargetType="TextBox">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Cursor" Value="IBeam"/>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -34,6 +46,8 @@
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
                 <TextBlock Text="Units:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                 <Button x:Name="UnitToggleButton" Content="PPM per Liter" Width="120" Height="30" Click="UnitToggleButton_Click"/>
+                <Button Content="Copy" Width="60" Height="30" Margin="10,0,0,0" Click="CopyComparison_Click"
+                        ToolTip="Copy the nutrient comparison to the clipboard"/>
             </StackPanel>
         </Grid>
 
@@ -59,7 +73,7 @@
                 <DataGrid x:Name="FirstMixIngredientsGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Fertilizer" Binding="{Binding FertilizerName}" Width="*"/>
-                        <DataGridTextColumn Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=N2}" Width="100"/>
+                        <DataGridTextColumn x:Name="FirstMixQuantityColumn" Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=F2}" Width="100"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -79,7 +93,7 @@
                 <DataGrid x:Name="SecondMixIngredientsGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Fertilizer" Binding="{Binding FertilizerName}" Width="*"/>
-                        <DataGridTextColumn Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=N2}" Width="100"/>
+                        <DataGridTextColumn x:Name="SecondMixQuantityColumn" Header="Quantity (g/L)" Binding="{Binding Quantity, StringFormat=F2}" Width="100"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -116,78 +130,78 @@
 
             <!-- Header -->
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Nutrient" FontWeight="Bold" Margin="5"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Text="Mix 1 (PPM/L)" FontWeight="Bold" Margin="5"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" Text="Mix 2 (PPM/L)" FontWeight="Bold" Margin="5"/>
+            <TextBlock x:Name="Mix1HeaderTextBlock" Grid.Row="0" Grid.Column="1" Text="Mix 1 (PPM/L)" FontWeight="Bold" Margin="5"/>
+            <TextBlock x:Name="Mix2HeaderTextBlock" Grid.Row="0" Grid.Column="2" Text="Mix 2 (PPM/L)" FontWeight="Bold" Margin="5"/>
 
             <!-- Nutrients -->
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Nitrogen (N)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixNitrogenTextBlock" Grid.Row="1" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixNitrogenTextBlock" Grid.Row="1" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixNitrogenTextBlock" Grid.Row="1" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixNitrogenTextBlock" Grid.Row="1" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0" Text="Phosphorus (P)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixPhosphorusTextBlock" Grid.Row="2" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixPhosphorusTextBlock" Grid.Row="2" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixPhosphorusTextBlock" Grid.Row="2" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixPhosphorusTextBlock" Grid.Row="2" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="3" Grid.Column="0" Text="Potassium (K)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixPotassiumTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixPotassiumTextBlock" Grid.Row="3" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixPotassiumTextBlock" Grid.Row="3" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixPotassiumTextBlock" Grid.Row="3" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="4" Grid.Column="0" Text="Calcium (Ca)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixCalciumTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixCalciumTextBlock" Grid.Row="4" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixCalciumTextBlock" Grid.Row="4" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixCalciumTextBlock" Grid.Row="4" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="5" Grid.Column="0" Text="Magnesium (Mg)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixMagnesiumTextBlock" Grid.Row="5" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixMagnesiumTextBlock" Grid.Row="5" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixMagnesiumTextBlock" Grid.Row="5" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixMagnesiumTextBlock" Grid.Row="5" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="6" Grid.Column="0" Text="Sulfur (S)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixSulfurTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixSulfurTextBlock" Grid.Row="6" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixSulfurTextBlock" Grid.Row="6" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixSulfurTextBlock" Grid.Row="6" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="7" Grid.Column="0" Text="Boron (B)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixBoronTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixBoronTextBlock" Grid.Row="7" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixBoronTextBlock" Grid.Row="7" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixBoronTextBlock" Grid.Row="7" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="8" Grid.Column="0" Text="Copper (Cu)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixCopperTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixCopperTextBlock" Grid.Row="8" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixCopperTextBlock" Grid.Row="8" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixCopperTextBlock" Grid.Row="8" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="9" Grid.Column="0" Text="Iron (Fe)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixIronTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixIronTextBlock" Grid.Row="9" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixIronTextBlock" Grid.Row="9" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixIronTextBlock" Grid.Row="9" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="10" Grid.Column="0" Text="Manganese (Mn)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixManganeseTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixManganeseTextBlock" Grid.Row="10" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixManganeseTextBlock" Grid.Row="10" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixManganeseTextBlock" Grid.Row="10" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="11" Grid.Column="0" Text="Molybdenum (Mo)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixMolybdenumTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixMolybdenumTextBlock" Grid.Row="11" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixMolybdenumTextBlock" Grid.Row="11" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixMolybdenumTextBlock" Grid.Row="11" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="12" Grid.Column="0" Text="Zinc (Zn)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixZincTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixZincTextBlock" Grid.Row="12" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixZincTextBlock" Grid.Row="12" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixZincTextBlock" Grid.Row="12" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="13" Grid.Column="0" Text="Chlorine (Cl)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixChlorineTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixChlorineTextBlock" Grid.Row="13" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixChlorineTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixChlorineTextBlock" Grid.Row="13" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="14" Grid.Column="0" Text="Silica (Si)" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixSilicaTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixSilicaTextBlock" Grid.Row="14" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixSilicaTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixSilicaTextBlock" Grid.Row="14" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="15" Grid.Column="0" Text="Humic Acid" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixHumicAcidTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixHumicAcidTextBlock" Grid.Row="15" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixHumicAcidTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixHumicAcidTextBlock" Grid.Row="15" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <TextBlock Grid.Row="16" Grid.Column="0" Text="Fulvic Acid" Margin="0,0,10,2"/>
-            <TextBlock x:Name="FirstMixFulvicAcidTextBlock" Grid.Row="16" Grid.Column="1" Text="0.00" Margin="0,0,0,2"/>
-            <TextBlock x:Name="SecondMixFulvicAcidTextBlock" Grid.Row="16" Grid.Column="2" Text="0.00" Margin="0,0,0,2"/>
+            <TextBox x:Name="FirstMixFulvicAcidTextBlock" Grid.Row="16" Grid.Column="1" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixFulvicAcidTextBlock" Grid.Row="16" Grid.Column="2" Text="0.00" Margin="0,0,0,2" Style="{StaticResource SelectableValue}"/>
 
             <!-- Total PPM -->
             <TextBlock Grid.Row="17" Grid.Column="0" Text="Total PPM" FontWeight="Bold" Margin="0,5,10,0"/>
-            <TextBlock x:Name="FirstMixTotalPpmTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" FontWeight="Bold" Margin="0,5,0,0"/>
-            <TextBlock x:Name="SecondMixTotalPpmTextBlock" Grid.Row="17" Grid.Column="2" Text="0.00" FontWeight="Bold" Margin="0,5,0,0"/>
+            <TextBox x:Name="FirstMixTotalPpmTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" FontWeight="Bold" Margin="0,5,0,0" Style="{StaticResource SelectableValue}"/>
+            <TextBox x:Name="SecondMixTotalPpmTextBlock" Grid.Row="17" Grid.Column="2" Text="0.00" FontWeight="Bold" Margin="0,5,0,0" Style="{StaticResource SelectableValue}"/>
         </Grid>
     </Grid>
 </Window>

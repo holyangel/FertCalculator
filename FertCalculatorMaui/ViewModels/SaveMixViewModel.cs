@@ -148,30 +148,30 @@ namespace FertCalculatorMaui.ViewModels
                 IsSaving = true;
                 ErrorMessage = string.Empty;
                 
-                // Check if we're overwriting an existing mix or creating a new one
-                FertilizerMix mixToSave;
-                bool isNewMix = true;
-                
-                if (SelectedMix != null && OverwriteExisting)
+                // Load current mixes and check the typed name (not just the
+                // dropdown selection) so duplicates can't slip through
+                var mixes = await _fileService.LoadMixesAsync();
+                int existingIndex = mixes.ToList().FindIndex(m =>
+                    string.Equals(m.Name, MixName?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                if (existingIndex >= 0 && !OverwriteExisting)
                 {
-                    // Overwrite existing mix
-                    mixToSave = SelectedMix;
-                    mixToSave.Ingredients.Clear();
-                    isNewMix = false;
-                    System.Diagnostics.Debug.WriteLine($"Overwriting existing mix: {mixToSave.Name}");
-                }
-                else
-                {
-                    // Create a new mix
-                    mixToSave = new FertilizerMix
+                    ErrorMessage = "A mix with this name already exists. Select it and enable overwrite, or choose a different name.";
+                    SaveCompletedEvent?.Invoke(this, new SaveMixResult
                     {
-                        Name = MixName,
-                        Ingredients = new List<FertilizerQuantity>()
-                    };
-                    System.Diagnostics.Debug.WriteLine($"Creating new mix: {mixToSave.Name}");
+                        Success = false,
+                        ErrorMessage = ErrorMessage
+                    });
+                    return;
                 }
-                
-                // Add all the ingredients to the mix
+
+                // Always build a fresh mix keyed on the typed name
+                var mixToSave = new FertilizerMix
+                {
+                    Name = MixName.Trim(),
+                    Ingredients = new List<FertilizerQuantity>()
+                };
+
                 foreach (var ingredient in _ingredients)
                 {
                     mixToSave.Ingredients.Add(new FertilizerQuantity
@@ -180,31 +180,16 @@ namespace FertCalculatorMaui.ViewModels
                         Quantity = ingredient.Quantity
                     });
                 }
-                
-                // Load current mixes
-                var mixes = await _fileService.LoadMixesAsync();
-                
-                // If this is a new mix, add it to the collection
-                if (isNewMix)
+
+                if (existingIndex >= 0)
                 {
-                    mixes.Add(mixToSave);
-                    System.Diagnostics.Debug.WriteLine($"Added new mix to collection");
+                    mixes[existingIndex] = mixToSave;
+                    System.Diagnostics.Debug.WriteLine($"Overwrote existing mix at index {existingIndex}");
                 }
                 else
                 {
-                    // If we're overwriting, we need to update by name since there's no Id property
-                    var existingMixIndex = mixes.IndexOf(mixes.FirstOrDefault(m => m.Name == mixToSave.Name));
-                    if (existingMixIndex >= 0)
-                    {
-                        mixes[existingMixIndex] = mixToSave;
-                        System.Diagnostics.Debug.WriteLine($"Updated existing mix at index {existingMixIndex}");
-                    }
-                    else
-                    {
-                        // Mix wasn't found, add it
-                        mixes.Add(mixToSave);
-                        System.Diagnostics.Debug.WriteLine($"Mix not found for update, adding as new");
-                    }
+                    mixes.Add(mixToSave);
+                    System.Diagnostics.Debug.WriteLine($"Added new mix to collection");
                 }
                 
                 // Save the mixes

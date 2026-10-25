@@ -111,20 +111,14 @@ public partial class MainPage : ContentPage
     {
         try
         {
+            // FileService seeds the embedded defaults on first run
             var fertilizers = await fileService.LoadFertilizersAsync();
-            
-            // If no fertilizers are found, try to import the default ones
-            if (fertilizers == null || fertilizers.Count == 0)
-            {
-                Debug.WriteLine("No fertilizers found. Attempting to import default fertilizers.");
-                fertilizers = await ImportDefaultFertilizersAsync();
-            }
             
             if (fertilizers != null)
             {
                 viewModel.AvailableFertilizers.Clear();
                 // Sort fertilizers alphabetically by name before adding to the collection
-                foreach (var fertilizer in fertilizers.OrderBy(f => f.Name))
+                foreach (var fertilizer in fertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()))
                 {
                     viewModel.AvailableFertilizers.Add(fertilizer);
                 }
@@ -135,54 +129,6 @@ public partial class MainPage : ContentPage
             Debug.WriteLine($"Error loading fertilizers: {ex.Message}\n{ex.StackTrace}");
             await dialogService.DisplayAlertAsync("Error", $"Failed to load fertilizers: {ex.Message}", "OK");
         }
-    }
-
-    private async Task<List<Fertilizer>> ImportDefaultFertilizersAsync()
-    {
-        try
-        {
-            // List all embedded resources to help diagnose issues
-            var resourceNames = GetType().Assembly.GetManifestResourceNames();
-            Debug.WriteLine($"Available embedded resources ({resourceNames.Length}):");
-            foreach (var resourceName in resourceNames)
-            {
-                Debug.WriteLine($"  - {resourceName}");
-            }
-            
-            // Get the embedded Fertilizers.xml resource
-            using (Stream resourceStream = GetType().Assembly.GetManifestResourceStream("FertCalculatorMaui.Fertilizers.xml"))
-            {
-                if (resourceStream != null)
-                {
-                    Debug.WriteLine("Found embedded Fertilizers.xml resource. Importing...");
-                    
-                    var importResult = await fileService.ImportDataAsync(resourceStream);
-                    
-                    if (importResult.Success && importResult.ImportedData?.Fertilizers?.Count > 0)
-                    {
-                        Debug.WriteLine($"Successfully imported {importResult.ImportedData.Fertilizers.Count} default fertilizers");
-                        
-                        // Save the imported fertilizers
-                        await fileService.SaveFertilizersAsync(importResult.ImportedData.Fertilizers);
-                        return importResult.ImportedData.Fertilizers;
-                    }
-                    
-                    Debug.WriteLine("Failed to import default fertilizers from embedded resource");
-                }
-                else
-                {
-                    Debug.WriteLine("Embedded Fertilizers.xml resource not found");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error importing default fertilizers: {ex.Message}\n{ex.StackTrace}");
-            await dialogService.DisplayAlertAsync("Error", 
-                "Failed to import default fertilizers. The application may have limited functionality.", "OK");
-        }
-        
-        return new List<Fertilizer>();
     }
 
     private async Task LoadMixesAsync()
@@ -215,7 +161,7 @@ public partial class MainPage : ContentPage
             
             editPage.QuantityChanged += (s, args) =>
             {
-                var item = viewModel.CurrentMix.FirstOrDefault(f => f.FertilizerName == args.FertilizerName);
+                var item = viewModel.CurrentMix.FirstOrDefault(f => string.Equals(f.FertilizerName, args.FertilizerName, StringComparison.OrdinalIgnoreCase));
                 if (item != null)
                 {
                     item.Quantity = args.NewQuantity;

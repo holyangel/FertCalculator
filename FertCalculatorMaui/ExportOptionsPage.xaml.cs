@@ -206,7 +206,7 @@ public partial class ExportOptionsViewModel : INotifyPropertyChanged
             }
             
             // Create export data
-            var exportData = new Services.ExportData();
+            var exportData = new FertCalculator.Core.ExportData();
             
             if (ExportFertilizers)
             {

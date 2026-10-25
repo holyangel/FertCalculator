@@ -20,7 +20,7 @@
             <VerticalStackLayout Spacing="10" BackgroundColor="Black">
                 <Entry x:Name="QuantityEntry" 
                        Text="{Binding Source={x:Reference editQuantityPage}, Path=BindingContext.Quantity, StringFormat='{0:F3}'}"
-                       Placeholder="Enter quantity in grams"
+                       Placeholder="Enter quantity (g or mL)"
                        Keyboard="Numeric"
                        BackgroundColor="Black"
                        HorizontalTextAlignment="Center" />

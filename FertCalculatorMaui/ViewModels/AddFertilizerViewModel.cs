@@ -12,6 +12,7 @@ public partial class AddFertilizerViewModel : ObservableObject
 {
     private readonly FileService fileService;
     private readonly IDialogService dialogService;
+    private Fertilizer? editingFertilizer;
     private static readonly Regex _decimalRegex = new(@"^-?\d*\.?\d*$", RegexOptions.Compiled);
 
     [ObservableProperty]
@@ -77,16 +78,28 @@ public partial class AddFertilizerViewModel : ObservableObject
     [ObservableProperty]
     private double fulvicAcidPercent;
 
+    [ObservableProperty]
+    private bool isLiquid;
+
+    [ObservableProperty]
+    private double density = 1.0;
+
     public AddFertilizerViewModel(FileService fileService, IDialogService dialogService)
     {
         this.fileService = fileService;
         this.dialogService = dialogService;
+
+        // Default new fertilizers to oxide form for P and K, matching the desktop
+        // app and typical US fertilizer labels.
+        IsPhosphorusInOxideForm = true;
+        IsPotassiumInOxideForm = true;
     }
 
     public void LoadExistingFertilizer(Fertilizer fertilizer)
     {
         if (fertilizer == null) return;
 
+        editingFertilizer = fertilizer;
         Name = fertilizer.Name;
         NitrogenPercent = fertilizer.NitrogenPercent;
         
@@ -94,11 +107,23 @@ public partial class AddFertilizerViewModel : ObservableObject
         IsPhosphorusInOxideForm = fertilizer.IsPhosphorusInOxideForm;
         OriginalPhosphorusValue = fertilizer.OriginalPhosphorusValue;
         PhosphorusPercent = fertilizer.PhosphorusPercent;
+
+        // Backfill the original label value for legacy entries that predate it,
+        // so re-saving doesn't zero out the nutrient
+        if (IsPhosphorusInOxideForm && OriginalPhosphorusValue == 0 && PhosphorusPercent > 0)
+        {
+            OriginalPhosphorusValue = PhosphorusPercent / Fertilizer.P2O5ToP(1);
+        }
         
         // Handle potassium with oxide form
         IsPotassiumInOxideForm = fertilizer.IsPotassiumInOxideForm;
         OriginalPotassiumValue = fertilizer.OriginalPotassiumValue;
         PotassiumPercent = fertilizer.PotassiumPercent;
+
+        if (IsPotassiumInOxideForm && OriginalPotassiumValue == 0 && PotassiumPercent > 0)
+        {
+            OriginalPotassiumValue = PotassiumPercent / Fertilizer.K2OToK(1);
+        }
         
         CalciumPercent = fertilizer.CalciumPercent;
         MagnesiumPercent = fertilizer.MagnesiumPercent;
@@ -113,6 +138,8 @@ public partial class AddFertilizerViewModel : ObservableObject
         SilicaPercent = fertilizer.SilicaPercent;
         HumicAcidPercent = fertilizer.HumicAcidPercent;
         FulvicAcidPercent = fertilizer.FulvicAcidPercent;
+        IsLiquid = fertilizer.IsLiquid;
+        Density = fertilizer.Density > 0 ? fertilizer.Density : 1.0;
     }
 
     [RelayCommand]
@@ -131,9 +158,22 @@ public partial class AddFertilizerViewModel : ObservableObject
         }
 
         var fertilizers = await fileService.LoadFertilizersAsync();
-        
-        // Check if fertilizer name already exists
-        if (fertilizers.Any(f => f.Name.Equals(Name, StringComparison.OrdinalIgnoreCase)))
+
+        var existingByName = fertilizers.FirstOrDefault(f =>
+            string.Equals(f.Name, Name, StringComparison.OrdinalIgnoreCase));
+        bool isRename = editingFertilizer != null &&
+            !string.Equals(editingFertilizer.Name, Name, StringComparison.OrdinalIgnoreCase);
+
+        // Reject renames that would collide with a different existing fertilizer
+        if (isRename && existingByName != null)
+        {
+            await dialogService.DisplayAlertAsync("Error",
+                "A fertilizer with this name already exists.", "OK");
+            return;
+        }
+
+        // For new fertilizers, confirm before overwriting an existing entry
+        if (editingFertilizer == null && existingByName != null)
         {
             bool overwrite = await dialogService.DisplayConfirmationAsync("Warning", 
                 "A fertilizer with this name already exists. Do you want to overwrite it?", 
@@ -142,26 +182,36 @@ public partial class AddFertilizerViewModel : ObservableObject
                 return;
         }
 
-        // Create new fertilizer or update existing one
-        var fertilizer = fertilizers.FirstOrDefault(f => f.Name.Equals(Name, StringComparison.OrdinalIgnoreCase)) 
-                        ?? new Fertilizer { Name = Name };
+        Fertilizer fertilizer;
+        if (editingFertilizer != null)
+        {
+            // Drop the persisted copy stored under the old name (handles renames)
+            fertilizers.RemoveAll(f => string.Equals(f.Name, editingFertilizer.Name, StringComparison.OrdinalIgnoreCase));
+            fertilizer = editingFertilizer;
+            fertilizer.Name = Name;
+        }
+        else
+        {
+            fertilizer = existingByName ?? new Fertilizer { Name = Name };
+        }
 
         // Set nutrient values
         fertilizer.NitrogenPercent = NitrogenPercent;
         
-        // Handle phosphorus with oxide form
+        // Handle phosphorus with oxide form. The entry binds the raw label value
+        // (OriginalPhosphorusValue); store elemental P.
         fertilizer.IsPhosphorusInOxideForm = IsPhosphorusInOxideForm;
         fertilizer.OriginalPhosphorusValue = OriginalPhosphorusValue;
         fertilizer.PhosphorusPercent = IsPhosphorusInOxideForm ? 
             Fertilizer.P2O5ToP(OriginalPhosphorusValue) : 
-            PhosphorusPercent;
+            OriginalPhosphorusValue;
         
         // Handle potassium with oxide form
         fertilizer.IsPotassiumInOxideForm = IsPotassiumInOxideForm;
         fertilizer.OriginalPotassiumValue = OriginalPotassiumValue;
         fertilizer.PotassiumPercent = IsPotassiumInOxideForm ? 
             Fertilizer.K2OToK(OriginalPotassiumValue) : 
-            PotassiumPercent;
+            OriginalPotassiumValue;
         
         fertilizer.CalciumPercent = CalciumPercent;
         fertilizer.MagnesiumPercent = MagnesiumPercent;
@@ -176,6 +226,8 @@ public partial class AddFertilizerViewModel : ObservableObject
         fertilizer.SilicaPercent = SilicaPercent;
         fertilizer.HumicAcidPercent = HumicAcidPercent;
         fertilizer.FulvicAcidPercent = FulvicAcidPercent;
+        fertilizer.IsLiquid = IsLiquid;
+        fertilizer.Density = Density > 0 ? Density : 1.0;
 
         // Add to list if new
         if (!fertilizers.Contains(fertilizer))
@@ -219,12 +271,14 @@ public partial class AddFertilizerViewModel : ObservableObject
 
     private bool ValidateNumericEntries()
     {
-        // Validate all numeric entries
+        // Validate all numeric entries — P and K are validated on the raw label
+        // values the user actually typed (Original values), not the stored
+        // elemental conversions
         var numericProperties = new[]
         {
             NitrogenPercent,
-            PhosphorusPercent,
-            PotassiumPercent,
+            OriginalPhosphorusValue,
+            OriginalPotassiumValue,
             CalciumPercent,
             MagnesiumPercent,
             SulfurPercent,

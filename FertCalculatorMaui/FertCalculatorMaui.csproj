@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<TargetFrameworks>net9.0-android</TargetFrameworks>
+		<!-- Windows target for local development/verification builds -->
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
 
@@ -54,7 +56,7 @@
 		<!-- Android native library alignment -->
 		<AndroidSoLibNativeLibraryLoadMode>Deep</AndroidSoLibNativeLibraryLoadMode>
 		<AndroidSoLibNativeLibraryDirectories>lib\$(AndroidSoLibNativeLibraryLoadMode)</AndroidSoLibNativeLibraryDirectories>
-		<Title>FertilzerCalculator</Title>
+		<Title>FertCalculator</Title>
 		<Authors>HolyAngel</Authors>
 		<PackageProjectUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/holyangel/FertCalculator/tree/master/FertCalculatorMaui</RepositoryUrl>
@@ -108,8 +110,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\FertCalculator.Core\FertCalculator.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="FertCalculator.Core" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="HarfBuzzSharp" Version="8.3.0.1" />
-		<PackageReference Include="HarfBuzzSharp.NativeAssets.Win32" Version="8.3.0.1" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Win32" Version="8.3.0.1" Condition="$(TargetFramework.Contains('-windows'))" />
 		<PackageReference Include="LiveChartsCore" Version="2.0.0-beta.710" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-beta.710" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-beta.710" />
@@ -161,31 +171,23 @@
 		<PublishTrimmed>false</PublishTrimmed>
 		<RunAOTCompilation>false</RunAOTCompilation>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <RunAOTCompilation>False</RunAOTCompilation>
-	  <EnableLLVM>True</EnableLLVM>
-	  <Optimize>True</Optimize>
 	  <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
 	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <DebugType>none</DebugType>
-	  <Debugger>Native</Debugger>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|ARM64'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|ARM64'">
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <RunAOTCompilation>False</RunAOTCompilation>
-	  <EnableLLVM>True</EnableLLVM>
-	  <Optimize>True</Optimize>
 	  <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
 	  <AndroidKeyStore>False</AndroidKeyStore>
-	  <DebugType>none</DebugType>
-	  <Debugger>Native</Debugger>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
@@ -197,7 +199,7 @@
 	  <Debugger>Native</Debugger>
 	  <PublishTrimmed>False</PublishTrimmed>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|ARM64'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|ARM64'">
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
@@ -209,7 +211,7 @@
 	  <Debugger>Native</Debugger>
 	  <PublishTrimmed>False</PublishTrimmed>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
 	  <Optimize>True</Optimize>
 	</PropertyGroup>
 
