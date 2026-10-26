@@ -1691,8 +1691,8 @@
       <NitrogenPercent>10</NitrogenPercent>
       <PhosphorusPercent>13.092</PhosphorusPercent>
       <PotassiumPercent>16.602</PotassiumPercent>
-      <CalciumPercent>0.5</CalciumPercent>
-      <MagnesiumPercent>0</MagnesiumPercent>
+      <CalciumPercent>0</CalciumPercent>
+      <MagnesiumPercent>0.5</MagnesiumPercent>
       <SulfurPercent>0.8</SulfurPercent>
       <BoronPercent>0.02</BoronPercent>
       <CopperPercent>0.05</CopperPercent>
