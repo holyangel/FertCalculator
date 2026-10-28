@@ -1,19 +1,18 @@
 ﻿@page "/"
 @using System.Xml.Serialization
-@using FertCalculator.Core
-@inject HttpClient Http
+@inject AppState State
 @inject IJSRuntime JS
 
 <div class="container-fluid mt-3">
     <div class="d-flex align-items-center mb-3">
         <h3 class="mb-0 me-3">Fertilizer Calculator</h3>
         <button class="btn btn-outline-secondary btn-sm" @onclick="ToggleUnits">
-            @(useImperial ? "Switch to Liter" : "Switch to Gallon")
+            @(State.UseImperial ? "Switch to Liter" : "Switch to Gallon")
         </button>
-        <span class="ms-3 text-muted">@(useImperial ? "Quantities in g or mL per gallon" : "Quantities in g or mL per liter")</span>
+        <span class="ms-3 text-muted">@(State.UseImperial ? "Quantities in g or mL per gallon" : "Quantities in g or mL per liter")</span>
     </div>
 
-    @if (fertilizers == null)
+    @if (!State.IsLoaded)
     {
         <p><em>Loading fertilizer library…</em></p>
     }
@@ -47,8 +46,15 @@
                     <tbody>
                         @foreach (var item in currentMix)
                         {
-                            <tr>
-                                <td>@item.FertilizerName</td>
+                            var known = IsKnown(item.FertilizerName);
+                            <tr class="@(known ? "" : "table-warning")">
+                                <td>
+                                    @item.FertilizerName
+                                    @if (!known)
+                                    {
+                                        <span class="badge text-bg-warning ms-1" title="Not in fertilizer library — contributes no nutrients">not found</span>
+                                    }
+                                </td>
                                 <td><input type="number" step="0.01" class="form-control form-control-sm"
                                            @bind="item.Quantity" @bind:event="oninput" @bind:after="Recalc" /></td>
                                 <td><button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveItem(item)">×</button></td>
@@ -60,11 +66,11 @@
                 <div class="d-flex gap-2 mb-3 flex-wrap">
                     <input class="form-control form-control-sm" style="width:180px" placeholder="Mix name" @bind="mixName" />
                     <button class="btn btn-sm btn-primary" @onclick="SaveMix" disabled="@(currentMix.Count == 0 || string.IsNullOrWhiteSpace(mixName))">Save</button>
-                    @if (savedMixes.Count > 0)
+                    @if (State.SavedMixes.Count > 0)
                     {
                         <select class="form-select form-select-sm" style="width:180px" @bind="selectedMixName">
                             <option value="">— saved mixes —</option>
-                            @foreach (var m in savedMixes)
+                            @foreach (var m in State.SavedMixes)
                             {
                                 <option value="@m.Name">@m.Name</option>
                             }
@@ -72,7 +78,7 @@
                         <button class="btn btn-sm btn-outline-primary" @onclick="LoadMix" disabled="@(string.IsNullOrEmpty(selectedMixName))">Load</button>
                         <button class="btn btn-sm btn-outline-danger" @onclick="DeleteMix" disabled="@(string.IsNullOrEmpty(selectedMixName))">Delete</button>
                     }
-                    <button class="btn btn-sm btn-outline-secondary" @onclick="ExportXml" disabled="@(fertilizers.Count == 0 && savedMixes.Count == 0)">Export XML</button>
+                    <button class="btn btn-sm btn-outline-secondary" @onclick="ExportXml" disabled="@(State.Fertilizers.Count == 0 && State.SavedMixes.Count == 0)">Export XML</button>
                     <label class="btn btn-sm btn-outline-secondary mb-0">
                         Import XML
                         <input id="importFile" type="file" accept=".xml" style="display:none" @onchange="ImportXml" />
@@ -112,41 +118,22 @@
 </div>
 
 @code {
-    private List<Fertilizer> fertilizers = new();
-    private List<FertilizerMix> savedMixes = new();
     private List<FertilizerQuantity> currentMix = new();
     private NutrientTotals totals = new();
-    private bool useImperial;
     private string search = "";
     private string? loadedMixName;
     private string mixName = "";
     private string? selectedMixName;
     private string? status;
 
-    private const string MixesKey = "fertcalc.mixes";
-    private const string ImperialKey = "fertcalc.imperial";
-
     private IEnumerable<Fertilizer> FilteredFertilizers =>
-        fertilizers.Where(f => string.IsNullOrEmpty(search) ||
+        State.Fertilizers.Where(f => string.IsNullOrEmpty(search) ||
             (f.Name?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
 
     protected override async Task OnInitializedAsync()
     {
-        var serializer = new XmlSerializer(typeof(List<Fertilizer>));
-        await using var stream = await Http.GetStreamAsync("data/Fertilizers.xml");
-        fertilizers = (List<Fertilizer>)serializer.Deserialize(stream)!;
-        fertilizers = fertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
-
-        string? imperial = await JS.InvokeAsync<string?>("fertcalc.loadLocal", ImperialKey);
-        useImperial = imperial == "1";
-
-        var mixesXml = await JS.InvokeAsync<string?>("fertcalc.loadLocal", MixesKey);
-        if (!string.IsNullOrEmpty(mixesXml))
-        {
-            var mixSer = new XmlSerializer(typeof(List<FertilizerMix>));
-            using var reader = new StringReader(mixesXml);
-            savedMixes = (List<FertilizerMix>)mixSer.Deserialize(reader)!;
-        }
+        await State.EnsureLoaded();
+        Recalc();
     }
 
     private void AddToMix(Fertilizer f)
@@ -170,20 +157,22 @@
 
     private void Recalc()
     {
-        totals = MixCalculator.Calculate(currentMix, fertilizers, useImperial);
+        totals = MixCalculator.Calculate(currentMix, State.Fertilizers, State.UseImperial);
     }
+
+    private bool IsKnown(string name) =>
+        State.Fertilizers.Any(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase));
 
     private async Task ToggleUnits()
     {
-        useImperial = !useImperial;
-        await JS.InvokeVoidAsync("fertcalc.saveLocal", ImperialKey, useImperial ? "1" : "0");
+        await State.SetImperial(!State.UseImperial);
         Recalc();
     }
 
     private async Task SaveMix()
     {
         var name = mixName.Trim();
-        var existing = savedMixes.FirstOrDefault(m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
+        var existing = State.SavedMixes.FirstOrDefault(m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
         var ingredients = currentMix.Select(i => new FertilizerQuantity
         {
             FertilizerName = i.FertilizerName,
@@ -197,16 +186,16 @@
         }
         else
         {
-            savedMixes.Add(new FertilizerMix { Name = name, Ingredients = ingredients });
+            State.SavedMixes.Add(new FertilizerMix { Name = name, Ingredients = ingredients });
             status = $"Saved mix '{name}'.";
         }
         loadedMixName = name;
-        await PersistMixes();
+        await State.PersistMixes();
     }
 
     private void LoadMix()
     {
-        var mix = savedMixes.FirstOrDefault(m => m.Name == selectedMixName);
+        var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName);
         if (mix == null) return;
         currentMix = mix.Ingredients.Select(i => new FertilizerQuantity
         {
@@ -220,24 +209,16 @@
 
     private async Task DeleteMix()
     {
-        var mix = savedMixes.FirstOrDefault(m => m.Name == selectedMixName);
+        var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName);
         if (mix == null) return;
-        savedMixes.Remove(mix);
+        State.SavedMixes.Remove(mix);
         status = $"Deleted mix '{mix.Name}'.";
-        await PersistMixes();
-    }
-
-    private async Task PersistMixes()
-    {
-        var serializer = new XmlSerializer(typeof(List<FertilizerMix>));
-        using var writer = new StringWriter();
-        serializer.Serialize(writer, savedMixes);
-        await JS.InvokeVoidAsync("fertcalc.saveLocal", MixesKey, writer.ToString());
+        await State.PersistMixes();
     }
 
     private async Task ExportXml()
     {
-        var data = new ExportData { Fertilizers = fertilizers, Mixes = savedMixes };
+        var data = new ExportData { Fertilizers = State.Fertilizers, Mixes = State.SavedMixes };
         var serializer = new XmlSerializer(typeof(ExportData));
         using var writer = new StringWriter();
         serializer.Serialize(writer, data);
@@ -278,21 +259,21 @@
             int addedF = 0, addedM = 0;
             foreach (var f in data.Fertilizers)
             {
-                if (!fertilizers.Any(x => string.Equals(x.Name, f.Name, StringComparison.OrdinalIgnoreCase)))
+                if (!State.Fertilizers.Any(x => string.Equals(x.Name, f.Name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    fertilizers.Add(f);
+                    State.Fertilizers.Add(f);
                     addedF++;
                 }
             }
             foreach (var m in data.Mixes)
             {
-                if (!savedMixes.Any(x => string.Equals(x.Name, m.Name, StringComparison.OrdinalIgnoreCase)))
+                if (!State.SavedMixes.Any(x => string.Equals(x.Name, m.Name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    savedMixes.Add(m);
+                    State.SavedMixes.Add(m);
                     addedM++;
                 }
             }
-            await PersistMixes();
+            await State.PersistMixes();
             status = $"Imported {addedF} fertilizer(s), {addedM} mix(es).";
         }
         catch (Exception ex)
@@ -316,7 +297,7 @@
             ("TOTAL PPM", totals.Total),
         };
         var sb = new System.Text.StringBuilder();
-        sb.AppendLine($"Nutrient\t{(useImperial ? "PPM (per gallon)" : "PPM (per liter)")}");
+        sb.AppendLine($"Nutrient\t{(State.UseImperial ? "PPM (per gallon)" : "PPM (per liter)")}");
         foreach (var (n, v) in rows) sb.AppendLine($"{n}\t{v:F2}");
         await JS.InvokeVoidAsync("navigator.clipboard.writeText", sb.ToString());
         status = "Breakdown copied to clipboard.";

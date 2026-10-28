@@ -1,0 +1,272 @@
+@page "/reservoir"
+@inject AppState State
+@inject IJSRuntime JS
+
+<div class="container-fluid mt-3">
+    <div class="d-flex align-items-center mb-3">
+        <h3 class="mb-0 me-3">Reservoir Recipe</h3>
+        <button class="btn btn-outline-secondary btn-sm" @onclick="ToggleUnits">
+            @(State.UseImperial ? "Switch to Liter" : "Switch to Gallon")
+        </button>
+        <span class="ms-3 text-muted">Mix doses are @(State.UseImperial ? "per gallon" : "per liter")</span>
+    </div>
+
+    @if (!State.IsLoaded)
+    {
+        <p><em>Loading…</em></p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Reservoir</h5>
+                <div class="input-group input-group-sm mb-3" style="max-width:280px">
+                    <input type="number" step="any" min="0" class="form-control" @bind="reservoirSize" @bind:event="oninput" @bind:after="Recalc" />
+                    <select class="form-select" style="max-width:110px" @bind="reservoirUnit" @bind:after="Recalc">
+                        <option value="L">liters</option>
+                        <option value="gal">gallons</option>
+                    </select>
+                </div>
+
+                <h5>Mixes to combine</h5>
+                @if (State.SavedMixes.Count == 0)
+                {
+                    <p class="text-muted">No saved mixes yet — create some on the Calculator tab.</p>
+                }
+                else
+                {
+                    <div class="list-group" style="max-height:50vh;overflow-y:auto">
+                        @foreach (var m in State.SavedMixes)
+                        {
+                            <label class="list-group-item d-flex gap-2">
+                                <input class="form-check-input" type="checkbox"
+                                       checked="@selected.Contains(m.Name)"
+                                       @onchange="e => ToggleMix(m.Name, (bool)e.Value!)" />
+                                <span>@m.Name <small class="text-muted">(@m.Ingredients.Count fert@(m.Ingredients.Count == 1 ? "" : "s"))</small></span>
+                            </label>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-8">
+                @if (recipe.Count == 0)
+                {
+                    <p class="text-muted mt-4">Enter a reservoir size and tick one or more mixes.</p>
+                }
+                else
+                {
+                    var unit = State.UseImperial ? "gal" : "L";
+                    <h5>Add to reservoir (@FormatSize(reservoirSizeInModeUnits) @unit)</h5>
+
+                    @foreach (var sec in sections)
+                    {
+                        <h6 class="mt-3 mb-1">@sec.Mix.Name</h6>
+                        <table class="table table-sm" style="max-width:640px">
+                            <tbody>
+                                @foreach (var line in sec.Lines)
+                                {
+                                    <tr class="@(line.Known ? "" : "table-warning")">
+                                        <td>
+                                            @line.Name
+                                            @if (!line.Known)
+                                            {
+                                                <span class="badge text-bg-warning ms-1" title="Not in fertilizer library — contributes no nutrients">not found</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">@line.PerUnit.ToString("F2")/@unit</td>
+                                        <td class="text-end fw-semibold">@FormatAmount(line)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                    <h6 class="mt-3 mb-1">Combined total</h6>
+                    <table class="table table-sm table-striped" style="max-width:640px">
+                        <thead>
+                            <tr><th>Fertilizer</th><th class="text-end">Per @unit</th><th class="text-end">Total to add</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var line in recipe)
+                            {
+                                <tr class="@(line.Known ? "" : "table-warning")">
+                                    <td>
+                                        @line.Name
+                                        @if (!line.Known)
+                                        {
+                                            <span class="badge text-bg-warning ms-1" title="Not in fertilizer library — contributes no nutrients">not found</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">@line.PerUnit.ToString("F2") @line.UnitLabel</td>
+                                    <td class="text-end fw-semibold">@FormatAmount(line)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <h6 class="mt-4">Combined nutrients <small class="text-muted">PPM (mg/L)</small></h6>
+                    <div class="row" style="max-width:640px">
+                        <div class="col-6">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr><td>N</td><td class="text-end">@totals.Nitrogen.ToString("F1")</td></tr>
+                                    <tr><td>P</td><td class="text-end">@totals.Phosphorus.ToString("F1")</td></tr>
+                                    <tr><td>K</td><td class="text-end">@totals.Potassium.ToString("F1")</td></tr>
+                                    <tr><td>Ca</td><td class="text-end">@totals.Calcium.ToString("F1")</td></tr>
+                                    <tr><td>Mg</td><td class="text-end">@totals.Magnesium.ToString("F1")</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr><td>S</td><td class="text-end">@totals.Sulfur.ToString("F1")</td></tr>
+                                    <tr><td>Fe</td><td class="text-end">@totals.Iron.ToString("F1")</td></tr>
+                                    <tr><td>Mn</td><td class="text-end">@totals.Manganese.ToString("F1")</td></tr>
+                                    <tr><td>Si</td><td class="text-end">@totals.Silica.ToString("F1")</td></tr>
+                                    <tr class="fw-bold"><td>Total</td><td class="text-end">@totals.Total.ToString("F1")</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-light mt-2" @onclick="CopyRecipe">Copy recipe</button>
+                    @if (!string.IsNullOrEmpty(status))
+                    {
+                        <div class="alert alert-info py-1 px-2 mt-2">@status</div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private double reservoirSize = 20;
+    private string reservoirUnit = "L";
+    private HashSet<string> selected = new(StringComparer.OrdinalIgnoreCase);
+    private List<RecipeLine> recipe = new();
+    private List<MixSection> sections = new();
+    private NutrientTotals totals = new();
+    private string? status;
+
+    private class RecipeLine
+    {
+        public string Name = "";
+        public double PerUnit;
+        public double Total;
+        public bool IsLiquid;
+        public bool Known = true;
+        public double Density = 1;
+        public string UnitLabel => IsLiquid ? "mL" : "g";
+    }
+
+    private class MixSection
+    {
+        public FertilizerMix Mix = new();
+        public List<RecipeLine> Lines = new();
+    }
+
+    private double reservoirSizeInModeUnits
+    {
+        get
+        {
+            bool sizeIsGallons = reservoirUnit == "gal";
+            if (sizeIsGallons == State.UseImperial) return reservoirSize;
+            return sizeIsGallons ? reservoirSize * MixCalculator.GallonToLiter
+                                 : reservoirSize / MixCalculator.GallonToLiter;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await State.EnsureLoaded();
+        Recalc();
+    }
+
+    private void ToggleMix(string name, bool on)
+    {
+        if (on) selected.Add(name); else selected.Remove(name);
+        Recalc();
+    }
+
+    private void Recalc()
+    {
+        recipe.Clear();
+        sections.Clear();
+        totals = new NutrientTotals();
+        if (reservoirSize <= 0 || selected.Count == 0) return;
+
+        var combined = new List<FertilizerQuantity>();
+        foreach (var m in State.SavedMixes.Where(m => selected.Contains(m.Name)))
+            foreach (var i in m.Ingredients)
+                combined.Add(i);
+
+        totals = MixCalculator.Calculate(combined, State.Fertilizers, State.UseImperial);
+
+        var map = State.Fertilizers
+            .Where(f => f.Name != null)
+            .GroupBy(f => f.Name, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
+
+        double size = reservoirSizeInModeUnits;
+
+        RecipeLine MakeLine(string name, double perUnit)
+        {
+            var f = map.TryGetValue(name, out var fert) ? fert : null;
+            return new RecipeLine
+            {
+                Name = name,
+                PerUnit = perUnit,
+                Total = perUnit * size,
+                IsLiquid = f?.IsLiquid == true,
+                Known = f != null,
+                Density = f?.EffectiveDensity ?? 1,
+            };
+        }
+
+        foreach (var m in State.SavedMixes.Where(m => selected.Contains(m.Name)))
+            sections.Add(new MixSection
+            {
+                Mix = m,
+                Lines = m.Ingredients.Select(i => MakeLine(i.FertilizerName, i.Quantity)).ToList(),
+            });
+
+        recipe = combined
+            .GroupBy(i => i.FertilizerName, StringComparer.OrdinalIgnoreCase)
+            .Select(g => MakeLine(g.Key, g.Sum(i => i.Quantity)))
+            .OrderBy(r => r.Name, new FertilizerNameComparer())
+            .ToList();
+    }
+
+    private string FormatSize(double v) => v >= 100 ? v.ToString("F0") : v.ToString("F1");
+
+    private string FormatAmount(RecipeLine line)
+    {
+        if (!line.IsLiquid)
+            return line.Total >= 1000 ? $"{line.Total / 1000:F2} kg" : $"{line.Total:F1} g";
+        double grams = line.Total * line.Density;
+        return $"{line.Total:F1} mL ({grams:F1} g)";
+    }
+
+    private async Task ToggleUnits()
+    {
+        await State.SetImperial(!State.UseImperial);
+        Recalc();
+    }
+
+    private async Task CopyRecipe()
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"Reservoir: {FormatSize(reservoirSizeInModeUnits)} {(State.UseImperial ? "gal" : "L")}");
+        sb.AppendLine($"Mixes: {string.Join(", ", State.SavedMixes.Where(m => selected.Contains(m.Name)).Select(m => m.Name))}");
+        sb.AppendLine();
+        foreach (var line in recipe)
+            sb.AppendLine($"{line.Name}\t{FormatAmount(line)}");
+        sb.AppendLine();
+        sb.AppendLine($"N {totals.Nitrogen:F1} | P {totals.Phosphorus:F1} | K {totals.Potassium:F1} | Ca {totals.Calcium:F1} | Mg {totals.Magnesium:F1} | S {totals.Sulfur:F1} ppm");
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", sb.ToString());
+        status = "Recipe copied to clipboard.";
+    }
+}

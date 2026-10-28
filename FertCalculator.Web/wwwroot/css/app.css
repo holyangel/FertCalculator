@@ -125,3 +125,16 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+.cmp-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.cmp-bar {
+    height: 14px;
+    min-width: 2px;
+    border-radius: 3px;
+    transition: width .15s ease;
+}

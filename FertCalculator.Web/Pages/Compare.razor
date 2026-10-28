@@ -1,0 +1,232 @@
+@page "/compare"
+@inject AppState State
+
+<div class="container-fluid mt-3">
+    <div class="d-flex align-items-center mb-3">
+        <h3 class="mb-0 me-3">Compare Mixes</h3>
+        <button class="btn btn-outline-secondary btn-sm" @onclick="ToggleUnits">
+            @(State.UseImperial ? "Switch to Liter" : "Switch to Gallon")
+        </button>
+        <span class="ms-3 text-muted">Values in PPM (mg/L)</span>
+    </div>
+
+    @if (!State.IsLoaded)
+    {
+        <p><em>Loading…</em></p>
+    }
+    else if (State.SavedMixes.Count == 0)
+    {
+        <p class="text-muted">No saved mixes yet — create some on the Calculator tab first.</p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-3">
+                <h5>Mixes</h5>
+                <div class="list-group" style="max-height:60vh;overflow-y:auto">
+                    @foreach (var m in State.SavedMixes)
+                    {
+                        <label class="list-group-item d-flex gap-2">
+                            <input class="form-check-input" type="checkbox"
+                                   checked="@selected.Contains(m.Name)"
+                                   @onchange="e => ToggleMix(m.Name, (bool)e.Value!)" />
+                            <span class="d-flex align-items-center gap-2">
+                                <span class="cmp-swatch" style="background:@ColorFor(m.Name)"></span>@m.Name
+                            </span>
+                        </label>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                @if (compared.Count == 0)
+                {
+                    <p class="text-muted mt-4">Tick two or more mixes to compare.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Nutrient</th>
+                                    @foreach (var c in compared)
+                                    {
+                                        <th class="text-end"><span class="cmp-swatch me-1" style="background:@c.Color"></span>@c.Mix.Name</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in nutrientRows)
+                                {
+                                    var max = compared.Max(c => row.Get(c.Totals));
+                                    <tr class="@(row.Label == "TOTAL" ? "fw-bold" : "")">
+                                        <td>@row.Label</td>
+                                        @foreach (var c in compared)
+                                        {
+                                            var v = row.Get(c.Totals);
+                                            <td class="text-end" style="@CellStyle(v, max)">@v.ToString("F2")</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h6 class="mt-4">Macros</h6>
+                    @foreach (var row in chartRows)
+                    {
+                        var max = compared.Max(c => row.Get(c.Totals));
+                        <div class="mb-3">
+                            <div class="small text-muted mb-1">@row.Label</div>
+                            @foreach (var c in compared)
+                            {
+                                var v = row.Get(c.Totals);
+                                var pct = max > 0 ? v / max * 100 : 0;
+                                <div class="d-flex align-items-center mb-1" style="gap:6px">
+                                    <div class="cmp-bar" style="width:@pct.ToString("F1")%;background:@c.Color"></div>
+                                    <small>@v.ToString("F1")</small>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <h6 class="mt-4">Ingredients <small class="text-muted">@(State.UseImperial ? "g or mL per gal" : "g or mL per L")</small></h6>
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var c in compared)
+                        {
+                            <div style="min-width:220px">
+                                <strong><span class="cmp-swatch me-1" style="background:@c.Color"></span>@c.Mix.Name</strong>
+                                @if (c.Missing.Count > 0)
+                                {
+                                    <div class="small text-warning mt-1">@c.Missing.Count ingredient@(c.Missing.Count == 1 ? "" : "s") not in library</div>
+                                }
+                                <table class="table table-sm mt-1">
+                                    <tbody>
+                                        @foreach (var i in c.Mix.Ingredients)
+                                        {
+                                            var known = IsKnown(i.FertilizerName);
+                                            <tr class="@(known ? "" : "table-warning")">
+                                                <td>
+                                                    @i.FertilizerName
+                                                    @if (!known)
+                                                    {
+                                                        <span class="badge text-bg-warning ms-1" title="Not in fertilizer library — contributes no nutrients">not found</span>
+                                                    }
+                                                </td>
+                                                <td class="text-end">@i.Quantity.ToString("F2")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private HashSet<string> selected = new(StringComparer.OrdinalIgnoreCase);
+    private List<Compared> compared = new();
+
+    private static readonly string[] Palette =
+        { "#4da3ff", "#5fd68a", "#ffb84d", "#ff7a7a", "#c792ea", "#4dd0e1", "#ffd54d", "#a1887f" };
+
+    private record NutrientRow(string Label, Func<NutrientTotals, double> Get);
+
+    private static readonly NutrientRow[] nutrientRows =
+    {
+        new("Nitrogen (N)", t => t.Nitrogen),
+        new("Phosphorus (P)", t => t.Phosphorus),
+        new("Potassium (K)", t => t.Potassium),
+        new("Calcium (Ca)", t => t.Calcium),
+        new("Magnesium (Mg)", t => t.Magnesium),
+        new("Sulfur (S)", t => t.Sulfur),
+        new("Boron (B)", t => t.Boron),
+        new("Copper (Cu)", t => t.Copper),
+        new("Iron (Fe)", t => t.Iron),
+        new("Manganese (Mn)", t => t.Manganese),
+        new("Molybdenum (Mo)", t => t.Molybdenum),
+        new("Zinc (Zn)", t => t.Zinc),
+        new("Chlorine (Cl)", t => t.Chlorine),
+        new("Silica (Si)", t => t.Silica),
+        new("Humic Acid", t => t.HumicAcid),
+        new("Fulvic Acid", t => t.FulvicAcid),
+        new("TOTAL", t => t.Total),
+    };
+
+    private static readonly NutrientRow[] chartRows =
+    {
+        new("Nitrogen", t => t.Nitrogen),
+        new("Phosphorus", t => t.Phosphorus),
+        new("Potassium", t => t.Potassium),
+        new("Calcium", t => t.Calcium),
+        new("Magnesium", t => t.Magnesium),
+        new("Sulfur", t => t.Sulfur),
+        new("TOTAL PPM", t => t.Total),
+    };
+
+    private class Compared
+    {
+        public FertilizerMix Mix = new();
+        public NutrientTotals Totals = new();
+        public string Color = "#4da3ff";
+        public List<string> Missing = new();
+    }
+
+    private bool IsKnown(string name) =>
+        State.Fertilizers.Any(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    private Dictionary<string, string> mixColors = new(StringComparer.OrdinalIgnoreCase);
+
+    private string ColorFor(string name)
+    {
+        if (!mixColors.TryGetValue(name, out var color))
+        {
+            color = Palette[mixColors.Count % Palette.Length];
+            mixColors[name] = color;
+        }
+        return color;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await State.EnsureLoaded();
+        Recalc();
+    }
+
+    private void ToggleMix(string name, bool on)
+    {
+        if (on) selected.Add(name); else selected.Remove(name);
+        Recalc();
+    }
+
+    private void Recalc()
+    {
+        compared = State.SavedMixes
+            .Where(m => selected.Contains(m.Name))
+            .Select(m => new Compared
+            {
+                Mix = m,
+                Totals = MixCalculator.Calculate(m.Ingredients, State.Fertilizers, State.UseImperial),
+                Color = ColorFor(m.Name),
+                Missing = m.Ingredients.Where(i => !IsKnown(i.FertilizerName)).Select(i => i.FertilizerName).ToList(),
+            }).ToList();
+    }
+
+    private string CellStyle(double value, double max)
+    {
+        if (value <= 0 || max <= 0) return "";
+        double intensity = 0.08 + 0.5 * (value / max);
+        return $"background:rgba(95,214,138,{intensity:F2})";
+    }
+
+    private async Task ToggleUnits()
+    {
+        await State.SetImperial(!State.UseImperial);
+        Recalc();
+    }
+}

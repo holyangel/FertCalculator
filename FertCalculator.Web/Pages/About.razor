@@ -27,8 +27,26 @@
             elemental P and K (×0.4364 and ×0.8301).
         </li>
         <li>
-            The fertilizer library ships with ~80 common products. Entries not in the
+            The fertilizer library ships with ~100 common products. Entries not in the
             library can be added in the desktop app and imported here via XML.
+        </li>
+    </ul>
+
+    <h5 class="mt-4">The tabs</h5>
+    <ul>
+        <li>
+            <strong>Calculator</strong> — build a mix from the library and see its
+            elemental PPM breakdown.
+        </li>
+        <li>
+            <strong>Reservoir</strong> — enter a reservoir size (liters or gallons) and
+            tick saved mixes to get exact amounts of each fertilizer to add —
+            grams for solids, mL (plus gram-equivalent) for liquids.
+        </li>
+        <li>
+            <strong>Compare</strong> — select two or more saved mixes for a
+            side-by-side nutrient table (highest values highlighted) and bar
+            charts for the macros.
         </li>
     </ul>
 
@@ -37,7 +55,8 @@
         <li>
             <strong>Saved mixes</strong> and your <strong>unit preference</strong> live in your
             browser's <code>localStorage</code> — they persist across visits on this
-            device and browser only.
+            device and browser only. On first run the example mixes from the
+            bundled <code>Mixes.xml</code> are loaded as a starting point.
         </li>
         <li>
             <strong>Nothing is sent anywhere.</strong> This is a fully static app — no
@@ -63,8 +82,8 @@
             They don't account for source water, interactions, or availability.
         </li>
         <li>
-            Liquid densities are estimates; if a label lists weight per volume
-            (e.g. lb/gal), that can be entered for better accuracy in the desktop app.
+            Liquid densities come from labels/SDS documents where available; a
+            handful of products without published data still use estimates.
         </li>
     </ul>
 </div>
