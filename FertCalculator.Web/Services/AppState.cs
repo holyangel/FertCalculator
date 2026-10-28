@@ -13,6 +13,7 @@ public class AppState
 {
     private const string MixesKey = "fertcalc.mixes";
     private const string ImperialKey = "fertcalc.imperial";
+    private const string CustomFertsKey = "fertcalc.customFertilizers";
 
     private readonly HttpClient _http;
     private readonly IJSRuntime _js;
@@ -25,6 +26,7 @@ public class AppState
     }
 
     public List<Fertilizer> Fertilizers { get; private set; } = new();
+    public List<Fertilizer> CustomFertilizers { get; private set; } = new();
     public List<FertilizerMix> SavedMixes { get; private set; } = new();
     public bool UseImperial { get; private set; }
     public bool IsLoaded => _loadTask?.IsCompletedSuccessfully == true;
@@ -37,8 +39,20 @@ public class AppState
         await using (var stream = await _http.GetStreamAsync("data/Fertilizers.xml"))
         {
             Fertilizers = (List<Fertilizer>)serializer.Deserialize(stream)!;
-            Fertilizers = Fertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
         }
+
+        var customXml = await _js.InvokeAsync<string?>("fertcalc.loadLocal", CustomFertsKey);
+        if (!string.IsNullOrEmpty(customXml))
+        {
+            try
+            {
+                using var reader = new StringReader(customXml);
+                CustomFertilizers = (List<Fertilizer>)serializer.Deserialize(reader)!;
+                Fertilizers.AddRange(CustomFertilizers);
+            }
+            catch { }
+        }
+        Fertilizers = Fertilizers.OrderBy(f => f.Name, new FertilizerNameComparer()).ToList();
 
         var imperial = await _js.InvokeAsync<string?>("fertcalc.loadLocal", ImperialKey);
         UseImperial = imperial == "1";
@@ -78,5 +92,34 @@ public class AppState
         using var writer = new StringWriter();
         serializer.Serialize(writer, SavedMixes);
         await _js.InvokeVoidAsync("fertcalc.saveLocal", MixesKey, writer.ToString());
+    }
+
+    public bool IsCustomFertilizer(string name) =>
+        CustomFertilizers.Any(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>Adds or replaces a custom fertilizer and re-sorts the library.</summary>
+    public async Task SaveCustomFertilizer(Fertilizer f)
+    {
+        CustomFertilizers.RemoveAll(x => string.Equals(x.Name, f.Name, StringComparison.OrdinalIgnoreCase));
+        Fertilizers.RemoveAll(x => string.Equals(x.Name, f.Name, StringComparison.OrdinalIgnoreCase));
+        CustomFertilizers.Add(f);
+        Fertilizers.Add(f);
+        Fertilizers = Fertilizers.OrderBy(x => x.Name, new FertilizerNameComparer()).ToList();
+        await PersistCustomFertilizers();
+    }
+
+    public async Task RemoveCustomFertilizer(string name)
+    {
+        CustomFertilizers.RemoveAll(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        Fertilizers.RemoveAll(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        await PersistCustomFertilizers();
+    }
+
+    private async Task PersistCustomFertilizers()
+    {
+        var serializer = new XmlSerializer(typeof(List<Fertilizer>));
+        using var writer = new StringWriter();
+        serializer.Serialize(writer, CustomFertilizers);
+        await _js.InvokeVoidAsync("fertcalc.saveLocal", CustomFertsKey, writer.ToString());
     }
 }

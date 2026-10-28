@@ -1,0 +1,221 @@
+@page "/fertilizers"
+@inject AppState State
+
+<div class="container-fluid mt-3">
+    <h3 class="mb-3">Custom Fertilizers</h3>
+
+    @if (!State.IsLoaded)
+    {
+        <p><em>Loading…</em></p>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-7">
+                <h5>@(editing == null ? "Add fertilizer" : $"Editing {editing}")</h5>
+                <div class="row g-2 mb-2" style="max-width:520px">
+                    <div class="col-8">
+                        <input class="form-control form-control-sm" placeholder="Name" @bind="form.Name" />
+                    </div>
+                    <div class="col-4 d-flex align-items-center gap-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="isLiquid" @bind="form.IsLiquid" />
+                            <label class="form-check-label" for="isLiquid">Liquid</label>
+                        </div>
+                        @if (form.IsLiquid)
+                        {
+                            <input type="number" step="any" min="0" class="form-control form-control-sm" style="width:90px"
+                                   title="Density (g/mL)" placeholder="Density" @bind="form.Density" />
+                        }
+                    </div>
+                </div>
+
+                <div class="row g-2" style="max-width:520px">
+                    <div class="col-4">
+                        <label class="small text-muted mb-0">N %</label>
+                        <input type="number" step="any" min="0" class="form-control form-control-sm" @bind="form.N" />
+                    </div>
+                    <div class="col-4">
+                        <label class="small text-muted mb-0">P₂O₅ %</label>
+                        <input type="number" step="any" min="0" class="form-control form-control-sm" @bind="form.P2O5" />
+                    </div>
+                    <div class="col-4">
+                        <label class="small text-muted mb-0">K₂O %</label>
+                        <input type="number" step="any" min="0" class="form-control form-control-sm" @bind="form.K2O" />
+                    </div>
+                    @foreach (var el in microFields)
+                    {
+                        <div class="col-4">
+                            <label class="small text-muted mb-0">@el.Label %</label>
+                            <input type="number" step="any" min="0" class="form-control form-control-sm"
+                                   value="@el.Get(form)" @oninput="e => el.Set(form, ToDouble(e.Value))" />
+                        </div>
+                    }
+                </div>
+                <p class="small text-muted mt-2 mb-2">P and K are entered as declared on the label (P₂O₅ / K₂O) and converted automatically. Everything else is elemental %.</p>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-primary" @onclick="Save" disabled="@(string.IsNullOrWhiteSpace(form.Name))">
+                        @(editing == null ? "Add" : "Save changes")
+                    </button>
+                    @if (editing != null)
+                    {
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="ResetForm">Cancel</button>
+                    }
+                </div>
+                @if (!string.IsNullOrEmpty(status))
+                {
+                    <div class="alert alert-info py-1 px-2 mt-2" style="max-width:520px">@status</div>
+                }
+            </div>
+
+            <div class="col-md-5">
+                <h5>Your custom fertilizers (@State.CustomFertilizers.Count)</h5>
+                @if (State.CustomFertilizers.Count == 0)
+                {
+                    <p class="text-muted">None yet. Built-in library products can only be changed via XML import — custom entries you add here persist in this browser.</p>
+                }
+                else
+                {
+                    <div class="list-group" style="max-height:60vh;overflow-y:auto">
+                        @foreach (var f in State.CustomFertilizers.OrderBy(x => x.Name, new FertilizerNameComparer()))
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>
+                                    @f.Name@(f.IsLiquid ? " (mL)" : "")
+                                    <small class="text-muted d-block">N @f.NitrogenPercent.ToString("F1") · P @f.PhosphorusPercent.ToString("F1") · K @f.PotassiumPercent.ToString("F1")</small>
+                                </span>
+                                <span class="d-flex gap-1">
+                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => Edit(f)">Edit</button>
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => Delete(f)">×</button>
+                                </span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private FormModel form = new();
+    private string? editing;
+    private string? status;
+
+    private class FormModel
+    {
+        public string Name = "";
+        public bool IsLiquid;
+        public double Density = 1;
+        public double N, P2O5, K2O;
+        public double Ca, Mg, S, B, Cu, Fe, Mn, Mo, Zn, Cl, Si, Humic, Fulvic;
+    }
+
+    private record MicroField(string Label, Func<FormModel, double> Get, Action<FormModel, double> Set);
+
+    private static readonly MicroField[] microFields =
+    {
+        new("Ca", f => f.Ca, (f, v) => f.Ca = v),
+        new("Mg", f => f.Mg, (f, v) => f.Mg = v),
+        new("S", f => f.S, (f, v) => f.S = v),
+        new("Fe", f => f.Fe, (f, v) => f.Fe = v),
+        new("Mn", f => f.Mn, (f, v) => f.Mn = v),
+        new("Zn", f => f.Zn, (f, v) => f.Zn = v),
+        new("Cu", f => f.Cu, (f, v) => f.Cu = v),
+        new("B", f => f.B, (f, v) => f.B = v),
+        new("Mo", f => f.Mo, (f, v) => f.Mo = v),
+        new("Cl", f => f.Cl, (f, v) => f.Cl = v),
+        new("Si", f => f.Si, (f, v) => f.Si = v),
+        new("Humic", f => f.Humic, (f, v) => f.Humic = v),
+        new("Fulvic", f => f.Fulvic, (f, v) => f.Fulvic = v),
+    };
+
+    private static double ToDouble(object? v) =>
+        double.TryParse(v?.ToString(), out var d) ? d : 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await State.EnsureLoaded();
+    }
+
+    private void Edit(Fertilizer f)
+    {
+        editing = f.Name;
+        form = new FormModel
+        {
+            Name = f.Name,
+            IsLiquid = f.IsLiquid,
+            Density = f.Density,
+            N = f.NitrogenPercent,
+            P2O5 = f.IsPhosphorusInOxideForm ? f.OriginalPhosphorusValue : f.PhosphorusPercent / 0.4364,
+            K2O = f.IsPotassiumInOxideForm ? f.OriginalPotassiumValue : f.PotassiumPercent / 0.8301,
+            Ca = f.CalciumPercent, Mg = f.MagnesiumPercent, S = f.SulfurPercent,
+            B = f.BoronPercent, Cu = f.CopperPercent, Fe = f.IronPercent,
+            Mn = f.ManganesePercent, Mo = f.MolybdenumPercent, Zn = f.ZincPercent,
+            Cl = f.ChlorinePercent, Si = f.SilicaPercent,
+            Humic = f.HumicAcidPercent, Fulvic = f.FulvicAcidPercent,
+        };
+    }
+
+    private async Task Save()
+    {
+        var name = form.Name.Trim();
+        if (name.Length == 0) return;
+
+        bool isNew = editing == null;
+        bool nameTaken = State.Fertilizers.Any(f =>
+            string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(f.Name, editing ?? "", StringComparison.OrdinalIgnoreCase));
+        if (isNew && nameTaken)
+        {
+            status = $"A fertilizer named '{name}' already exists — pick a different name.";
+            return;
+        }
+        if (!isNew && nameTaken)
+        {
+            status = $"Can't rename to '{name}' — that name is already in use.";
+            return;
+        }
+
+        var f = new Fertilizer
+        {
+            Name = name,
+            IsLiquid = form.IsLiquid,
+            Density = form.IsLiquid && form.Density > 0 ? form.Density : 1,
+            NitrogenPercent = form.N,
+            IsPhosphorusInOxideForm = true,
+            IsPotassiumInOxideForm = true,
+            OriginalPhosphorusValue = form.P2O5,
+            OriginalPotassiumValue = form.K2O,
+            PhosphorusPercent = Fertilizer.P2O5ToP(form.P2O5),
+            PotassiumPercent = Fertilizer.K2OToK(form.K2O),
+            CalciumPercent = form.Ca, MagnesiumPercent = form.Mg, SulfurPercent = form.S,
+            BoronPercent = form.B, CopperPercent = form.Cu, IronPercent = form.Fe,
+            ManganesePercent = form.Mn, MolybdenumPercent = form.Mo, ZincPercent = form.Zn,
+            ChlorinePercent = form.Cl, SilicaPercent = form.Si,
+            HumicAcidPercent = form.Humic, FulvicAcidPercent = form.Fulvic,
+        };
+
+        // If renamed while editing, drop the old custom entry.
+        if (!isNew && !string.Equals(editing, name, StringComparison.OrdinalIgnoreCase))
+            await State.RemoveCustomFertilizer(editing!);
+
+        await State.SaveCustomFertilizer(f);
+        status = isNew ? $"Added '{name}'." : $"Updated '{name}'.";
+        ResetForm();
+    }
+
+    private async Task Delete(Fertilizer f)
+    {
+        await State.RemoveCustomFertilizer(f.Name);
+        status = $"Removed '{f.Name}'.";
+        if (editing == f.Name) ResetForm();
+    }
+
+    private void ResetForm()
+    {
+        form = new FormModel();
+        editing = null;
+    }
+}

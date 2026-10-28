@@ -1,0 +1,250 @@
+@page "/target"
+@inject AppState State
+@inject IJSRuntime JS
+
+<div class="container-fluid mt-3">
+    <div class="d-flex align-items-center mb-3">
+        <h3 class="mb-0 me-3">Scale to Target</h3>
+        <button class="btn btn-outline-secondary btn-sm" @onclick="ToggleUnits">
+            @(State.UseImperial ? "Switch to Liter" : "Switch to Gallon")
+        </button>
+        <span class="ms-3 text-muted">Doses are per @(State.UseImperial ? "gallon" : "liter")</span>
+    </div>
+
+    @if (!State.IsLoaded)
+    {
+        <p><em>Loading…</em></p>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Scale a mix -->
+            <div class="col-md-6">
+                <h5>Scale a mix</h5>
+                <div class="d-flex gap-2 mb-2 flex-wrap">
+                    <select class="form-select form-select-sm" style="width:200px" @bind="selectedMix" @bind:after="Recalc">
+                        <option value="">— mix —</option>
+                        @foreach (var m in State.SavedMixes)
+                        {
+                            <option value="@m.Name">@m.Name</option>
+                        }
+                    </select>
+                    <select class="form-select form-select-sm" style="width:150px" @bind="selectedNutrient" @bind:after="Recalc">
+                        @foreach (var n in nutrients)
+                        {
+                            <option value="@n.Label">@n.Label</option>
+                        }
+                    </select>
+                    <input type="number" step="any" min="0" class="form-control form-control-sm" style="width:110px"
+                           placeholder="Target ppm" @bind="targetPpm" @bind:event="oninput" @bind:after="Recalc" />
+                </div>
+
+                @if (mixResult != null)
+                {
+                    if (mixResult.Current <= 0)
+                    {
+                        <div class="alert alert-warning py-1 px-2">That mix contributes no @selectedNutrient — can't scale to it.</div>
+                    }
+                    else
+                    {
+                        <p class="mb-2">
+                            Current <strong>@mixResult.Current.ToString("F1")</strong> ppm →
+                            scale every ingredient by <strong>×@mixResult.Factor.ToString("F2")</strong>
+                        </p>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr><th>Fertilizer</th><th class="text-end">Was</th><th class="text-end">New qty/@(State.UseImperial ? "gal" : "L")</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in mixResult.Rows)
+                                {
+                                    <tr>
+                                        <td>@r.Name</td>
+                                        <td class="text-end text-muted">@r.OldQty.ToString("F2")</td>
+                                        <td class="text-end fw-semibold">@r.NewQty.ToString("F2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <p class="small text-muted mb-1">
+                            Scaled result: N @mixResult.Scaled.Nitrogen.ToString("F1") ·
+                            P @mixResult.Scaled.Phosphorus.ToString("F1") ·
+                            K @mixResult.Scaled.Potassium.ToString("F1") ·
+                            Total @mixResult.Scaled.Total.ToString("F1") ppm
+                        </p>
+                        <button class="btn btn-sm btn-outline-light" @onclick="CopyScaled">Copy scaled mix</button>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Pick a mix, a nutrient, and a target PPM.</p>
+                }
+            </div>
+
+            <!-- Single fertilizer to target -->
+            <div class="col-md-6">
+                <h5>Dose to target</h5>
+                <div class="d-flex gap-2 mb-2 flex-wrap">
+                    <select class="form-select form-select-sm" style="width:200px" @bind="selectedFert" @bind:after="Recalc">
+                        <option value="">— fertilizer —</option>
+                        @foreach (var f in State.Fertilizers)
+                        {
+                            <option value="@f.Name">@f.Name</option>
+                        }
+                    </select>
+                    <select class="form-select form-select-sm" style="width:150px" @bind="fertNutrient" @bind:after="Recalc">
+                        @foreach (var n in nutrients)
+                        {
+                            <option value="@n.Label">@n.Label</option>
+                        }
+                    </select>
+                    <input type="number" step="any" min="0" class="form-control form-control-sm" style="width:110px"
+                           placeholder="Target ppm" @bind="fertTargetPpm" @bind:event="oninput" @bind:after="Recalc" />
+                </div>
+
+                @if (fertResult != null)
+                {
+                    <div class="alert alert-success py-2 px-3">
+                        Add <strong>@fertResult.Qty.ToString("F2") @fertResult.Unit</strong>
+                        of <strong>@selectedFert</strong> per @(State.UseImperial ? "gallon" : "liter")
+                        for @fertTargetPpm ppm @fertNutrient.
+                    </div>
+                }
+                else if (fertNoContribution)
+                {
+                    <div class="alert alert-warning py-1 px-2">@selectedFert contributes no @fertNutrient.</div>
+                }
+                else
+                {
+                    <p class="text-muted">Or pick one fertilizer and how much of a nutrient you want it to add.</p>
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(status))
+        {
+            <div class="alert alert-info py-1 px-2 mt-2">@status</div>
+        }
+    }
+</div>
+
+@code {
+    private string? selectedMix;
+    private string selectedNutrient = "Nitrogen (N)";
+    private double? targetPpm;
+    private string? selectedFert;
+    private string fertNutrient = "Nitrogen (N)";
+    private double? fertTargetPpm;
+    private string? status;
+
+    private MixResult? mixResult;
+    private FertResult? fertResult;
+    private bool fertNoContribution;
+
+    private record NutrientRow(string Label, Func<NutrientTotals, double> Get);
+
+    private static readonly NutrientRow[] nutrients =
+    {
+        new("Nitrogen (N)", t => t.Nitrogen),
+        new("Phosphorus (P)", t => t.Phosphorus),
+        new("Potassium (K)", t => t.Potassium),
+        new("Calcium (Ca)", t => t.Calcium),
+        new("Magnesium (Mg)", t => t.Magnesium),
+        new("Sulfur (S)", t => t.Sulfur),
+        new("Iron (Fe)", t => t.Iron),
+        new("Silica (Si)", t => t.Silica),
+        new("TOTAL PPM", t => t.Total),
+    };
+
+    private class MixResult
+    {
+        public double Current;
+        public double Factor;
+        public List<(string Name, double OldQty, double NewQty)> Rows = new();
+        public NutrientTotals Scaled = new();
+    }
+
+    private class FertResult
+    {
+        public double Qty;
+        public string Unit = "g";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await State.EnsureLoaded();
+        Recalc();
+    }
+
+    private NutrientRow Nutrient(string label) => nutrients.First(n => n.Label == label);
+
+    private void Recalc()
+    {
+        mixResult = null;
+        fertResult = null;
+        fertNoContribution = false;
+
+        var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMix);
+        if (mix != null && targetPpm > 0)
+        {
+            var totals = MixCalculator.Calculate(mix.Ingredients, State.Fertilizers, State.UseImperial);
+            double current = Nutrient(selectedNutrient).Get(totals);
+            if (current > 0)
+            {
+                double factor = targetPpm.Value / current;
+                var scaled = mix.Ingredients.Select(i => new FertilizerQuantity
+                {
+                    FertilizerName = i.FertilizerName,
+                    Quantity = i.Quantity * factor,
+                }).ToList();
+                mixResult = new MixResult
+                {
+                    Current = current,
+                    Factor = factor,
+                    Rows = mix.Ingredients.Select(i => (i.FertilizerName, i.Quantity, i.Quantity * factor)).ToList(),
+                    Scaled = MixCalculator.Calculate(scaled, State.Fertilizers, State.UseImperial),
+                };
+            }
+        }
+
+        var fert = State.Fertilizers.FirstOrDefault(f => f.Name == selectedFert);
+        if (fert != null && fertTargetPpm > 0)
+        {
+            // PPM contributed by a 1-unit dose in the current mode.
+            var oneUnit = new List<FertilizerQuantity>
+            {
+                new FertilizerQuantity { FertilizerName = fert.Name, Quantity = 1 }
+            };
+            double perUnit = Nutrient(fertNutrient).Get(
+                MixCalculator.Calculate(oneUnit, State.Fertilizers, State.UseImperial));
+            fertNoContribution = perUnit <= 0;
+            if (perUnit > 0)
+            {
+                // perUnit is ppm per 1 dose-unit (g for solids, mL for liquids —
+                // the calculator already applies density internally).
+                fertResult = new FertResult
+                {
+                    Qty = fertTargetPpm.Value / perUnit,
+                    Unit = fert.IsLiquid ? "mL" : "g",
+                };
+            }
+        }
+    }
+
+    private async Task ToggleUnits()
+    {
+        await State.SetImperial(!State.UseImperial);
+        Recalc();
+    }
+
+    private async Task CopyScaled()
+    {
+        if (mixResult == null || selectedMix == null) return;
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"{selectedMix} scaled ×{mixResult.Factor:F2} → {targetPpm} ppm {selectedNutrient}");
+        foreach (var r in mixResult.Rows)
+            sb.AppendLine($"{r.Name}\t{r.NewQty:F2} {(State.UseImperial ? "per gal" : "per L")}");
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", sb.ToString());
+        status = "Scaled mix copied to clipboard.";
+    }
+}
