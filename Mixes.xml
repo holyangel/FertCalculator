@@ -47,15 +47,15 @@
     <Ingredients>
       <FertilizerQuantity>
         <FertilizerName>Jacks 5-12-26 Part A</FertilizerName>
-        <Quantity>3.6</Quantity>
+        <Quantity>3.79</Quantity>
       </FertilizerQuantity>
       <FertilizerQuantity>
         <FertilizerName>Jacks 15-0-0 Part B</FertilizerName>
-        <Quantity>2.4</Quantity>
+        <Quantity>2.52</Quantity>
       </FertilizerQuantity>
       <FertilizerQuantity>
         <FertilizerName>Epsom Salt - Magnesium Sulfate</FertilizerName>
-        <Quantity>1.2</Quantity>
+        <Quantity>0.99</Quantity>
       </FertilizerQuantity>
     </Ingredients>
     <UseImperial>true</UseImperial>
