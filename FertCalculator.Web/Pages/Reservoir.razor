@@ -8,7 +8,7 @@
         <button class="btn btn-outline-secondary btn-sm" @onclick="ToggleUnits">
             @(State.UseImperial ? "Switch to Liter" : "Switch to Gallon")
         </button>
-        <span class="ms-3 text-muted">Mix doses are @(State.UseImperial ? "per gallon" : "per liter")</span>
+        <span class="ms-3 text-muted">Mix doses are measured per @(State.UseImperial ? "gallon" : "liter")</span>
     </div>
 
     @if (!State.IsLoaded)
@@ -19,7 +19,7 @@
     {
         <div class="row">
             <div class="col-md-4">
-                <h5>Reservoir</h5>
+                <h5>Reservoir size</h5>
                 <div class="input-group input-group-sm mb-3" style="max-width:280px">
                     <input type="number" step="any" min="0" class="form-control" @bind="reservoirSize" @bind:event="oninput" @bind:after="Recalc" />
                     <select class="form-select" style="max-width:110px" @bind="reservoirUnit" @bind:after="Recalc">
@@ -57,7 +57,13 @@
                 else
                 {
                     var unit = State.UseImperial ? "gal" : "L";
-                    <h5>Add to reservoir (@FormatSize(reservoirSizeInModeUnits) @unit)</h5>
+                    <h5>
+                        Add to reservoir — @FormatSize(reservoirSizeInModeUnits) @unit
+                        @if (reservoirUnit != (State.UseImperial ? "gal" : "L"))
+                        {
+                            <small class="text-muted">(@FormatSize(reservoirSize) @reservoirUnit entered)</small>
+                        }
+                    </h5>
 
                     @foreach (var sec in sections)
                     {
@@ -182,6 +188,9 @@
     protected override async Task OnInitializedAsync()
     {
         await State.EnsureLoaded();
+        // Default the reservoir-size unit to the dose unit; if the user picks
+        // a different one it sticks until they change it back.
+        reservoirUnit = State.UseImperial ? "gal" : "L";
         Recalc();
     }
 
