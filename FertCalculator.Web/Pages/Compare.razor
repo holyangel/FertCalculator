@@ -97,13 +97,17 @@
                         {
                             <div style="min-width:220px">
                                 <strong><span class="cmp-swatch me-1" style="background:@c.Color"></span>@c.Mix.Name</strong>
+                                @if (c.Mix.UseImperial != null && c.Mix.UseImperial != State.UseImperial)
+                                {
+                                    <span class="badge text-bg-secondary ms-1" title="Authored in the other unit — quantities converted">per-@(c.Mix.UseImperial == true ? "gal" : "L")</span>
+                                }
                                 @if (c.Missing.Count > 0)
                                 {
                                     <div class="small text-warning mt-1">@c.Missing.Count ingredient@(c.Missing.Count == 1 ? "" : "s") not in library</div>
                                 }
                                 <table class="table table-sm mt-1">
                                     <tbody>
-                                        @foreach (var i in c.Mix.Ingredients)
+                                        @foreach (var i in c.DisplayIngredients)
                                         {
                                             var known = IsKnown(i.FertilizerName);
                                             <tr class="@(known ? "" : "table-warning")">
@@ -175,6 +179,7 @@
         public NutrientTotals Totals = new();
         public string Color = "#4da3ff";
         public List<string> Missing = new();
+        public List<FertilizerQuantity> DisplayIngredients = new();
     }
 
     private bool IsKnown(string name) =>
@@ -211,9 +216,12 @@
             .Select(m => new Compared
             {
                 Mix = m,
-                Totals = MixCalculator.Calculate(m.Ingredients, State.Fertilizers, State.UseImperial),
+                Totals = MixCalculator.Calculate(
+                    MixCalculator.IngredientsInMode(m, State.UseImperial),
+                    State.Fertilizers, State.UseImperial),
                 Color = ColorFor(m.Name),
                 Missing = m.Ingredients.Where(i => !IsKnown(i.FertilizerName)).Select(i => i.FertilizerName).ToList(),
+                DisplayIngredients = MixCalculator.IngredientsInMode(m, State.UseImperial),
             }).ToList();
     }
 

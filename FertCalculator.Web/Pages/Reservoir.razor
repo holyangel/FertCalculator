@@ -67,7 +67,13 @@
 
                     @foreach (var sec in sections)
                     {
-                        <h6 class="mt-3 mb-1">@sec.Mix.Name</h6>
+                        <h6 class="mt-3 mb-1">
+                            @sec.Mix.Name
+                            @if (sec.Mix.UseImperial != null && sec.Mix.UseImperial != State.UseImperial)
+                            {
+                                <span class="badge text-bg-secondary ms-1" title="Authored in the other unit — quantities converted">per-@(sec.Mix.UseImperial == true ? "gal" : "L") mix</span>
+                            }
+                        </h6>
                         <table class="table table-sm" style="max-width:640px">
                             <tbody>
                                 @foreach (var line in sec.Lines)
@@ -209,8 +215,7 @@
 
         var combined = new List<FertilizerQuantity>();
         foreach (var m in State.SavedMixes.Where(m => selected.Contains(m.Name)))
-            foreach (var i in m.Ingredients)
-                combined.Add(i);
+            combined.AddRange(MixCalculator.IngredientsInMode(m, State.UseImperial));
 
         totals = MixCalculator.Calculate(combined, State.Fertilizers, State.UseImperial);
 
@@ -239,7 +244,8 @@
             sections.Add(new MixSection
             {
                 Mix = m,
-                Lines = m.Ingredients.Select(i => MakeLine(i.FertilizerName, i.Quantity)).ToList(),
+                Lines = MixCalculator.IngredientsInMode(m, State.UseImperial)
+                    .Select(i => MakeLine(i.FertilizerName, i.Quantity)).ToList(),
             });
 
         recipe = combined

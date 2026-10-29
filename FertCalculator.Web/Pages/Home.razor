@@ -166,6 +166,9 @@
     private async Task ToggleUnits()
     {
         await State.SetImperial(!State.UseImperial);
+        // Rescale the working quantities so the mix keeps the same strength.
+        foreach (var item in currentMix)
+            item.Quantity = MixCalculator.ToModeUnits(item.Quantity, !State.UseImperial, State.UseImperial);
         Recalc();
     }
 
@@ -182,11 +185,12 @@
         if (existing != null)
         {
             existing.Ingredients = ingredients;
+            existing.UseImperial = State.UseImperial;
             status = $"Updated mix '{name}'.";
         }
         else
         {
-            State.SavedMixes.Add(new FertilizerMix { Name = name, Ingredients = ingredients });
+            State.SavedMixes.Add(new FertilizerMix { Name = name, Ingredients = ingredients, UseImperial = State.UseImperial });
             status = $"Saved mix '{name}'.";
         }
         loadedMixName = name;
@@ -197,11 +201,7 @@
     {
         var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName);
         if (mix == null) return;
-        currentMix = mix.Ingredients.Select(i => new FertilizerQuantity
-        {
-            FertilizerName = i.FertilizerName,
-            Quantity = i.Quantity
-        }).ToList();
+        currentMix = MixCalculator.IngredientsInMode(mix, State.UseImperial);
         loadedMixName = mix.Name;
         Recalc();
         status = $"Loaded '{mix.Name}'.";

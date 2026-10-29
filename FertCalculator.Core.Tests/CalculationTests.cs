@@ -141,4 +141,43 @@ public class CalculationTests
         Assert.Equal(0, MixCalculator.Calculate(null, null).Total);
         Assert.Equal(0, MixCalculator.Calculate(new List<FertilizerQuantity>(), new List<Fertilizer>()).Total);
     }
+    [Fact]
+    public void ToModeUnits_ConvertsPerGallonToPerLiter()
+    {
+        Assert.Equal(7.0 / MixCalculator.GallonToLiter,
+            MixCalculator.ToModeUnits(7.0, sourceImperial: true, targetImperial: false), 6);
+    }
+
+    [Fact]
+    public void ToModeUnits_ConvertsPerLiterToPerGallon()
+    {
+        Assert.Equal(2.0 * MixCalculator.GallonToLiter,
+            MixCalculator.ToModeUnits(2.0, sourceImperial: false, targetImperial: true), 6);
+    }
+
+    [Fact]
+    public void ToModeUnits_SameModeOrUnknown_ReturnsUnchanged()
+    {
+        Assert.Equal(5.0, MixCalculator.ToModeUnits(5.0, true, true));
+        Assert.Equal(5.0, MixCalculator.ToModeUnits(5.0, false, false));
+        Assert.Equal(5.0, MixCalculator.ToModeUnits(5.0, null, true));
+        Assert.Equal(5.0, MixCalculator.ToModeUnits(5.0, null, false));
+    }
+
+    [Fact]
+    public void IngredientsInMode_PerGallonMixKeepsStrengthInLiterMode()
+    {
+        var fert = new Fertilizer { Name = "A", NitrogenPercent = 10 };
+        var mix = new FertilizerMix
+        {
+            Name = "test", UseImperial = true,
+            Ingredients = { new FertilizerQuantity { FertilizerName = "A", Quantity = MixCalculator.GallonToLiter } }
+        };
+
+        var converted = MixCalculator.IngredientsInMode(mix, targetImperial: false);
+        var totalsG = MixCalculator.Calculate(mix.Ingredients, new[] { fert }, useImperial: true);
+        var totalsL = MixCalculator.Calculate(converted, new[] { fert }, useImperial: false);
+
+        Assert.Equal(totalsG.Nitrogen, totalsL.Nitrogen, 6);
+    }
 }

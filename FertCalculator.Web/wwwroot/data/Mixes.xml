@@ -12,6 +12,7 @@
         <Quantity>1</Quantity>
       </FertilizerQuantity>
     </Ingredients>
+    <UseImperial>true</UseImperial>
   </FertilizerMix>
   <FertilizerMix>
     <Name>Lucas Formula - 8/16</Name>
@@ -25,6 +26,7 @@
         <Quantity>16</Quantity>
       </FertilizerQuantity>
     </Ingredients>
+    <UseImperial>true</UseImperial>
   </FertilizerMix>
   <FertilizerMix>
     <Name>Jacks 4-2-0</Name>
@@ -38,6 +40,7 @@
         <Quantity>2</Quantity>
       </FertilizerQuantity>
     </Ingredients>
+    <UseImperial>true</UseImperial>
   </FertilizerMix>
   <FertilizerMix>
     <Name>Jacks 3-2-1</Name>
@@ -55,5 +58,6 @@
         <Quantity>1.2</Quantity>
       </FertilizerQuantity>
     </Ingredients>
+    <UseImperial>true</UseImperial>
   </FertilizerMix>
 </ArrayOfFertilizerMix>

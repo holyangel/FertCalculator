@@ -34,6 +34,41 @@ namespace FertCalculator.Core
         public const double GallonToLiter = 3.78541;
 
         /// <summary>
+        /// Converts a stored quantity to the target display mode, preserving
+        /// mix strength. <paramref name="sourceImperial"/> is the convention the
+        /// quantity was authored in (null = legacy/unknown, returned as-is).
+        /// </summary>
+        public static double ToModeUnits(double quantity, bool? sourceImperial, bool targetImperial)
+        {
+            if (sourceImperial == null || sourceImperial == targetImperial)
+                return quantity;
+            return sourceImperial.Value
+                ? quantity / GallonToLiter
+                : quantity * GallonToLiter;
+        }
+
+        /// <summary>
+        /// Returns a copy of the mix's ingredients with quantities expressed in
+        /// the target mode, so the result feeds straight into Calculate.
+        /// </summary>
+        public static List<FertilizerQuantity> IngredientsInMode(FertilizerMix mix, bool targetImperial)
+        {
+            var result = new List<FertilizerQuantity>();
+            if (mix?.Ingredients == null)
+                return result;
+            foreach (var i in mix.Ingredients)
+            {
+                if (i == null) continue;
+                result.Add(new FertilizerQuantity
+                {
+                    FertilizerName = i.FertilizerName,
+                    Quantity = ToModeUnits(i.Quantity, mix.UseImperial, targetImperial),
+                });
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Sums the nutrient contribution of every ingredient in <paramref name="mix"/>.
         /// Fertilizer names are matched case-insensitively; ingredients whose
         /// fertilizer is not found are skipped.

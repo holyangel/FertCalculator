@@ -215,6 +215,13 @@ namespace FertCalculator.Core
     {
         public string Name { get; set; } = string.Empty;
         public List<FertilizerQuantity> Ingredients { get; set; } = new List<FertilizerQuantity>();
+
+        /// <summary>
+        /// Unit convention the ingredient quantities were authored in:
+        /// true = per gallon, false = per liter, null = legacy/unknown
+        /// (treated as whatever unit mode is currently active).
+        /// </summary>
+        public bool? UseImperial { get; set; }
     }
 
     [Serializable]

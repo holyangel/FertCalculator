@@ -187,12 +187,13 @@
         var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMix);
         if (mix != null && targetPpm > 0)
         {
-            var totals = MixCalculator.Calculate(mix.Ingredients, State.Fertilizers, State.UseImperial);
+            var ingredients = MixCalculator.IngredientsInMode(mix, State.UseImperial);
+            var totals = MixCalculator.Calculate(ingredients, State.Fertilizers, State.UseImperial);
             double current = Nutrient(selectedNutrient).Get(totals);
             if (current > 0)
             {
                 double factor = targetPpm.Value / current;
-                var scaled = mix.Ingredients.Select(i => new FertilizerQuantity
+                var scaled = ingredients.Select(i => new FertilizerQuantity
                 {
                     FertilizerName = i.FertilizerName,
                     Quantity = i.Quantity * factor,
@@ -201,7 +202,7 @@
                 {
                     Current = current,
                     Factor = factor,
-                    Rows = mix.Ingredients.Select(i => (i.FertilizerName, i.Quantity, i.Quantity * factor)).ToList(),
+                    Rows = ingredients.Select(i => (i.FertilizerName, i.Quantity, i.Quantity * factor)).ToList(),
                     Scaled = MixCalculator.Calculate(scaled, State.Fertilizers, State.UseImperial),
                 };
             }
