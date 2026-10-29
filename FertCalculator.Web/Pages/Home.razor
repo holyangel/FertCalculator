@@ -24,6 +24,19 @@
                 <h5>Available Fertilizers (@FilteredFertilizers.Count())</h5>
                 <input class="form-control form-control-sm mb-2" placeholder="Filter…" @bind="search" @bind:event="oninput" />
                 <div class="list-group" style="max-height:60vh;overflow-y:auto">
+                    @foreach (var m in FilteredMixes)
+                    {
+                        <button class="list-group-item list-group-item-action d-flex justify-content-between"
+                                title="Add all of this mix's ingredients to the current mix"
+                                @onclick="() => AddMixToMix(m)">
+                            <span>@m.Name <span class="badge text-bg-secondary ms-1">mix</span></span>
+                            <small class="text-muted">@m.Ingredients.Count ferts</small>
+                        </button>
+                    }
+                    @if (FilteredMixes.Any() && FilteredFertilizers.Any())
+                    {
+                        <div class="list-group-item disabled py-1"><small class="text-muted">— fertilizers —</small></div>
+                    }
                     @foreach (var f in FilteredFertilizers)
                     {
                         <button class="list-group-item list-group-item-action d-flex justify-content-between"
@@ -136,6 +149,10 @@
         State.Fertilizers.Where(f => string.IsNullOrEmpty(search) ||
             (f.Name?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
 
+    private IEnumerable<FertilizerMix> FilteredMixes =>
+        State.SavedMixes.Where(m => string.IsNullOrEmpty(search) ||
+            (m.Name?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+
     protected override async Task OnInitializedAsync()
     {
         await State.EnsureLoaded();
@@ -152,6 +169,26 @@
         currentMix.Add(new FertilizerQuantity { FertilizerName = f.Name, Quantity = 1.0 });
         loadedMixName = null;
         Recalc();
+    }
+
+    private void AddMixToMix(FertilizerMix mix)
+    {
+        // Flatten the mix's ingredients into the current mix, converted to the
+        // active unit mode; quantities for duplicate fertilizers are summed.
+        int added = 0;
+        foreach (var i in MixCalculator.IngredientsInMode(mix, State.UseImperial))
+        {
+            var existing = currentMix.FirstOrDefault(x =>
+                string.Equals(x.FertilizerName, i.FertilizerName, StringComparison.OrdinalIgnoreCase));
+            if (existing != null)
+                existing.Quantity += i.Quantity;
+            else
+                currentMix.Add(i);
+            added++;
+        }
+        loadedMixName = null;
+        Recalc();
+        status = $"Added {added} ingredient{(added == 1 ? "" : "s")} from '{mix.Name}'.";
     }
 
     private void RemoveItem(FertilizerQuantity item)
