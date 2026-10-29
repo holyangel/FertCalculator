@@ -42,7 +42,13 @@
                                 <input class="form-check-input" type="checkbox"
                                        checked="@selected.Contains(m.Name)"
                                        @onchange="e => ToggleMix(m.Name, (bool)e.Value!)" />
-                                <span>@m.Name <small class="text-muted">(@m.Ingredients.Count fert@(m.Ingredients.Count == 1 ? "" : "s"))</small></span>
+                                <span>
+                                    @m.Name <small class="text-muted">(@m.Ingredients.Count fert@(m.Ingredients.Count == 1 ? "" : "s"))</small>
+                                    @if (m.UseImperial == null)
+                                    {
+                                        <span class="badge text-bg-dark border ms-1" title="Unit not stamped — quantities used as-is. Set it on the Calculator tab.">unit?</span>
+                                    }
+                                </span>
                             </label>
                         }
                     </div>

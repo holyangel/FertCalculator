@@ -32,6 +32,10 @@
                                    @onchange="e => ToggleMix(m.Name, (bool)e.Value!)" />
                             <span class="d-flex align-items-center gap-2">
                                 <span class="cmp-swatch" style="background:@ColorFor(m.Name)"></span>@m.Name
+                                @if (m.UseImperial == null)
+                                {
+                                    <span class="badge text-bg-dark border" title="Unit not stamped — quantities used as-is. Set it on the Calculator tab.">unit?</span>
+                                }
                             </span>
                         </label>
                     }

@@ -77,6 +77,12 @@
                         </select>
                         <button class="btn btn-sm btn-outline-primary" @onclick="LoadMix" disabled="@(string.IsNullOrEmpty(selectedMixName))">Load</button>
                         <button class="btn btn-sm btn-outline-danger" @onclick="DeleteMix" disabled="@(string.IsNullOrEmpty(selectedMixName))">Delete</button>
+                        <select class="form-select form-select-sm" style="width:150px" title="Unit convention this mix was saved in"
+                                value="@MixUnitValue" disabled="@(string.IsNullOrEmpty(selectedMixName))" @onchange="SetMixUnit">
+                            <option value="">unit: unset</option>
+                            <option value="true">per gallon</option>
+                            <option value="false">per liter</option>
+                        </select>
                     }
                     <button class="btn btn-sm btn-outline-secondary" @onclick="ExportXml" disabled="@(State.Fertilizers.Count == 0 && State.SavedMixes.Count == 0)">Export XML</button>
                     <label class="btn btn-sm btn-outline-secondary mb-0">
@@ -205,6 +211,28 @@
         loadedMixName = mix.Name;
         Recalc();
         status = $"Loaded '{mix.Name}'.";
+    }
+
+    private string MixUnitValue =>
+        State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName)?.UseImperial switch
+        {
+            true => "true",
+            false => "false",
+            _ => "",
+        };
+
+    private async Task SetMixUnit(ChangeEventArgs e)
+    {
+        var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName);
+        if (mix == null) return;
+        mix.UseImperial = e.Value?.ToString() switch
+        {
+            "true" => true,
+            "false" => false,
+            _ => null,
+        };
+        await State.PersistMixes();
+        status = $"'{mix.Name}' marked as {(mix.UseImperial == true ? "per-gallon" : mix.UseImperial == false ? "per-liter" : "unit-unset")}.";
     }
 
     private async Task DeleteMix()
