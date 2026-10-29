@@ -1,4 +1,6 @@
 @page "/about"
+@inject AppState State
+@inject IJSRuntime JS
 
 <PageTitle>About — Fertilizer Calculator</PageTitle>
 
@@ -65,8 +67,13 @@
         <li>
             <strong>Saved mixes</strong> and your <strong>unit preference</strong> live in your
             browser's <code>localStorage</code> — they persist across visits on this
-            device and browser only. On first run the example mixes from the
-            bundled <code>Mixes.xml</code> are loaded as a starting point.
+            device and browser only. The built-in example mixes always load from
+            the server; your own mixes merge in alongside them, and same-named
+            local mixes override the built-ins.
+        </li>
+        <li>
+            <strong>Custom fertilizers</strong> also persist in
+            <code>localStorage</code> and merge into the bundled library.
         </li>
         <li>
             <strong>Nothing is sent anywhere.</strong> This is a fully static app — no
@@ -79,6 +86,20 @@
             the Windows desktop app and the Android app — export on one, import on another.
         </li>
     </ul>
+
+    <h5 class="mt-4">Reset local data</h5>
+    <p class="text-muted">
+        Clear this browser's saved data and go back to what the server ships.
+        Neither touches your unit preference, and anything exported via XML is unaffected.
+    </p>
+    <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-sm btn-outline-warning" @onclick="ResetMixes">Reset mixes</button>
+        <button class="btn btn-sm btn-outline-warning" @onclick="ResetFertilizers">Reset custom fertilizers</button>
+    </div>
+    @if (!string.IsNullOrEmpty(resetStatus))
+    {
+        <div class="alert alert-info py-1 px-2 mt-2">@resetStatus</div>
+    }
 
     <h5 class="mt-4">Caveats</h5>
     <ul>
@@ -97,3 +118,30 @@
         </li>
     </ul>
 </div>
+
+@code {
+    private string? resetStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await State.EnsureLoaded();
+    }
+
+    private async Task ResetMixes()
+    {
+        bool ok = await JS.InvokeAsync<bool>("confirm",
+            "Delete all locally saved mixes and restore the built-in ones? This cannot be undone (exports are unaffected).");
+        if (!ok) return;
+        await State.ResetMixes();
+        resetStatus = "Mixes reset — you're back to the built-in set.";
+    }
+
+    private async Task ResetFertilizers()
+    {
+        bool ok = await JS.InvokeAsync<bool>("confirm",
+            "Remove all custom fertilizers and restore the bundled library? This cannot be undone (exports are unaffected).");
+        if (!ok) return;
+        await State.ResetFertilizers();
+        resetStatus = "Custom fertilizers removed — library is back to the bundled set.";
+    }
+}

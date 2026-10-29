@@ -181,26 +181,21 @@
     private async Task SaveMix()
     {
         var name = mixName.Trim();
-        var existing = State.SavedMixes.FirstOrDefault(m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
-        var ingredients = currentMix.Select(i => new FertilizerQuantity
+        bool existed = State.SavedMixes.Any(m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
+        var mix = new FertilizerMix
         {
-            FertilizerName = i.FertilizerName,
-            Quantity = i.Quantity
-        }).ToList();
+            Name = name,
+            Ingredients = currentMix.Select(i => new FertilizerQuantity
+            {
+                FertilizerName = i.FertilizerName,
+                Quantity = i.Quantity
+            }).ToList(),
+            UseImperial = State.UseImperial,
+        };
 
-        if (existing != null)
-        {
-            existing.Ingredients = ingredients;
-            existing.UseImperial = State.UseImperial;
-            status = $"Updated mix '{name}'.";
-        }
-        else
-        {
-            State.SavedMixes.Add(new FertilizerMix { Name = name, Ingredients = ingredients, UseImperial = State.UseImperial });
-            status = $"Saved mix '{name}'.";
-        }
+        await State.SaveUserMix(mix);
+        status = existed ? $"Updated mix '{name}'." : $"Saved mix '{name}'.";
         loadedMixName = name;
-        await State.PersistMixes();
     }
 
     private void LoadMix()
@@ -225,23 +220,32 @@
     {
         var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName);
         if (mix == null) return;
-        mix.UseImperial = e.Value?.ToString() switch
+        // Clone into a user override so stamping works on seed mixes too.
+        var stamped = new FertilizerMix
         {
-            "true" => true,
-            "false" => false,
-            _ => null,
+            Name = mix.Name,
+            Ingredients = mix.Ingredients.Select(i => new FertilizerQuantity
+            {
+                FertilizerName = i.FertilizerName, Quantity = i.Quantity
+            }).ToList(),
+            UseImperial = e.Value?.ToString() switch
+            {
+                "true" => true,
+                "false" => false,
+                _ => null,
+            },
         };
-        await State.PersistMixes();
-        status = $"'{mix.Name}' marked as {(mix.UseImperial == true ? "per-gallon" : mix.UseImperial == false ? "per-liter" : "unit-unset")}.";
+        await State.SaveUserMix(stamped);
+        status = $"'{mix.Name}' marked as {(stamped.UseImperial == true ? "per-gallon" : stamped.UseImperial == false ? "per-liter" : "unit-unset")}.";
     }
 
     private async Task DeleteMix()
     {
         var mix = State.SavedMixes.FirstOrDefault(m => m.Name == selectedMixName);
         if (mix == null) return;
-        State.SavedMixes.Remove(mix);
-        status = $"Deleted mix '{mix.Name}'.";
-        await State.PersistMixes();
+        bool isSeed = State.SeedMixes.Any(s => string.Equals(s.Name, mix.Name, StringComparison.OrdinalIgnoreCase));
+        await State.DeleteUserMix(mix.Name);
+        status = isSeed ? $"Hid built-in mix '{mix.Name}' (restored by reset)." : $"Deleted mix '{mix.Name}'.";
     }
 
     private async Task ExportXml()
@@ -289,7 +293,7 @@
             {
                 if (!State.Fertilizers.Any(x => string.Equals(x.Name, f.Name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    State.Fertilizers.Add(f);
+                    await State.SaveCustomFertilizer(f);
                     addedF++;
                 }
             }
@@ -297,11 +301,10 @@
             {
                 if (!State.SavedMixes.Any(x => string.Equals(x.Name, m.Name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    State.SavedMixes.Add(m);
+                    await State.SaveUserMix(m);
                     addedM++;
                 }
             }
-            await State.PersistMixes();
             status = $"Imported {addedF} fertilizer(s), {addedM} mix(es).";
         }
         catch (Exception ex)
