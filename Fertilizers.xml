@@ -1825,13 +1825,18 @@
     <HumicAcidPercent>4</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
   </Fertilizer>
+  <Fertilizer>
+    <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+    <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+    <OriginalPhosphorusValue>0</OriginalPhosphorusValue>
+    <OriginalPotassiumValue>3</OriginalPotassiumValue>
     <IsLiquid>true</IsLiquid>
     <Density>1.2</Density>
     <Name>H&amp;G Aqua Flakes A</Name>
-    <NitrogenPercent>0.3</NitrogenPercent>
+    <NitrogenPercent>3</NitrogenPercent>
     <PhosphorusPercent>0</PhosphorusPercent>
-    <PotassiumPercent>0.24902999999999997</PotassiumPercent>
-    <CalciumPercent>0</CalciumPercent>
+    <PotassiumPercent>2.4903</PotassiumPercent>
+    <CalciumPercent>3</CalciumPercent>
     <MagnesiumPercent>0</MagnesiumPercent>
     <SulfurPercent>0</SulfurPercent>
     <BoronPercent>0</BoronPercent>
@@ -1848,14 +1853,14 @@
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
     <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
-    <OriginalPhosphorusValue>0.3</OriginalPhosphorusValue>
-    <OriginalPotassiumValue>0.8</OriginalPotassiumValue>
+    <OriginalPhosphorusValue>3</OriginalPhosphorusValue>
+    <OriginalPotassiumValue>6</OriginalPotassiumValue>
     <IsLiquid>true</IsLiquid>
     <Density>1.32</Density>
     <Name>H&amp;G Aqua Flakes B</Name>
-    <NitrogenPercent>0.1</NitrogenPercent>
-    <PhosphorusPercent>0.13092</PhosphorusPercent>
-    <PotassiumPercent>0.66408</PotassiumPercent>
+    <NitrogenPercent>1</NitrogenPercent>
+    <PhosphorusPercent>1.3092</PhosphorusPercent>
+    <PotassiumPercent>4.9806</PotassiumPercent>
     <CalciumPercent>0</CalciumPercent>
     <MagnesiumPercent>0.8</MagnesiumPercent>
     <SulfurPercent>0</SulfurPercent>
