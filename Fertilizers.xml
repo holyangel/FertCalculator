@@ -1235,7 +1235,7 @@
     <Name>GH Floralicious Grow</Name>
     <NitrogenPercent>1</NitrogenPercent>
     <PhosphorusPercent>0.30548</PhosphorusPercent>
-    <PotassiumPercent>0.49805999999999995</PotassiumPercent>
+    <PotassiumPercent>0.49806</PotassiumPercent>
     <CalciumPercent>0</CalciumPercent>
     <MagnesiumPercent>0</MagnesiumPercent>
     <SulfurPercent>0</SulfurPercent>
@@ -1257,10 +1257,35 @@
     <OriginalPotassiumValue>0.02</OriginalPotassiumValue>
     <IsLiquid>true</IsLiquid>
     <Density>1.15</Density>
-    <Name>GH Floralicious Plus</Name>
+    <Name>GH Floralicious Plus 0.02</Name>
     <NitrogenPercent>2</NitrogenPercent>
-    <PhosphorusPercent>0.34912000000000004</PhosphorusPercent>
+    <PhosphorusPercent>0.34912</PhosphorusPercent>
     <PotassiumPercent>0.016602</PotassiumPercent>
+    <CalciumPercent>0</CalciumPercent>
+    <MagnesiumPercent>0</MagnesiumPercent>
+    <SulfurPercent>0</SulfurPercent>
+    <BoronPercent>0</BoronPercent>
+    <CopperPercent>0</CopperPercent>
+    <IronPercent>0</IronPercent>
+    <ManganesePercent>0</ManganesePercent>
+    <MolybdenumPercent>0</MolybdenumPercent>
+    <ZincPercent>0</ZincPercent>
+    <ChlorinePercent>0</ChlorinePercent>
+    <SilicaPercent>0</SilicaPercent>
+    <HumicAcidPercent>2</HumicAcidPercent>
+    <FulvicAcidPercent>0</FulvicAcidPercent>
+  </Fertilizer>
+  <Fertilizer>
+    <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
+    <IsPotassiumInOxideForm>true</IsPotassiumInOxideForm>
+    <OriginalPhosphorusValue>0.8</OriginalPhosphorusValue>
+    <OriginalPotassiumValue>0.5</OriginalPotassiumValue>
+    <IsLiquid>true</IsLiquid>
+    <Density>1.15</Density>
+    <Name>GH Floralicious Plus 0.5</Name>
+    <NitrogenPercent>2</NitrogenPercent>
+    <PhosphorusPercent>0.34912</PhosphorusPercent>
+    <PotassiumPercent>0.41505</PotassiumPercent>
     <CalciumPercent>0</CalciumPercent>
     <MagnesiumPercent>0</MagnesiumPercent>
     <SulfurPercent>0</SulfurPercent>
