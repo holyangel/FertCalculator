@@ -207,6 +207,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <!-- Nutrient labels -->
@@ -226,8 +227,9 @@
                             <TextBlock Grid.Row="13" Text="Silica (Si)"/>
                             <TextBlock Grid.Row="14" Text="Humic Acid"/>
                             <TextBlock Grid.Row="15" Text="Fulvic Acid"/>
-                            <TextBlock Grid.Row="16" Text="" Height="10"/>
-                            <TextBlock Grid.Row="17" Text="TOTAL PPM" FontWeight="Bold"/>
+                            <TextBlock Grid.Row="16" Text="Kelp"/>
+                            <TextBlock Grid.Row="17" Text="" Height="10"/>
+                            <TextBlock Grid.Row="18" Text="TOTAL PPM" FontWeight="Bold"/>
 
                             <!-- Nutrient values -->
                             <TextBox x:Name="NitrogenValueTextBlock" Grid.Row="0" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
@@ -246,8 +248,9 @@
                             <TextBox x:Name="SilicaValueTextBlock" Grid.Row="13" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
                             <TextBox x:Name="HumicAcidValueTextBlock" Grid.Row="14" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
                             <TextBox x:Name="FulvicAcidValueTextBlock" Grid.Row="15" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
-                            <TextBlock Grid.Row="16" Grid.Column="1" Text="" Height="10"/>
-                            <TextBox x:Name="TotalPpmValueTextBlock" Grid.Row="17" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold" Style="{StaticResource SelectableValue}"/>
+                            <TextBox x:Name="KelpValueTextBlock" Grid.Row="16" Grid.Column="1" Text="0.00" TextAlignment="Right" Style="{StaticResource SelectableValue}"/>
+                            <TextBlock Grid.Row="17" Grid.Column="1" Text="" Height="10"/>
+                            <TextBox x:Name="TotalPpmValueTextBlock" Grid.Row="18" Grid.Column="1" Text="0.00" TextAlignment="Right" FontWeight="Bold" Style="{StaticResource SelectableValue}"/>
                         </Grid>
                     </Grid>
 

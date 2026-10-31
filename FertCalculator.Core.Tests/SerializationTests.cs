@@ -115,7 +115,7 @@ public class SerializationTests
         // The serialized element names are the cross-app contract — guard them.
         string xml = Serialize(new List<Fertilizer>
         {
-            new Fertilizer { Name = "X", SilicaPercent = 1, HumicAcidPercent = 2, FulvicAcidPercent = 3 }
+            new Fertilizer { Name = "X", SilicaPercent = 1, HumicAcidPercent = 2, FulvicAcidPercent = 3, KelpPercent = 4 }
         });
 
         foreach (var element in new[]
@@ -124,7 +124,7 @@ public class SerializationTests
             "CalciumPercent", "MagnesiumPercent", "SulfurPercent", "BoronPercent",
             "CopperPercent", "IronPercent", "ManganesePercent", "MolybdenumPercent",
             "ZincPercent", "ChlorinePercent", "SilicaPercent",
-            "HumicAcidPercent", "FulvicAcidPercent",
+            "HumicAcidPercent", "FulvicAcidPercent", "KelpPercent",
             "IsPhosphorusInOxideForm", "IsPotassiumInOxideForm",
             "OriginalPhosphorusValue", "OriginalPotassiumValue"
         })

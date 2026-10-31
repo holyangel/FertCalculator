@@ -84,7 +84,7 @@
                 
                 <!-- Comparison Table -->
                 <Grid ColumnDefinitions="*,*,*" 
-                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                       BackgroundColor="{AppThemeBinding Light=Transparent, Dark={StaticResource Black}}"
                       Margin="5">
                     <!-- Headers -->
@@ -141,12 +141,16 @@
                     <Label Grid.Row="16" Grid.Column="0" Text="Fulvic Acid" Margin="0,2"/>
                     <Label Grid.Row="16" Grid.Column="1" Text="{Binding BindingContext.Mix1FulvicAcidPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     <Label Grid.Row="16" Grid.Column="2" Text="{Binding BindingContext.Mix2FulvicAcidPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+
+                    <Label Grid.Row="17" Grid.Column="0" Text="Kelp" Margin="0,2"/>
+                    <Label Grid.Row="17" Grid.Column="1" Text="{Binding BindingContext.Mix1KelpPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
+                    <Label Grid.Row="17" Grid.Column="2" Text="{Binding BindingContext.Mix2KelpPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" Margin="0,2"/>
                     
                     <!-- Total Row with Unit Label -->
-                    <BoxView Grid.Row="17" Grid.ColumnSpan="3" HeightRequest="1" BackgroundColor="Gray" Margin="0,5" />
-                    <Label Grid.Row="18" Grid.Column="0" Text="Total Nutrients" FontAttributes="Bold" Margin="0,5,0,2"/>
-                    <Label Grid.Row="18" Grid.Column="1" Text="{Binding BindingContext.Mix1TotalNutrientPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,5,0,2"/>
-                    <Label Grid.Row="18" Grid.Column="2" Text="{Binding BindingContext.Mix2TotalNutrientPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,5,0,2"/>
+                    <BoxView Grid.Row="18" Grid.ColumnSpan="3" HeightRequest="1" BackgroundColor="Gray" Margin="0,5" />
+                    <Label Grid.Row="19" Grid.Column="0" Text="Total Nutrients" FontAttributes="Bold" Margin="0,5,0,2"/>
+                    <Label Grid.Row="19" Grid.Column="1" Text="{Binding BindingContext.Mix1TotalNutrientPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,5,0,2"/>
+                    <Label Grid.Row="19" Grid.Column="2" Text="{Binding BindingContext.Mix2TotalNutrientPpm, StringFormat='{0:F3}', Source={x:Reference CompareMixPageRoot}}" FontAttributes="Bold" Margin="0,5,0,2"/>
                 </Grid>
             </VerticalStackLayout>
         </ScrollView>

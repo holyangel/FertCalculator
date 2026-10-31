@@ -26,6 +26,7 @@ namespace FertCalculator.Core
         public double Silica { get; set; }
         public double HumicAcid { get; set; }
         public double FulvicAcid { get; set; }
+        public double Kelp { get; set; }
         public double Total { get; set; }
     }
 
@@ -116,13 +117,14 @@ namespace FertCalculator.Core
                 totals.Silica += fertilizer.SilicaPpm() * quantity;
                 totals.HumicAcid += fertilizer.HumicAcidPpm() * quantity;
                 totals.FulvicAcid += fertilizer.FulvicAcidPpm() * quantity;
+                totals.Kelp += fertilizer.KelpPpm() * quantity;
             }
 
             totals.Total = totals.Nitrogen + totals.Phosphorus + totals.Potassium +
                            totals.Calcium + totals.Magnesium + totals.Sulfur +
                            totals.Boron + totals.Copper + totals.Iron +
                            totals.Manganese + totals.Molybdenum + totals.Zinc +
-                           totals.Chlorine + totals.Silica + totals.HumicAcid + totals.FulvicAcid;
+                           totals.Chlorine + totals.Silica + totals.HumicAcid + totals.FulvicAcid + totals.Kelp;
 
             return totals;
         }

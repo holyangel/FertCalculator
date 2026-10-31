@@ -65,6 +65,7 @@ namespace FertilizerCalculator
                 SilicaTextBox.Text = existingFertilizer.SilicaPercent.ToString("F3");
                 HumicAcidTextBox.Text = existingFertilizer.HumicAcidPercent.ToString("F3");
                 FulvicAcidTextBox.Text = existingFertilizer.FulvicAcidPercent.ToString("F3");
+                KelpTextBox.Text = existingFertilizer.KelpPercent.ToString("F3");
                 IsLiquidCheckBox.IsChecked = existingFertilizer.IsLiquid;
                 DensityTextBox.Text = existingFertilizer.Density.ToString("F3");
             }
@@ -87,6 +88,7 @@ namespace FertilizerCalculator
                 SilicaTextBox.Text = "";
                 HumicAcidTextBox.Text = "";
                 FulvicAcidTextBox.Text = "";
+                KelpTextBox.Text = "";
             }
         }
 
@@ -165,6 +167,7 @@ namespace FertilizerCalculator
                 SilicaPercent = ParseTextBoxValue(SilicaTextBox),
                 HumicAcidPercent = ParseTextBoxValue(HumicAcidTextBox),
                 FulvicAcidPercent = ParseTextBoxValue(FulvicAcidTextBox),
+                KelpPercent = ParseTextBoxValue(KelpTextBox),
 
                 // Store original input format and values
                 IsPhosphorusInOxideForm = isPhosphorusInOxideForm,

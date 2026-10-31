@@ -92,6 +92,7 @@ namespace FertilizerCalculator
                 ("Silica (Si)", FirstMixSilicaTextBlock, SecondMixSilicaTextBlock),
                 ("Humic Acid", FirstMixHumicAcidTextBlock, SecondMixHumicAcidTextBlock),
                 ("Fulvic Acid", FirstMixFulvicAcidTextBlock, SecondMixFulvicAcidTextBlock),
+                ("Kelp", FirstMixKelpTextBlock, SecondMixKelpTextBlock),
                 ("Total PPM", FirstMixTotalPpmTextBlock, SecondMixTotalPpmTextBlock),
             };
 
@@ -155,6 +156,7 @@ namespace FertilizerCalculator
             FirstMixSilicaTextBlock.Text = first.Silica.ToString("F2");
             FirstMixHumicAcidTextBlock.Text = first.HumicAcid.ToString("F2");
             FirstMixFulvicAcidTextBlock.Text = first.FulvicAcid.ToString("F2");
+            FirstMixKelpTextBlock.Text = first.Kelp.ToString("F2");
             FirstMixTotalPpmTextBlock.Text = first.Total.ToString("F2");
 
             SecondMixNitrogenTextBlock.Text = second.Nitrogen.ToString("F2");
@@ -173,6 +175,7 @@ namespace FertilizerCalculator
             SecondMixSilicaTextBlock.Text = second.Silica.ToString("F2");
             SecondMixHumicAcidTextBlock.Text = second.HumicAcid.ToString("F2");
             SecondMixFulvicAcidTextBlock.Text = second.FulvicAcid.ToString("F2");
+            SecondMixKelpTextBlock.Text = second.Kelp.ToString("F2");
             SecondMixTotalPpmTextBlock.Text = second.Total.ToString("F2");
         }
     }

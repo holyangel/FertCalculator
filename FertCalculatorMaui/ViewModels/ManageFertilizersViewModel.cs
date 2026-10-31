@@ -205,7 +205,8 @@ namespace FertCalculatorMaui.ViewModels
                     ("Chlorine (Cl)", fertilizer.ChlorinePercent),
                     ("Silica (Si)", fertilizer.SilicaPercent),
                     ("Humic Acid", fertilizer.HumicAcidPercent),
-                    ("Fulvic Acid", fertilizer.FulvicAcidPercent)
+                    ("Fulvic Acid", fertilizer.FulvicAcidPercent),
+                    ("Kelp", fertilizer.KelpPercent)
                 });
                 
                 var nonZeroNutrients = nutrientDetails

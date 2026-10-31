@@ -24,6 +24,7 @@ namespace FertCalculator.Core
         private double silicaPercent;
         private double humicAcidPercent;
         private double fulvicAcidPercent;
+        private double kelpPercent;
 
         // Properties to store original input format and values
         public bool IsPhosphorusInOxideForm { get; set; }
@@ -144,6 +145,14 @@ namespace FertCalculator.Core
             set { fulvicAcidPercent = value; OnPropertyChanged(nameof(FulvicAcidPercent)); }
         }
 
+        // Declared kelp content by weight. Most labels don't declare it, so
+        // files lacking the element deserialize to 0.
+        public double KelpPercent
+        {
+            get => kelpPercent;
+            set { kelpPercent = value; OnPropertyChanged(nameof(KelpPercent)); }
+        }
+
         // Convert percentage to decimal (divide by 100) and multiply by 1000 to get
         // mg of nutrient per gram of fertilizer (i.e. PPM for a 1 g/L dose).
         // With useImperial, the value is scaled for a dose expressed in g/gal.
@@ -169,9 +178,10 @@ namespace FertCalculator.Core
         public double SilicaPpm(bool useImperial = false) => GetPpmValue(SilicaPercent, useImperial);
         public double HumicAcidPpm(bool useImperial = false) => GetPpmValue(HumicAcidPercent, useImperial);
         public double FulvicAcidPpm(bool useImperial = false) => GetPpmValue(FulvicAcidPercent, useImperial);
+        public double KelpPpm(bool useImperial = false) => GetPpmValue(KelpPercent, useImperial);
 
         // Total nutrient calculations
-        public double TotalNutrientPercent => NitrogenPercent + PhosphorusPercent + PotassiumPercent + CalciumPercent + MagnesiumPercent + SulfurPercent + BoronPercent + CopperPercent + IronPercent + ManganesePercent + MolybdenumPercent + ZincPercent + ChlorinePercent + SilicaPercent + HumicAcidPercent + FulvicAcidPercent;
+        public double TotalNutrientPercent => NitrogenPercent + PhosphorusPercent + PotassiumPercent + CalciumPercent + MagnesiumPercent + SulfurPercent + BoronPercent + CopperPercent + IronPercent + ManganesePercent + MolybdenumPercent + ZincPercent + ChlorinePercent + SilicaPercent + HumicAcidPercent + FulvicAcidPercent + KelpPercent;
         public double TotalNutrientPpm(bool useImperial = false) => GetPpmValue(TotalNutrientPercent, useImperial);
 
         // Conversion helpers for P2O5 and K2O

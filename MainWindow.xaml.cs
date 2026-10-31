@@ -563,6 +563,7 @@ namespace FertilizerCalculator
             SilicaValueTextBlock.Text = totals.Silica.ToString("F2");
             HumicAcidValueTextBlock.Text = totals.HumicAcid.ToString("F2");
             FulvicAcidValueTextBlock.Text = totals.FulvicAcid.ToString("F2");
+            KelpValueTextBlock.Text = totals.Kelp.ToString("F2");
             TotalPpmValueTextBlock.Text = totals.Total.ToString("F2");
         }
 
@@ -586,6 +587,7 @@ namespace FertilizerCalculator
                 ("Silica (Si)", SilicaValueTextBlock),
                 ("Humic Acid", HumicAcidValueTextBlock),
                 ("Fulvic Acid", FulvicAcidValueTextBlock),
+                ("Kelp", KelpValueTextBlock),
                 ("TOTAL PPM", TotalPpmValueTextBlock),
             };
 

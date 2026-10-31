@@ -97,6 +97,11 @@
                 <Entry Text="{Binding BindingContext.FulvicAcidPercent, Source={x:Reference AddFertilizerPageRoot}}" Style="{StaticResource EntryTextStyle}" Keyboard="Numeric" Placeholder="Enter fulvic acid percentage" Margin="0,0,0,10" Grid.Column="1" />
             </Grid>
 
+            <Grid ColumnDefinitions="150,Auto" RowDefinitions="Auto">
+                <Label Text="Kelp (%)" Grid.Column="0" Margin="0,10,0,0" />
+                <Entry Text="{Binding BindingContext.KelpPercent, Source={x:Reference AddFertilizerPageRoot}}" Style="{StaticResource EntryTextStyle}" Keyboard="Numeric" Placeholder="Enter kelp percentage" Margin="0,0,0,10" Grid.Column="1" />
+            </Grid>
+
             <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" Margin="0,10,0,0">
                 <CheckBox IsChecked="{Binding BindingContext.IsLiquid, Source={x:Reference AddFertilizerPageRoot}}" Grid.Column="0" Style="{StaticResource CheckBoxStyle}" />
                 <Label Text="Liquid product — dosed in mL" Grid.Column="1" VerticalOptions="Center" Margin="10,0,0,0" />

@@ -109,7 +109,7 @@
         public bool IsLiquid;
         public double Density = 1;
         public double N, P2O5, K2O;
-        public double Ca, Mg, S, B, Cu, Fe, Mn, Mo, Zn, Cl, Si, Humic, Fulvic;
+        public double Ca, Mg, S, B, Cu, Fe, Mn, Mo, Zn, Cl, Si, Humic, Fulvic, Kelp;
     }
 
     private record MicroField(string Label, Func<FormModel, double> Get, Action<FormModel, double> Set);
@@ -129,6 +129,7 @@
         new("Si", f => f.Si, (f, v) => f.Si = v),
         new("Humic", f => f.Humic, (f, v) => f.Humic = v),
         new("Fulvic", f => f.Fulvic, (f, v) => f.Fulvic = v),
+        new("Kelp", f => f.Kelp, (f, v) => f.Kelp = v),
     };
 
     private static double ToDouble(object? v) =>
@@ -154,7 +155,7 @@
             B = f.BoronPercent, Cu = f.CopperPercent, Fe = f.IronPercent,
             Mn = f.ManganesePercent, Mo = f.MolybdenumPercent, Zn = f.ZincPercent,
             Cl = f.ChlorinePercent, Si = f.SilicaPercent,
-            Humic = f.HumicAcidPercent, Fulvic = f.FulvicAcidPercent,
+            Humic = f.HumicAcidPercent, Fulvic = f.FulvicAcidPercent, Kelp = f.KelpPercent,
         };
     }
 
@@ -194,7 +195,7 @@
             BoronPercent = form.B, CopperPercent = form.Cu, IronPercent = form.Fe,
             ManganesePercent = form.Mn, MolybdenumPercent = form.Mo, ZincPercent = form.Zn,
             ChlorinePercent = form.Cl, SilicaPercent = form.Si,
-            HumicAcidPercent = form.Humic, FulvicAcidPercent = form.Fulvic,
+            HumicAcidPercent = form.Humic, FulvicAcidPercent = form.Fulvic, KelpPercent = form.Kelp,
         };
 
         // If renamed while editing, drop the old custom entry.

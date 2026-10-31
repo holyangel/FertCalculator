@@ -48,6 +48,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Fertilizer name -->
@@ -138,15 +139,19 @@
                 <TextBox Grid.Row="17" Grid.Column="1" x:Name="FulvicAcidTextBox" PreviewTextInput="DecimalInputValidation"/>
                 <TextBlock Grid.Row="17" Grid.Column="2" Text="%"/>
 
+                <TextBlock Grid.Row="18" Grid.Column="0" Text="Kelp:"/>
+                <TextBox Grid.Row="18" Grid.Column="1" x:Name="KelpTextBox" PreviewTextInput="DecimalInputValidation"/>
+                <TextBlock Grid.Row="18" Grid.Column="2" Text="%"/>
+
                 <!-- Liquid product handling -->
-                <CheckBox Grid.Row="18" Grid.Column="0" Grid.ColumnSpan="2" x:Name="IsLiquidCheckBox"
+                <CheckBox Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="2" x:Name="IsLiquidCheckBox"
                           Content="Liquid product — quantities are dosed in mL" Margin="0,15,0,5"/>
 
-                <TextBlock Grid.Row="19" Grid.Column="0" Text="Density:"/>
-                <TextBox Grid.Row="19" Grid.Column="1" x:Name="DensityTextBox" PreviewTextInput="DecimalInputValidation" Text="1.0"/>
-                <TextBlock Grid.Row="19" Grid.Column="2" Text="g/mL"/>
+                <TextBlock Grid.Row="20" Grid.Column="0" Text="Density:"/>
+                <TextBox Grid.Row="20" Grid.Column="1" x:Name="DensityTextBox" PreviewTextInput="DecimalInputValidation" Text="1.0"/>
+                <TextBlock Grid.Row="20" Grid.Column="2" Text="g/mL"/>
 
-                <TextBlock Grid.Row="20" Grid.Column="0" Grid.ColumnSpan="3"
+                <TextBlock Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="3"
                            Text="Density converts mL to grams for liquid products (label percentages are by weight). If the label gives lb/gal, multiply by 0.12 — e.g. 10 lb/gal ≈ 1.2 g/mL."
                            TextWrapping="Wrap" FontSize="11" Opacity="0.7" Margin="0,5,0,0"/>
             </Grid>

@@ -124,6 +124,7 @@
                         <tr><td>Silica (Si)</td><td class="text-end">@totals.Silica.ToString("F2")</td></tr>
                         <tr><td>Humic Acid</td><td class="text-end">@totals.HumicAcid.ToString("F2")</td></tr>
                         <tr><td>Fulvic Acid</td><td class="text-end">@totals.FulvicAcid.ToString("F2")</td></tr>
+                        <tr><td>Kelp</td><td class="text-end">@totals.Kelp.ToString("F2")</td></tr>
                         <tr class="fw-bold"><td>TOTAL PPM</td><td class="text-end">@totals.Total.ToString("F2")</td></tr>
                     </tbody>
                 </table>
@@ -362,6 +363,7 @@
             ("Molybdenum (Mo)", totals.Molybdenum), ("Zinc (Zn)", totals.Zinc),
             ("Chlorine (Cl)", totals.Chlorine), ("Silica (Si)", totals.Silica),
             ("Humic Acid", totals.HumicAcid), ("Fulvic Acid", totals.FulvicAcid),
+            ("Kelp", totals.Kelp),
             ("TOTAL PPM", totals.Total),
         };
         var sb = new System.Text.StringBuilder();

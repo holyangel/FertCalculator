@@ -86,6 +86,9 @@ public partial class MainViewModel : ObservableObject
     private double fulvicAcidPercent;
 
     [ObservableProperty]
+    private double kelpPercent;
+
+    [ObservableProperty]
     private double totalNutrientPercent;
 
     // Nutrient PPM properties
@@ -136,6 +139,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private double fulvicAcidPpm;
+
+    [ObservableProperty]
+    private double kelpPpm;
 
     [ObservableProperty]
     private double totalNutrientPpm;
@@ -485,6 +491,7 @@ public partial class MainViewModel : ObservableObject
                     SilicaPercent += (fertilizer.SilicaPercent / 100) * quantity;
                     HumicAcidPercent += (fertilizer.HumicAcidPercent / 100) * quantity;
                     FulvicAcidPercent += (fertilizer.FulvicAcidPercent / 100) * quantity;
+                    KelpPercent += (fertilizer.KelpPercent / 100) * quantity;
                 }
             }
 
@@ -507,6 +514,7 @@ public partial class MainViewModel : ObservableObject
                 SilicaPercent = (SilicaPercent / totalQuantity) * 100;
                 HumicAcidPercent = (HumicAcidPercent / totalQuantity) * 100;
                 FulvicAcidPercent = (FulvicAcidPercent / totalQuantity) * 100;
+                KelpPercent = (KelpPercent / totalQuantity) * 100;
             }
 
             // Calculate total nutrient percentage
@@ -514,7 +522,7 @@ public partial class MainViewModel : ObservableObject
                                   CalciumPercent + MagnesiumPercent + SulfurPercent +
                                   BoronPercent + CopperPercent + IronPercent +
                                   ManganesePercent + MolybdenumPercent + ZincPercent +
-                                  ChlorinePercent + SilicaPercent + HumicAcidPercent + FulvicAcidPercent;
+                                  ChlorinePercent + SilicaPercent + HumicAcidPercent + FulvicAcidPercent + KelpPercent;
 
             // Sum PPM contributions via the shared calculator
             var totals = MixCalculator.Calculate(CurrentMix, AvailableFertilizers, UseImperialUnits);
@@ -534,6 +542,7 @@ public partial class MainViewModel : ObservableObject
             SilicaPpm = totals.Silica;
             HumicAcidPpm = totals.HumicAcid;
             FulvicAcidPpm = totals.FulvicAcid;
+            KelpPpm = totals.Kelp;
             TotalNutrientPpm = totals.Total;
             
             // Explicitly notify property changes for all PPM values
@@ -564,6 +573,7 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(SilicaPercent));
         OnPropertyChanged(nameof(HumicAcidPercent));
         OnPropertyChanged(nameof(FulvicAcidPercent));
+        OnPropertyChanged(nameof(KelpPercent));
         
         // Notify all PPM properties
         OnPropertyChanged(nameof(NitrogenPpm));
@@ -582,6 +592,7 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(SilicaPpm));
         OnPropertyChanged(nameof(HumicAcidPpm));
         OnPropertyChanged(nameof(FulvicAcidPpm));
+        OnPropertyChanged(nameof(KelpPpm));
     }
 
     private void ResetNutrientTotals()
@@ -603,6 +614,7 @@ public partial class MainViewModel : ObservableObject
         SilicaPercent = 0;
         HumicAcidPercent = 0;
         FulvicAcidPercent = 0;
+        KelpPercent = 0;
         TotalNutrientPercent = 0;
 
         // Reset PPM values
@@ -622,6 +634,7 @@ public partial class MainViewModel : ObservableObject
         SilicaPpm = 0;
         HumicAcidPpm = 0;
         FulvicAcidPpm = 0;
+        KelpPpm = 0;
         TotalNutrientPpm = 0;
     }
 

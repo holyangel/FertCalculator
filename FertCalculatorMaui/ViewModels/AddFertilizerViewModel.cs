@@ -79,6 +79,9 @@ public partial class AddFertilizerViewModel : ObservableObject
     private double fulvicAcidPercent;
 
     [ObservableProperty]
+    private double kelpPercent;
+
+    [ObservableProperty]
     private bool isLiquid;
 
     [ObservableProperty]
@@ -138,6 +141,7 @@ public partial class AddFertilizerViewModel : ObservableObject
         SilicaPercent = fertilizer.SilicaPercent;
         HumicAcidPercent = fertilizer.HumicAcidPercent;
         FulvicAcidPercent = fertilizer.FulvicAcidPercent;
+        KelpPercent = fertilizer.KelpPercent;
         IsLiquid = fertilizer.IsLiquid;
         Density = fertilizer.Density > 0 ? fertilizer.Density : 1.0;
     }
@@ -226,6 +230,7 @@ public partial class AddFertilizerViewModel : ObservableObject
         fertilizer.SilicaPercent = SilicaPercent;
         fertilizer.HumicAcidPercent = HumicAcidPercent;
         fertilizer.FulvicAcidPercent = FulvicAcidPercent;
+        fertilizer.KelpPercent = KelpPercent;
         fertilizer.IsLiquid = IsLiquid;
         fertilizer.Density = Density > 0 ? Density : 1.0;
 
@@ -291,7 +296,8 @@ public partial class AddFertilizerViewModel : ObservableObject
             ChlorinePercent,
             SilicaPercent,
             HumicAcidPercent,
-            FulvicAcidPercent
+            FulvicAcidPercent,
+            KelpPercent
         };
 
         return numericProperties.All(value => value >= 0 && value <= 100);

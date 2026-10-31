@@ -289,6 +289,7 @@ public partial class CompareMixPage : ContentPage
             data.Add(("Si", ViewModel.Mix1SilicaPpm, ViewModel.Mix2SilicaPpm));
             data.Add(("HuA", ViewModel.Mix1HumicAcidPpm, ViewModel.Mix2HumicAcidPpm));
             data.Add(("FuA", ViewModel.Mix1FulvicAcidPpm, ViewModel.Mix2FulvicAcidPpm));
+            data.Add(("Kelp", ViewModel.Mix1KelpPpm, ViewModel.Mix2KelpPpm));
             
             // Filter out nutrients with zero values in both mixes
             data = data.Where(n => n.Mix1Value > 0 || n.Mix2Value > 0).ToList();

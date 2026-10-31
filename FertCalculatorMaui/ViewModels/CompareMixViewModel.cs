@@ -109,6 +109,9 @@ namespace FertCalculatorMaui.ViewModels
         [ObservableProperty]
         private double mix1FulvicAcidPpm;
 
+    [ObservableProperty]
+    private double mix1KelpPpm;
+
         [ObservableProperty]
         private double mix1TotalNutrientPpm;
 
@@ -160,6 +163,9 @@ namespace FertCalculatorMaui.ViewModels
 
         [ObservableProperty]
         private double mix2FulvicAcidPpm;
+
+    [ObservableProperty]
+    private double mix2KelpPpm;
 
         [ObservableProperty]
         private double mix2TotalNutrientPpm;
@@ -304,6 +310,7 @@ namespace FertCalculatorMaui.ViewModels
             Mix1SilicaPpm = totals.Silica;
             Mix1HumicAcidPpm = totals.HumicAcid;
             Mix1FulvicAcidPpm = totals.FulvicAcid;
+            Mix1KelpPpm = totals.Kelp;
             Mix1TotalNutrientPpm = totals.Total;
         }
 
@@ -332,6 +339,7 @@ namespace FertCalculatorMaui.ViewModels
             Mix2SilicaPpm = totals.Silica;
             Mix2HumicAcidPpm = totals.HumicAcid;
             Mix2FulvicAcidPpm = totals.FulvicAcid;
+            Mix2KelpPpm = totals.Kelp;
             Mix2TotalNutrientPpm = totals.Total;
         }
 
@@ -367,6 +375,7 @@ namespace FertCalculatorMaui.ViewModels
             AddNutrientData("Si", Mix1SilicaPpm, Mix2SilicaPpm, mix1Values, mix2Values, labels);
             AddNutrientData("Humic", Mix1HumicAcidPpm, Mix2HumicAcidPpm, mix1Values, mix2Values, labels);
             AddNutrientData("Fulvic", Mix1FulvicAcidPpm, Mix2FulvicAcidPpm, mix1Values, mix2Values, labels);
+            AddNutrientData("Kelp", Mix1KelpPpm, Mix2KelpPpm, mix1Values, mix2Values, labels);
 
             if (mix1Values.Count == 0)
             {
@@ -502,6 +511,7 @@ namespace FertCalculatorMaui.ViewModels
             Mix1SilicaPpm = 0;
             Mix1HumicAcidPpm = 0;
             Mix1FulvicAcidPpm = 0;
+            Mix1KelpPpm = 0;
             Mix1TotalNutrientPpm = 0;
         }
 
@@ -523,6 +533,7 @@ namespace FertCalculatorMaui.ViewModels
             Mix2SilicaPpm = 0;
             Mix2HumicAcidPpm = 0;
             Mix2FulvicAcidPpm = 0;
+            Mix2KelpPpm = 0;
             Mix2TotalNutrientPpm = 0;
         }
 
