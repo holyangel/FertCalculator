@@ -1272,7 +1272,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>1</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>1</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -1792,7 +1792,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>2</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>2</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -1818,7 +1818,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>0</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>2</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -1896,7 +1896,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>4</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>2</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -2546,7 +2546,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>0.4</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>0.1</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -2598,7 +2598,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>0</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>0.005</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -2624,7 +2624,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>0</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>0.05</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
@@ -2780,7 +2780,7 @@
     <SilicaPercent>0</SilicaPercent>
     <HumicAcidPercent>7</HumicAcidPercent>
     <FulvicAcidPercent>0</FulvicAcidPercent>
-    <KelpPercent>0</KelpPercent>
+    <KelpPercent>0.5</KelpPercent>
   </Fertilizer>
   <Fertilizer>
     <IsPhosphorusInOxideForm>true</IsPhosphorusInOxideForm>
